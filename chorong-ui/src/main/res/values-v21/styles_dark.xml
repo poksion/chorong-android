@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyAppTheme.Dark" parent="MyAppThemeBase.Dark">
+        <item name="android:navigationBarColor">#4a4a50</item>
+    </style>
+</resources>

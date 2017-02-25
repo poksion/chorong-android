@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="purplePrimaryDark">#4c3a5b</color>
+
+    <style name="MyPurpleTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:textColor">#4a4a50</item>
+    </style>
+
+    <style name="MyPurpleToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" >
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="MyPurpleToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">#ffffff</item>
+    </style>
+
+    <style name="MyAppThemeBase.Purple" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/purplePrimaryDark</item>
+
+        <item name="colorPrimaryDark">@color/purplePrimaryDark</item>
+        <item name="colorAccent">@color/purplePrimaryDark</item>
+        <item name="colorControlHighlight">@color/purplePrimaryDark</item>
+
+        <item name="colorPrimary">#674287</item>
+        <item name="colorControlNormal">#999999</item>
+
+        <item name="android:textViewStyle">@style/MyPurpleTextViewStyle</item>
+        <item name="myToolbarTitleStyle">@style/MyPurpleToolbarTitle</item>
+        <item name="myToolbarTheme">@style/MyPurpleToolbarTheme</item>
+    </style>
+
+    <style name="MyAppTheme.Purple" parent="MyAppThemeBase.Purple">
+    </style>
+
+</resources>
