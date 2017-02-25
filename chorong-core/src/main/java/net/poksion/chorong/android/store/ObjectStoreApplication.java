@@ -2,7 +2,7 @@ package net.poksion.chorong.android.store;
 
 import android.app.Application;
 
-public class ObjectStoreApplication extends Application implements ObjectStore {
+public abstract class ObjectStoreApplication extends Application implements ObjectStore {
 
     private final ObjectStoreImpl objectStore = new ObjectStoreImpl();
 
