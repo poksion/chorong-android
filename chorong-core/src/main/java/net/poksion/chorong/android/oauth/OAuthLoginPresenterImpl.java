@@ -4,7 +4,7 @@ import net.poksion.chorong.android.annotation.NonNull;
 
 public abstract class OAuthLoginPresenterImpl implements OAuthLoginPresenter {
 
-    abstract void startLoginActivity();
+    protected abstract void startLoginActivity();
 
     private final LoginTokenManager loginTokenManager;
 

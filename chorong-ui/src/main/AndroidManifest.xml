@@ -6,7 +6,12 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-				
+
+        <activity
+            android:name=".oauth.LoginActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".dialog.AlertDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"

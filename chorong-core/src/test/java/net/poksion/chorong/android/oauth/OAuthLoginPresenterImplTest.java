@@ -20,7 +20,7 @@ public class OAuthLoginPresenterImplTest {
     public void setUp() {
         oAuthLoginPresenter = new OAuthLoginPresenterImpl(loginTokenManager) {
             @Override
-            void startLoginActivity() {}
+            protected void startLoginActivity() {}
         };
     }
 

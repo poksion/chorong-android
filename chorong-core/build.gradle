@@ -26,7 +26,7 @@ publish {
     userOrg = 'poksion'
     groupId = 'net.poksion'
     artifactId = 'chorong-android-core'
-    publishVersion = '0.0.1'
+    publishVersion = '0.0.2'
 }
 
 dependencies {

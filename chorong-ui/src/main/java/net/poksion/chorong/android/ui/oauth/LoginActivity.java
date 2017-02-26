@@ -1,4 +1,4 @@
-package net.poksion.chorong.android.oauth;
+package net.poksion.chorong.android.ui.oauth;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import net.poksion.chorong.android.oauth.LoginTokenManager;
+import net.poksion.chorong.android.oauth.LoginTokenManagerImpl;
 import net.poksion.chorong.android.ui.R;
 
 public class LoginActivity extends Activity {
