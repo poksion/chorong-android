@@ -4,13 +4,18 @@ import net.poksion.chorong.android.annotation.NonNull;
 
 public interface OAuthLoginPresenter {
 
-    boolean isEmptyTokenButNotLoginTried();
-    void setLoginTriedAndStartActivity(@NonNull String nextRequest);
+    enum OAuthState {
+        OAUTH_EMPTY,
+        OAUTH_ON_RESUME,
+        OAUTH_DONE
+    }
 
-    boolean checkOnResumeLoginTriedAndBack();
-    String updateOnResumeNextRequest();
+    OAuthState getOAuthState();
+
+    void startOAuth(OAuthState state, @NonNull String nextRequest);
+    String completeOAuth(OAuthState state);
+    void resetOAuth();
 
     String getLoginToken();
-    void resetOAuth();
 
 }

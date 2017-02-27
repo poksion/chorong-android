@@ -2,7 +2,7 @@ package net.poksion.chorong.android.oauth;
 
 import net.poksion.chorong.android.annotation.NonNull;
 
-public abstract class OAuthLoginPresenterImpl implements OAuthLoginPresenter {
+public abstract class OAuthLoginPresenterWithActivity implements OAuthLoginPresenter {
 
     protected abstract void startLoginActivity();
 
@@ -11,18 +11,30 @@ public abstract class OAuthLoginPresenterImpl implements OAuthLoginPresenter {
     private boolean isLoginTriedPrev = false;
     private String nextRequest;
 
-
-    public OAuthLoginPresenterImpl(LoginTokenManager loginTokenManager) {
+    protected OAuthLoginPresenterWithActivity(LoginTokenManager loginTokenManager) {
         this.loginTokenManager = loginTokenManager;
     }
 
     @Override
-    public boolean isEmptyTokenButNotLoginTried() {
-        return (!isLoginTriedPrev && isEmptyToken(loginTokenManager.getSavedLoginToken()));
+    public OAuthState getOAuthState() {
+
+        if (isLoginTriedPrev) {
+            return OAuthState.OAUTH_ON_RESUME;
+        }
+
+        if (isEmptyToken(loginTokenManager.getSavedLoginToken())) {
+            return OAuthState.OAUTH_EMPTY;
+        }
+
+        return OAuthState.OAUTH_DONE;
     }
 
     @Override
-    public void setLoginTriedAndStartActivity(@NonNull String nextRequest) {
+    public void startOAuth(OAuthState state, @NonNull String nextRequest) {
+        if (state != OAuthState.OAUTH_EMPTY) {
+            throw new AssertionError("startOAuth should be invoked with OAUTH_EMPTY");
+        }
+
         this.isLoginTriedPrev = true;
         this.nextRequest = nextRequest;
 
@@ -30,12 +42,11 @@ public abstract class OAuthLoginPresenterImpl implements OAuthLoginPresenter {
     }
 
     @Override
-    public boolean checkOnResumeLoginTriedAndBack() {
-        return isLoginTriedPrev;
-    }
+    public String completeOAuth(OAuthState state) {
+        if (state != OAuthState.OAUTH_ON_RESUME) {
+            throw new AssertionError("completeOAuth should be invoked with OAUTH_ON_RESUME");
+        }
 
-    @Override
-    public String updateOnResumeNextRequest() {
         if (!isEmptyToken(loginTokenManager.getSavedLoginToken())) {
             isLoginTriedPrev = false;
             String updatedRequest = nextRequest;
@@ -47,14 +58,14 @@ public abstract class OAuthLoginPresenterImpl implements OAuthLoginPresenter {
     }
 
     @Override
-    public String getLoginToken() {
-        return loginTokenManager.getSavedLoginToken();
-    }
-
-    @Override
     public void resetOAuth() {
         isLoginTriedPrev = false;
         loginTokenManager.saveLoginToken("");
+    }
+
+    @Override
+    public String getLoginToken() {
+        return loginTokenManager.getSavedLoginToken();
     }
 
     private boolean isEmptyToken(String loginToken){
