@@ -14,7 +14,7 @@ public class SimpleTaskTest {
     }
 
     @Test
-    public void shouldReceiveResultAfterWork() {
+    public void result_should_be_received_after_work() {
         TaskRunnerSync<Object> taskHandler = new TaskRunnerSync<>(dummyListener);
         taskHandler.runTask(new SimpleTask<TestResult, Object>() {
             @Override

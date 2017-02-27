@@ -32,26 +32,26 @@ public class TaskQueueRunnerTest {
         HANDLER_THREAD
     }
 
-    private static class TaskRunnerImpl extends TaskQueueRunner<TaskRunnerOwner> {
+    private static class TaskRunnerImpl extends TaskQueueRunner<RunnerOwnerAndListener> {
 
-        TaskRunnerImpl(TaskQueue<TaskRunnerOwner> taskQueue) {
+        TaskRunnerImpl(TaskQueue<RunnerOwnerAndListener> taskQueue) {
             super(taskQueue);
         }
 
-        private TaskQueue<TaskRunnerOwner> getTaskQueue() {
+        private TaskQueue<RunnerOwnerAndListener> getTaskQueue() {
             return taskQueue;
         }
     }
 
-    private static class TaskRunnerOwner {
+    private static class RunnerOwnerAndListener {
         final TaskRunnerImpl taskRunner;
 
-        TaskRunnerOwner(QueueType queueType) {
+        RunnerOwnerAndListener(QueueType queueType) {
             this(queueType, null);
         }
 
-        TaskRunnerOwner(QueueType queueType, Looper looper) {
-            TaskQueue<TaskRunnerOwner> taskQueue = null;
+        RunnerOwnerAndListener(QueueType queueType, Looper looper) {
+            TaskQueue<RunnerOwnerAndListener> taskQueue = null;
             switch (queueType) {
                 case SYNC:
                     taskQueue = new TaskQueueSyncImpl<>(this);
@@ -66,7 +66,7 @@ public class TaskQueueRunnerTest {
             taskRunner = new TaskRunnerImpl(taskQueue);
         }
 
-        TaskQueueRunner<TaskRunnerOwner> getTaskRunner() {
+        TaskQueueRunner<RunnerOwnerAndListener> getTaskRunner() {
             return taskRunner;
         }
 
@@ -76,9 +76,9 @@ public class TaskQueueRunnerTest {
     }
 
     @Test
-    public void testSendResultAndIfSendLastResultThenRemoveTask() {
-        final TaskRunnerOwner runnerOwner = new TaskRunnerOwner(QueueType.SYNC);
-        runnerOwner.getTaskRunner().runTask(new Task<TaskRunnerOwner>() {
+    public void task_should_be_removed_if_send_last_result() {
+        final RunnerOwnerAndListener runnerOwnerAndListener = new RunnerOwnerAndListener(QueueType.SYNC);
+        runnerOwnerAndListener.getTaskRunner().runTask(new Task<RunnerOwnerAndListener>() {
             @Override
             public void onWork(ResultSender resultSender) {
                 resultSender.sendResult(0, null, false);
@@ -91,13 +91,13 @@ public class TaskQueueRunnerTest {
             }
 
             @Override
-            public void onResult(int resultKey, Object resultValue, WeakReference<TaskRunnerOwner> resultListenerRef) {
+            public void onResult(int resultKey, Object resultValue, WeakReference<RunnerOwnerAndListener> resultListenerRef) {
                 if (resultKey == 0) {
-                    assertThat(runnerOwner.getTaskQueue().isEmptyTask()).isFalse();
+                    assertThat(runnerOwnerAndListener.getTaskQueue().isEmptyTask()).isFalse();
                 }
 
                 if (resultKey == 1) {
-                    assertThat(runnerOwner.getTaskQueue().isEmptyTask()).isTrue();
+                    assertThat(runnerOwnerAndListener.getTaskQueue().isEmptyTask()).isTrue();
                 }
 
                 if (resultKey == 2) {
@@ -110,12 +110,12 @@ public class TaskQueueRunnerTest {
     private static class TaskFixture {
 
         boolean gotResult = false;
-        WeakReference<TaskRunnerOwner> resultListenerWeakRef;
+        WeakReference<RunnerOwnerAndListener> resultListenerWeakRef;
 
-        Task<TaskRunnerOwner> getTask() {
+        Task<RunnerOwnerAndListener> getTask() {
             gotResult = false;
 
-            return new Task<TaskRunnerOwner>() {
+            return new Task<RunnerOwnerAndListener>() {
                 @Override
                 public void onWork(ResultSender resultSender) {
                     try {
@@ -127,7 +127,7 @@ public class TaskQueueRunnerTest {
                 }
 
                 @Override
-                public void onResult(int resultKey, Object resultValue, WeakReference<TaskRunnerOwner> resultListenerRef) {
+                public void onResult(int resultKey, Object resultValue, WeakReference<RunnerOwnerAndListener> resultListenerRef) {
                     assertThat(resultKey).isEqualTo(0);
                     resultListenerWeakRef = resultListenerRef;
 
@@ -161,15 +161,15 @@ public class TaskQueueRunnerTest {
     }
 
     @Test
-    public void testRunnerWeakRefOnSimpleThreadImpl() {
+    public void listener_should_be_managed_as_weak_ref_on_simple_thread() {
         TaskFixture taskFixture = new TaskFixture();
 
-        TaskRunnerOwner runnerOwner = new TaskRunnerOwner(QueueType.SIMPLE_THREAD);
-        runnerOwner.getTaskRunner().runTask(taskFixture.getTask());
+        RunnerOwnerAndListener runnerOwnerAndListener = new RunnerOwnerAndListener(QueueType.SIMPLE_THREAD);
+        runnerOwnerAndListener.getTaskRunner().runTask(taskFixture.getTask());
 
         // remove reference
         // noinspection UnusedAssignment
-        runnerOwner = null;
+        runnerOwnerAndListener = null;
         System.gc();
 
         taskFixture.waitUntilGotResult();
@@ -177,19 +177,19 @@ public class TaskQueueRunnerTest {
     }
 
     @Test
-    public void testHandlerWeakRefOnAsyncImpl() {
+    public void listener_should_be_managed_as_weak_ref_on_shared_handler_thread() {
         TaskFixture taskFixture = new TaskFixture();
 
         HandlerThread handlerThread = new HandlerThread("test");
         handlerThread.start();
         assertThat(handlerThread.getLooper()).isNotNull();
 
-        TaskRunnerOwner runnerOwner = new TaskRunnerOwner(QueueType.HANDLER_THREAD, handlerThread.getLooper());
-        runnerOwner.getTaskRunner().runTask(taskFixture.getTask());
+        RunnerOwnerAndListener runnerOwnerAndListener = new RunnerOwnerAndListener(QueueType.HANDLER_THREAD, handlerThread.getLooper());
+        runnerOwnerAndListener.getTaskRunner().runTask(taskFixture.getTask());
 
         // remove reference
         // noinspection UnusedAssignment
-        runnerOwner = null;
+        runnerOwnerAndListener = null;
         System.gc();
 
         taskFixture.waitUntilGotResultWithShadowLooper(handlerThread.getLooper());
