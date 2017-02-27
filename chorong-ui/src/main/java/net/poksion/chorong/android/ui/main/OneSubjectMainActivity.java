@@ -5,29 +5,60 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import java.util.List;
 import net.poksion.chorong.android.ui.R;
 
 public abstract class OneSubjectMainActivity extends AppCompatActivity {
 
-    protected abstract void onCreateContent(ViewGroup rootView, Bundle savedInstanceState);
+    protected abstract void onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState);
+    protected abstract boolean isUsingCustomTheme();
+
+    public static class MenuInfo {
+        private final int id;
+        private int strResId;
+
+        public MenuInfo(int id, int strRedId) {
+            this.id = id;
+            this.strResId = strRedId;
+        }
+
+        public MenuInfo(int strResIdAsId) {
+            this.id = strResIdAsId;
+            this.strResId = strResIdAsId;
+        }
+    }
+
+    protected List<MenuInfo> getMenuInfoList() {
+        return null;
+    }
+
+    protected boolean onMenuSelected(int id) {
+        return false;
+    }
 
     private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isUsingCustomTheme()) {
+            setTheme(R.style.MyAppTheme_Dark);
+        }
+
         setContentView(R.layout.activity_one_subject_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
 
-        ViewGroup root = (ViewGroup) findViewById(R.id.main_content);
-        onCreateContent(root, savedInstanceState);
+        ViewGroup container = (ViewGroup) findViewById(R.id.main_content);
+        onCreateView(getLayoutInflater(), container, savedInstanceState);
 
         // remove background for performance
         getWindow().setBackgroundDrawable(null);
@@ -37,15 +68,21 @@ public abstract class OneSubjectMainActivity extends AppCompatActivity {
         actionBar.setTitle(title);
     }
 
-    private static int MENU_INFO_ID = 1;
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
 
-        MenuItem info = menu.add(Menu.NONE, MENU_INFO_ID, Menu.NONE, R.string.menu_info);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            info.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
+        List<MenuInfo> menuInfoList = getMenuInfoList();
+        if (menuInfoList != null && !menuInfoList.isEmpty()) {
+            int order = 0;
+            for (MenuInfo menuInfo : menuInfoList) {
+                order++;
+                MenuItem info = menu.add(Menu.NONE, menuInfo.id, order, menuInfo.strResId);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    info.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
+                }
+            }
         }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -59,13 +96,11 @@ public abstract class OneSubjectMainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == MENU_INFO_ID) {
-            // TODO
+        if (onMenuSelected(id)) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 
 }
