@@ -21,6 +21,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(path: ':chorong-core')
+    compile project(path: ':chorong-ui')
     compile 'com.android.support:appcompat-v7:24.2.1'
 
     androidTestCompile 'com.android.support:support-annotations:24.2.1'
