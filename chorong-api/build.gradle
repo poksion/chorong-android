@@ -30,7 +30,7 @@ publish {
     userOrg = 'poksion'
     groupId = 'net.poksion'
     artifactId = 'chorong-android-api'
-    publishVersion = '0.0.2'
+    publishVersion = '0.0.3'
 }
 
 dependencies {
