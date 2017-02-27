@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UnitToolTest {
 
     @Test
-    public void testDpToPx() {
+    public void dip_and_pixel_should_be_same_on_1_density() {
         Resources resources = Shadow.newInstanceOf(Resources.class);
         ShadowResources shadowResources = Shadows.shadowOf(resources);
         shadowResources.setDensity(1.0f);
