@@ -24,9 +24,9 @@ public class MainActivityTest {
     public void assemble_annotation_should_be_worked_so_not_null() {
         MainActivity mainActivity = mainActivityTestRule.getActivity();
 
-        assertNotNull(mainActivity.objectStore);
-        assertNotNull(mainActivity.parentContentView);
         assertNotNull(mainActivity.buttonContainer);
+        assertNotNull(mainActivity.objectStore);
+        assertNotNull(mainActivity.contentView);
     }
 
     @Test

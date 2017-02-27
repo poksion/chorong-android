@@ -21,18 +21,23 @@ import net.poksion.chorong.android.ui.main.OneSubjectMainActivity;
 
 public class MainActivity extends OneSubjectMainActivity {
 
-    @Assemble ObjectStore objectStore;
+    // Assembling member with MainActivityAssembler
+    // 1. LinearLayout is set directly in MainActivityAssembler.
+    // 2. Since MainActivityAssembler extends ViewModuleAssembler,
+    // automatically assemble
+    //   2-1. ObjectStore (provided by App-ModuleFactory.Initializer) and
+    //   2-2. FrameLayout (finding in ViewModuleAssembler with assemble id)
 
-    @Assemble(R.id.main_content) FrameLayout parentContentView;
     @Assemble LinearLayout buttonContainer;
-
+    @Assemble ObjectStore objectStore;
+    @Assemble(R.id.main_content) FrameLayout contentView;
 
     @Override
     protected void onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
         ModuleFactory.assemble(this, new MainActivityAssembler(this, container));
 
-        parentContentView.setBackgroundColor(Color.BLACK);
+        contentView.setBackgroundColor(Color.BLACK);
 
         addAlertDialogSample();
     }
