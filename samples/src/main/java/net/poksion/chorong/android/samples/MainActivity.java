@@ -37,14 +37,14 @@ public class MainActivity extends OneSubjectMainActivity {
 
         ModuleFactory.assemble(this, new MainActivityAssembler(this, container));
 
-        contentView.setBackgroundColor(Color.BLACK);
+        contentView.setBackgroundColor(Color.WHITE);
 
         addAlertDialogSample();
     }
 
     @Override
-    protected boolean isUsingCustomTheme() {
-        return false;
+    protected ThemeType getThemeType() {
+        return ThemeType.SKY;
     }
 
     @Override

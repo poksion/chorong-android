@@ -16,7 +16,17 @@ import net.poksion.chorong.android.ui.R;
 public abstract class OneSubjectMainActivity extends AppCompatActivity {
 
     protected abstract void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState);
-    protected abstract boolean isUsingCustomTheme();
+
+    public enum ThemeType {
+        DARK,
+        GREEN,
+        PURPLE,
+        SKY,
+
+        CUSTOM
+    }
+
+    protected abstract ThemeType getThemeType();
 
     public static class MenuInfo {
         private final int id;
@@ -47,8 +57,23 @@ public abstract class OneSubjectMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!isUsingCustomTheme()) {
-            setTheme(R.style.MyAppTheme_Dark);
+        ThemeType themeType = getThemeType();
+        switch(themeType == null? ThemeType.CUSTOM : themeType) {
+            case DARK:
+                setTheme(R.style.MyAppTheme_Dark);
+                break;
+            case GREEN:
+                setTheme(R.style.MyAppTheme_Green);
+                break;
+            case PURPLE:
+                setTheme(R.style.MyAppTheme_Purple);
+                break;
+            case SKY:
+                setTheme(R.style.MyAppTheme_Sky);
+                break;
+            case CUSTOM:
+                // do nothing
+                break;
         }
 
         setContentView(R.layout.activity_one_subject_main);
@@ -95,12 +120,7 @@ public abstract class OneSubjectMainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (onMenuSelected(id)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return onMenuSelected(id) || super.onOptionsItemSelected(item);
     }
 
 }
