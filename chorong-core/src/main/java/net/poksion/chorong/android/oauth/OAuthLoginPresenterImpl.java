@@ -30,12 +30,12 @@ public abstract class OAuthLoginPresenterImpl implements OAuthLoginPresenter {
     }
 
     @Override
-    public boolean isLoginTriedAndBackOnResume() {
+    public boolean checkOnResumeLoginTriedAndBack() {
         return isLoginTriedPrev;
     }
 
     @Override
-    public String updateNextRequestAfterOAuthOnResume() {
+    public String updateOnResumeNextRequest() {
         if (!isEmptyToken(loginTokenManager.getSavedLoginToken())) {
             isLoginTriedPrev = false;
             String updatedRequest = nextRequest;

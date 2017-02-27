@@ -25,20 +25,20 @@ public class OAuthLoginPresenterImplTest {
     }
 
     @Test
-    public void testTokenValidationAndLoginTriedAfterInit() {
+    public void oauth_presenter_should_know_token_state_when_login_token_mgr_does_not_have_saved_token() {
         when(loginTokenManager.getSavedLoginToken()).thenReturn("");
         assertThat(oAuthLoginPresenter.isEmptyTokenButNotLoginTried()).isTrue();
     }
 
     @Test
-    public void prevLoginTriedIsTrueWhenSetTried() {
-        assertThat(oAuthLoginPresenter.isLoginTriedAndBackOnResume()).isFalse();
+    public void login_tried_should_be_true_after_calling_login_tried_and_started_activity() {
+        assertThat(oAuthLoginPresenter.checkOnResumeLoginTriedAndBack()).isFalse();
         oAuthLoginPresenter.setLoginTriedAndStartActivity("");
-        assertThat(oAuthLoginPresenter.isLoginTriedAndBackOnResume()).isTrue();
+        assertThat(oAuthLoginPresenter.checkOnResumeLoginTriedAndBack()).isTrue();
     }
 
     @Test
-    public void whenSuccessUpdateTokenThenUpdateNextRequestOnResume() {
+    public void next_request_should_be_updated_after_login_tried_and_start_activity() {
         String fakeToken = "some-token-value";
         when(loginTokenManager.getSavedLoginToken()).thenReturn(fakeToken);
 
@@ -47,17 +47,12 @@ public class OAuthLoginPresenterImplTest {
         oAuthLoginPresenter.setLoginTriedAndStartActivity(nextRequest);
 
         // check on resume
-        assertThat(oAuthLoginPresenter.isLoginTriedAndBackOnResume()).isTrue();
-        String result = oAuthLoginPresenter.updateNextRequestAfterOAuthOnResume();
+        assertThat(oAuthLoginPresenter.checkOnResumeLoginTriedAndBack()).isTrue();
+        String result = oAuthLoginPresenter.updateOnResumeNextRequest();
         assertThat(result).isEqualTo(nextRequest);
 
         // if double updateNextRequest, then next should be null
-        result = oAuthLoginPresenter.updateNextRequestAfterOAuthOnResume();
+        result = oAuthLoginPresenter.updateOnResumeNextRequest();
         assertThat(result).isNull();
-
-        // after check
-        assertThat(oAuthLoginPresenter.isLoginTriedAndBackOnResume()).isFalse();
-        assertThat(oAuthLoginPresenter.isEmptyTokenButNotLoginTried()).isFalse();
-        assertThat(oAuthLoginPresenter.getLoginToken()).isEqualTo(fakeToken);
     }
 }

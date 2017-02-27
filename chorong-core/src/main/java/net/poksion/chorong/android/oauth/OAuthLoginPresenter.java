@@ -7,8 +7,8 @@ public interface OAuthLoginPresenter {
     boolean isEmptyTokenButNotLoginTried();
     void setLoginTriedAndStartActivity(@NonNull String nextRequest);
 
-    boolean isLoginTriedAndBackOnResume();
-    String updateNextRequestAfterOAuthOnResume();
+    boolean checkOnResumeLoginTriedAndBack();
+    String updateOnResumeNextRequest();
 
     String getLoginToken();
     void resetOAuth();
