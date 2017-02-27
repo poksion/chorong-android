@@ -24,7 +24,7 @@ public abstract class ViewModuleAssembler implements Assembler {
             return ModuleFactory.get(filedClass.getName());
         }
 
-        if (!filedClass.isAssignableFrom(View.class)) {
+        if (!View.class.isAssignableFrom(filedClass)) {
             return null;
         }
 
