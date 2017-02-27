@@ -26,16 +26,6 @@ public class MainActivity extends OneSubjectMainActivity {
     @Assemble(R.id.main_content) FrameLayout parentContentView;
     @Assemble LinearLayout buttonContainer;
 
-    private StoreObserver<Boolean> alertDialogBtnObserver = new StoreObserver<Boolean>() {
-        @Override
-        protected void onChanged(Boolean aBoolean) {
-            if (aBoolean) {
-                Toast.makeText(MainActivity.this, "Yes clicked", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(MainActivity.this, "No clicked", Toast.LENGTH_LONG).show();
-            }
-        }
-    };
 
     @Override
     protected void onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,11 +60,27 @@ public class MainActivity extends OneSubjectMainActivity {
         return false;
     }
 
+    // Store Observer
+    // CAUTION
+    // In Object Store, the observer reference is managed "weak".
+    // Hence should manage the observer reference.
+    private StoreObserver<Boolean> alertDialogBtnObserver = new StoreObserver<Boolean>() {
+        @Override
+        protected void onChanged(Boolean aBoolean) {
+            if (aBoolean) {
+                Toast.makeText(MainActivity.this, "Yes clicked", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this, "No clicked", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
     private void addAlertDialogSample() {
 
         // button clicked event
         final String ALERT_DIALOG_CLICKED_EVENT = "alert-dialog-click-event";
 
+        // observer for click event
         objectStore.addWeakObserver(ALERT_DIALOG_CLICKED_EVENT, alertDialogBtnObserver, false);
 
         Button button = new Button(this);
