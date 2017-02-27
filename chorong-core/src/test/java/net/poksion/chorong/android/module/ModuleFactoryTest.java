@@ -9,24 +9,23 @@ import org.junit.Test;
 public class ModuleFactoryTest {
 
     private static final String KEY = "key";
-    private static final String VALUE = "test-module-1";
+    private static final String MODULE = "test-module";
 
     @Before
-    public void resetModules() {
+    public void setUp() {
         ModuleFactory.reset();
 
         ModuleFactory.init(this, new ModuleFactory.Initializer() {
             @Override
             public void onInit(Object host, Map<String, Object> moduleMap) {
-                moduleMap.put(KEY, VALUE);
-
+                moduleMap.put(KEY, MODULE);
             }
         });
     }
 
     @Test
-    public void testAcquiringModule() {
-        String testModule1 = (String) ModuleFactory.get(KEY);
-        assertThat(testModule1).isEqualTo("test-module-1");
+    public void module_factory_should_return_request_module() {
+        String testModule = (String) ModuleFactory.get(KEY);
+        assertThat(testModule).isEqualTo("test-module");
     }
 }
