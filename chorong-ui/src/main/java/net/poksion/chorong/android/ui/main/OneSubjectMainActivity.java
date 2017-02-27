@@ -15,7 +15,7 @@ import net.poksion.chorong.android.ui.R;
 
 public abstract class OneSubjectMainActivity extends AppCompatActivity {
 
-    protected abstract void onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState);
+    protected abstract void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState);
     protected abstract boolean isUsingCustomTheme();
 
     public static class MenuInfo {
@@ -58,7 +58,7 @@ public abstract class OneSubjectMainActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
 
         ViewGroup container = (ViewGroup) findViewById(R.id.main_content);
-        onCreateView(getLayoutInflater(), container, savedInstanceState);
+        onCreateContentView(getLayoutInflater(), container, savedInstanceState);
 
         // remove background for performance
         getWindow().setBackgroundDrawable(null);

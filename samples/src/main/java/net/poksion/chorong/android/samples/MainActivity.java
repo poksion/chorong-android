@@ -33,7 +33,7 @@ public class MainActivity extends OneSubjectMainActivity {
     @Assemble(R.id.main_content) FrameLayout contentView;
 
     @Override
-    protected void onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
         ModuleFactory.assemble(this, new MainActivityAssembler(this, container));
 
