@@ -16,7 +16,7 @@ public class SubjectAndStoreObserverTest {
     private final String value2 = "test-value-2";
 
     @Test
-    public void testSubjectAsContainer() {
+    public void subject_should_store_values() {
         Subject container = new Subject();
 
         container.set(key1, value1);
@@ -27,7 +27,7 @@ public class SubjectAndStoreObserverTest {
     }
 
     @Test
-    public void testObserverReadExistValue() {
+    public void observer_should_read_existed_value_if_requested() {
         Subject subscriber = new Subject();
         subscriber.set(key1, value1);
 
@@ -57,7 +57,7 @@ public class SubjectAndStoreObserverTest {
     }
 
     @Test
-    public void testObserverOnDataChanged() {
+    public void observer_should_be_notified_on_data_changed() {
         Subject observableContainer = new Subject();
         observableContainer.set(key1, value1);
 
@@ -76,10 +76,10 @@ public class SubjectAndStoreObserverTest {
 
         observableContainer.set(key1, value2);
         assertThat(valueChecked[0]).isTrue();
-        valueChecked[0] = false;
 
         // change key2
         // not change key1 observer
+        valueChecked[0] = false;
         observableContainer.set(key2, value2);
         assertThat(valueChecked[0]).isFalse();
 
