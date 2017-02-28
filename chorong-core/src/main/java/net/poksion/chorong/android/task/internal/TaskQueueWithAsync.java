@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TaskQueueWithAsync<T_Listener> extends TaskQueue<T_Listener> {
+public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
 
     // Thread executor
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();

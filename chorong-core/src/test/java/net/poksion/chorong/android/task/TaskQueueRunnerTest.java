@@ -5,9 +5,7 @@ import android.os.Looper;
 
 import junit.framework.Assert;
 
-import net.poksion.chorong.android.task.internal.TaskQueue;
 import net.poksion.chorong.android.task.internal.TaskQueueWithAsync;
-import net.poksion.chorong.android.task.internal.TaskQueueRunner;
 import net.poksion.chorong.android.task.internal.TaskQueueWithSimpleThread;
 import net.poksion.chorong.android.task.internal.TaskQueueWithSync;
 
@@ -32,26 +30,15 @@ public class TaskQueueRunnerTest {
         HANDLER_THREAD
     }
 
-    private static class TaskRunnerImpl extends TaskQueueRunner<RunnerOwnerAndListener> {
-
-        TaskRunnerImpl(TaskQueue<RunnerOwnerAndListener> taskQueue) {
-            super(taskQueue);
-        }
-
-        private TaskQueue<RunnerOwnerAndListener> getTaskQueue() {
-            return taskQueue;
-        }
-    }
-
     private static class RunnerOwnerAndListener {
-        final TaskRunnerImpl taskRunner;
+        private final TaskRunner<RunnerOwnerAndListener> taskRunner;
+        private final TaskQueue<RunnerOwnerAndListener> taskQueue;
 
         RunnerOwnerAndListener(QueueType queueType) {
             this(queueType, null);
         }
 
         RunnerOwnerAndListener(QueueType queueType, Looper looper) {
-            TaskQueue<RunnerOwnerAndListener> taskQueue = null;
             switch (queueType) {
                 case SYNC:
                     taskQueue = new TaskQueueWithSync<>(this);
@@ -62,16 +49,18 @@ public class TaskQueueRunnerTest {
                 case HANDLER_THREAD:
                     taskQueue = new TaskQueueWithAsync<>(this, looper, false);
                     break;
+                default:
+                    taskQueue = null;
             }
-            taskRunner = new TaskRunnerImpl(taskQueue);
+            taskRunner = new TaskQueueRunner<>(taskQueue);
         }
 
-        TaskQueueRunner<RunnerOwnerAndListener> getTaskRunner() {
+        TaskRunner<RunnerOwnerAndListener> getTaskRunner() {
             return taskRunner;
         }
 
-        TaskQueue getTaskQueue() {
-            return taskRunner.getTaskQueue();
+        TaskQueue<RunnerOwnerAndListener> getTaskQueue() {
+            return taskQueue;
         }
     }
 
@@ -93,11 +82,11 @@ public class TaskQueueRunnerTest {
             @Override
             public void onResult(int resultKey, Object resultValue, WeakReference<RunnerOwnerAndListener> resultListenerRef) {
                 if (resultKey == 0) {
-                    assertThat(runnerOwnerAndListener.getTaskQueue().isEmptyTask()).isFalse();
+                    assertThat(runnerOwnerAndListener.getTaskQueue().size()).isEqualTo(1);
                 }
 
                 if (resultKey == 1) {
-                    assertThat(runnerOwnerAndListener.getTaskQueue().isEmptyTask()).isTrue();
+                    assertThat(runnerOwnerAndListener.getTaskQueue().size()).isEqualTo(0);
                 }
 
                 if (resultKey == 2) {
