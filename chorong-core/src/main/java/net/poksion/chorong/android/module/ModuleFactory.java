@@ -9,8 +9,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class ModuleFactory {
 
+    public final static class SingletonBinder {
+        private Map<String, Object> moduleMap;
+
+        public void bind(Class<?> representType, Object singletonInstance) {
+            moduleMap.put(representType.getName(), singletonInstance);
+        }
+
+        public void bind(String customBindingKey, Object singletonInstance) {
+            moduleMap.put(customBindingKey, singletonInstance);
+        }
+    }
+
     public interface Initializer {
-        void onInit(Object host, Map<String, Object> moduleMap);
+        void onInit(Object host, SingletonBinder singletonBinder);
     }
 
     private static Map<String, Object> modules = new ConcurrentHashMap<>();
@@ -28,7 +40,12 @@ public final class ModuleFactory {
             return;
         }
 
-        initializer.onInit(host, modules);
+        SingletonBinder singletonBinder = new SingletonBinder();
+        singletonBinder.moduleMap = modules;
+
+        initializer.onInit(host, singletonBinder);
+
+        singletonBinder.moduleMap = null;
     }
 
     public static Object get(String name) {

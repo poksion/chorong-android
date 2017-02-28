@@ -2,7 +2,6 @@ package net.poksion.chorong.android.module;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,8 +16,8 @@ public class ModuleFactoryTest {
 
         ModuleFactory.init(this, new ModuleFactory.Initializer() {
             @Override
-            public void onInit(Object host, Map<String, Object> moduleMap) {
-                moduleMap.put(KEY, MODULE);
+            public void onInit(Object host, ModuleFactory.SingletonBinder singletonBinder) {
+                singletonBinder.bind(KEY, MODULE);
             }
         });
     }

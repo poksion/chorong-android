@@ -3,7 +3,6 @@ package net.poksion.chorong.android.module;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 import net.poksion.chorong.android.annotation.Assemble;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +36,8 @@ public class ModuleAssemblerTest {
 
         ModuleFactory.init(this, new ModuleFactory.Initializer() {
             @Override
-            public void onInit(Object host, Map<String, Object> moduleMap) {
-                moduleMap.put(DummyModule.class.getName(), new DummyModule("dummy-module"));
+            public void onInit(Object host, ModuleFactory.SingletonBinder singletonBinder) {
+                singletonBinder.bind(DummyModule.class, new DummyModule("dummy-module"));
             }
         });
 
