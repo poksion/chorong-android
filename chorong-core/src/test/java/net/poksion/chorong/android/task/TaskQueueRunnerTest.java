@@ -6,10 +6,10 @@ import android.os.Looper;
 import junit.framework.Assert;
 
 import net.poksion.chorong.android.task.internal.TaskQueue;
-import net.poksion.chorong.android.task.internal.TaskQueueAsyncImpl;
+import net.poksion.chorong.android.task.internal.TaskQueueWithAsync;
 import net.poksion.chorong.android.task.internal.TaskQueueRunner;
-import net.poksion.chorong.android.task.internal.TaskQueueSimpleThreadImpl;
-import net.poksion.chorong.android.task.internal.TaskQueueSyncImpl;
+import net.poksion.chorong.android.task.internal.TaskQueueWithSimpleThread;
+import net.poksion.chorong.android.task.internal.TaskQueueWithSync;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,13 +54,13 @@ public class TaskQueueRunnerTest {
             TaskQueue<RunnerOwnerAndListener> taskQueue = null;
             switch (queueType) {
                 case SYNC:
-                    taskQueue = new TaskQueueSyncImpl<>(this);
+                    taskQueue = new TaskQueueWithSync<>(this);
                     break;
                 case SIMPLE_THREAD:
-                    taskQueue = new TaskQueueSimpleThreadImpl<>(this);
+                    taskQueue = new TaskQueueWithSimpleThread<>(this);
                     break;
                 case HANDLER_THREAD:
-                    taskQueue = new TaskQueueAsyncImpl<>(this, looper, false);
+                    taskQueue = new TaskQueueWithAsync<>(this, looper, false);
                     break;
             }
             taskRunner = new TaskRunnerImpl(taskQueue);

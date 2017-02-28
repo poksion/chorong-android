@@ -9,29 +9,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class TaskQueue<T_Listener> {
 
-    abstract Task.ResultSender getResultSender(long taskId);
-    abstract void onRun(Task<T_Listener> task, Task.ResultSender taskResultSender);
+    protected abstract void onRun(Task<T_Listener> task, Task.ResultSender taskResultSender);
+
+    protected Task.ResultSender getResultSender(final long taskId) {
+        return new Task.ResultSender() {
+            @Override
+            public void sendResult(int resultId, Object resultValue, boolean lastResult) {
+                handleResult(resultId, resultValue, lastResult, taskId);
+            }
+        };
+    }
 
     private final Map<Long, Task<T_Listener>> taskList = new ConcurrentHashMap<>();
     private final WeakReference<T_Listener> taskResultListenerRef;
 
-    TaskQueue(T_Listener listener) {
+    protected TaskQueue(T_Listener listener) {
         taskResultListenerRef = new WeakReference<>(listener);
-    }
-
-    void handleResult(int resultId, Object resultValue, boolean lastResult, long taskId) {
-        Task<T_Listener> task;
-        if (lastResult) {
-            task = taskList.remove(taskId);
-        } else {
-            task = taskList.get(taskId);
-        }
-
-        if (task == null) {
-            return;
-        }
-
-        task.onResult(resultId, resultValue, taskResultListenerRef);
     }
 
     public void run(Task<T_Listener> task) {
@@ -51,5 +44,20 @@ public abstract class TaskQueue<T_Listener> {
 
     public boolean isEmptyTask() {
         return taskList.isEmpty();
+    }
+
+    protected void handleResult(int resultId, Object resultValue, boolean lastResult, long taskId) {
+        Task<T_Listener> task;
+        if (lastResult) {
+            task = taskList.remove(taskId);
+        } else {
+            task = taskList.get(taskId);
+        }
+
+        if (task == null) {
+            return;
+        }
+
+        task.onResult(resultId, resultValue, taskResultListenerRef);
     }
 }

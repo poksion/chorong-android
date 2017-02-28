@@ -5,7 +5,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 
-import net.poksion.chorong.android.annotation.NonNull;
 import net.poksion.chorong.android.task.Task;
 
 import java.lang.ref.WeakReference;
@@ -17,7 +16,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TaskQueueAsyncImpl<T_Listener> extends TaskQueue<T_Listener> {
+public class TaskQueueWithAsync<T_Listener> extends TaskQueue<T_Listener> {
 
     // Thread executor
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
@@ -27,8 +26,10 @@ public class TaskQueueAsyncImpl<T_Listener> extends TaskQueue<T_Listener> {
 
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger mCount = new AtomicInteger(1);
-        public Thread newThread(@NonNull Runnable r) {
-            return new Thread(r, "TaskQueueAsyncImpl Worker Thread #" + mCount.getAndIncrement());
+
+        @SuppressWarnings("NullableProblems")
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "TaskQueueWithAsync Worker Thread #" + mCount.getAndIncrement());
         }
     };
 
@@ -49,9 +50,9 @@ public class TaskQueueAsyncImpl<T_Listener> extends TaskQueue<T_Listener> {
 
     // internal handler
     private static class InternalHandler<T_Listener> extends Handler {
-        private final WeakReference<TaskQueueAsyncImpl<T_Listener>> ownerRef;
+        private final WeakReference<TaskQueueWithAsync<T_Listener>> ownerRef;
 
-        private InternalHandler(Looper looper, TaskQueueAsyncImpl<T_Listener> owner) {
+        private InternalHandler(Looper looper, TaskQueueWithAsync<T_Listener> owner) {
             super(looper);
 
             ownerRef = new WeakReference<>(owner);
@@ -68,7 +69,7 @@ public class TaskQueueAsyncImpl<T_Listener> extends TaskQueue<T_Listener> {
             @SuppressWarnings("unchecked")
             InternalMessage internalMessage = (InternalMessage) msg.obj;
 
-            TaskQueueAsyncImpl<T_Listener> owner = ownerRef.get();
+            TaskQueueWithAsync<T_Listener> owner = ownerRef.get();
             if (owner != null) {
                 owner.handleResult(msg.what, internalMessage.resultValue, internalMessage.lastResult, internalMessage.taskId);
             }
@@ -78,11 +79,11 @@ public class TaskQueueAsyncImpl<T_Listener> extends TaskQueue<T_Listener> {
     private final InternalHandler<T_Listener> internalHandler;
     private final boolean useSharedExecutor;
 
-    public TaskQueueAsyncImpl(T_Listener listener) {
+    public TaskQueueWithAsync(T_Listener listener) {
         this(listener, Looper.getMainLooper(), true);
     }
 
-    public TaskQueueAsyncImpl(T_Listener listener, Looper looper, boolean useSharedExecutor) {
+    public TaskQueueWithAsync(T_Listener listener, Looper looper, boolean useSharedExecutor) {
         super(listener);
 
         internalHandler = new InternalHandler<>(looper, this);
@@ -90,15 +91,6 @@ public class TaskQueueAsyncImpl<T_Listener> extends TaskQueue<T_Listener> {
     }
 
     @Override
-    public Task.ResultSender getResultSender(final long taskId) {
-        return new Task.ResultSender() {
-            @Override
-            public void sendResult(int resultId, Object resultValue, boolean lastResult) {
-                internalHandler.sendMessage(resultId, resultValue, lastResult, taskId);
-            }
-        };
-    }
-
     public void onRun(final Task<T_Listener> task, final Task.ResultSender taskResultSender) {
         Runnable runnable = new Runnable() {
             @Override
@@ -117,6 +109,16 @@ public class TaskQueueAsyncImpl<T_Listener> extends TaskQueue<T_Listener> {
         } else {
             new Thread(runnable).start();
         }
+    }
+
+    @Override
+    public Task.ResultSender getResultSender(final long taskId) {
+        return new Task.ResultSender() {
+            @Override
+            public void sendResult(int resultId, Object resultValue, boolean lastResult) {
+                internalHandler.sendMessage(resultId, resultValue, lastResult, taskId);
+            }
+        };
     }
 
 }

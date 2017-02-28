@@ -2,9 +2,9 @@ package net.poksion.chorong.android.task.internal;
 
 import net.poksion.chorong.android.task.Task;
 
-public class TaskQueueSyncImpl<T_Listener> extends TaskQueueSimpleResultHandle<T_Listener> {
+public class TaskQueueWithSync<T_Listener> extends TaskQueue<T_Listener> {
 
-    public TaskQueueSyncImpl(T_Listener listener) {
+    public TaskQueueWithSync(T_Listener listener) {
         super(listener);
     }
 
