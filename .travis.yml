@@ -9,7 +9,9 @@ android:
 jdk:
   - oraclejdk8
 script:
-  - ./gradlew test
+  - ./gradlew testDebugUnitTestCoverage
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
