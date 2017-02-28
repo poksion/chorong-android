@@ -1,21 +1,27 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion _compile_sdk_ver
+    buildToolsVersion _build_tools_ver
+
     defaultConfig {
-        applicationId "net.poksion.chorong.android.samples"
-        minSdkVersion 9
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion _min_sdk_ver
+        targetSdkVersion _target_sdk_ver
+        versionCode _version_code
+        versionName _version_name
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lintOptions {
+        disable 'GradleDependency', 'GoogleAppIndexingWarning', 'AllowBackup'
     }
 }
 
@@ -23,10 +29,10 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(path: ':chorong-core')
     compile project(path: ':chorong-ui')
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile "com.android.support:appcompat-v7:$_support_lib_ver"
 
-    androidTestCompile 'com.android.support:support-annotations:24.2.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+    androidTestCompile "com.android.support:support-annotations:$_support_lib_ver"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$_espresso_ver"
+    androidTestCompile "com.android.support.test:runner:$_support_test_ver"
+    androidTestCompile "com.android.support.test:rules:$_support_test_ver"
 }

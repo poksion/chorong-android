@@ -1,6 +1,23 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+
+    ext._compile_sdk_ver  = 24
+    ext._build_tools_ver  = '24.0.2'
+    ext._min_sdk_ver      = 9
+    ext._target_sdk_ver   = 24
+    ext._version_code     = 4
+    ext._version_name     = '0.0.4'
+
+    ext._support_lib_ver  = '24.2.1'
+    ext._espresso_ver     = '2.2.2'
+    ext._support_test_ver = '0.5'
+
+    ext._junit_ver        = '4.12'
+    ext._mockito_ver      = '1.10.19'
+    ext._assertj_core_ver = '1.7.1'
+    ext._robolectric_ver  = '3.1.2'
+
     repositories {
         jcenter()
     }
