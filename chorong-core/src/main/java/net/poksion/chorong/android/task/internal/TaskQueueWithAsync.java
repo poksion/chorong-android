@@ -91,7 +91,7 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueue<T_Listener> {
     }
 
     @Override
-    public void onRun(final Task<T_Listener> task, final Task.ResultSender taskResultSender) {
+    protected void onRun(final Task<T_Listener> task, final Task.ResultSender taskResultSender) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -112,7 +112,7 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueue<T_Listener> {
     }
 
     @Override
-    public Task.ResultSender getResultSender(final long taskId) {
+    protected Task.ResultSender getResultSender(final long taskId) {
         return new Task.ResultSender() {
             @Override
             public void sendResult(int resultId, Object resultValue, boolean lastResult) {
