@@ -2,12 +2,13 @@
 
 buildscript {
 
+    ext._version_code     = 4
+    ext._version_name     = '0.0.4'
+
     ext._compile_sdk_ver  = 24
     ext._build_tools_ver  = '24.0.2'
     ext._min_sdk_ver      = 9
     ext._target_sdk_ver   = 24
-    ext._version_code     = 4
-    ext._version_name     = '0.0.4'
 
     ext._support_lib_ver  = '24.2.1'
     ext._espresso_ver     = '2.2.2'
@@ -21,6 +22,7 @@ buildscript {
     repositories {
         jcenter()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
 

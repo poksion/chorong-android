@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion _compile_sdk_ver
-    buildToolsVersion _build_tools_ver
+    compileSdkVersion    _compile_sdk_ver
+    buildToolsVersion    _build_tools_ver
 
     defaultConfig {
-        minSdkVersion _min_sdk_ver
+        minSdkVersion    _min_sdk_ver
         targetSdkVersion _target_sdk_ver
-        versionCode _version_code
-        versionName _version_name
+        versionCode      _version_code
+        versionName      _version_name
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
