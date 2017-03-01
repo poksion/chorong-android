@@ -10,6 +10,7 @@ jdk:
   - oraclejdk8
 script:
   - ./gradlew testDebugUnitTestCoverage
+  - ./gradlew jacocoRootReport
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 before_cache:

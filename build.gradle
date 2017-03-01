@@ -37,8 +37,45 @@ allprojects {
     repositories {
         jcenter()
     }
+
+    apply plugin: 'jacoco'
+
+    jacoco {
+        // https://bintray.com/bintray/jcenter/org.jacoco:org.jacoco.core
+        toolVersion = "0.7.7.201606060606"
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task jacocoRootReport(type: JacocoReport) {
+    classDirectories =
+            fileTree(
+                dir: "${project.rootDir}/chorong-api/build/intermediates/classes/debug",
+                excludes: ['**/R.class',
+                           '**/R$*.class',
+                           '**/*$ViewInjector*.*',
+                           '**/*$ViewBinder*.*',
+                           '**/BuildConfig.*',
+                           '**/Manifest*.*']) +
+            fileTree(
+                    dir: "${project.rootDir}/chorong-core/build/intermediates/classes/debug",
+                    excludes: ['**/R.class',
+                               '**/R$*.class',
+                               '**/*$ViewInjector*.*',
+                               '**/*$ViewBinder*.*',
+                               '**/BuildConfig.*',
+                               '**/Manifest*.*'])
+
+    sourceDirectories = files(["${project.rootDir}/chorong-api/src/main/java/", "${project.rootDir}/chorong-core/src/main/java/"])
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    reports {
+        xml.enabled true
+        xml.destination "${buildDir}/reports/jacoco/report.xml"
+        html.enabled true
+        csv.enabled false
+    }
 }
