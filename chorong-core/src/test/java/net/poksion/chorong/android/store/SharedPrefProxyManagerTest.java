@@ -16,8 +16,12 @@ import org.robolectric.annotation.Config;
 @Config(manifest=Config.NONE)
 public class SharedPrefProxyManagerTest {
 
-    private static final String PREF_NAME = "app-data-container";
-    private static final String PREF_KEY = "recent-visit-list";
+    private static final String PREF_NAME = "pref-name";
+
+    private static final String PREF_KEY_STR = "pref-key-str";
+    private static final String PREF_KEY_LONG = "pref-key-long";
+    private static final String PREF_KEY_INT = "pref-key-int";
+    private static final String PREF_KEY_BOOLEAN = "pref-key-boolean";
 
     private SharedPrefProxyManager sharedPrefProxyManager;
 
@@ -39,14 +43,29 @@ public class SharedPrefProxyManagerTest {
     @Test
     public void persistence_data_should_be_applied_by_proxy() {
         SharedPreferences sp = getRobolectricSharedPreferences();
-        sp.edit().putString(PREF_KEY, "aaa").apply();
+        sp.edit().putString(PREF_KEY_STR, "aaa").apply();
 
-        StoreAccessor<String> storeAccessor = sharedPrefProxyManager.installProxy(PREF_KEY, SharedPrefProxyManager.DataType.STRING);
+        StoreAccessor<String> storeAccessor = sharedPrefProxyManager.installProxy(PREF_KEY_STR, SharedPrefProxyManager.DataType.STRING);
         assertThat(storeAccessor.read()).isEqualTo("aaa");
 
         storeAccessor.write("bbb");
-        assertThat(sp.getString(PREF_KEY, null)).isEqualTo("bbb");
+        assertThat(sp.getString(PREF_KEY_STR, null)).isEqualTo("bbb");
+    }
 
-        sp.edit().putString(PREF_KEY, null).apply();
+    @Test
+    public void shared_pref_can_be_stored_long_int_boolean() {
+        SharedPreferences sp = getRobolectricSharedPreferences();
+        sp.edit().putLong(PREF_KEY_LONG, 111L).apply();
+        sp.edit().putInt(PREF_KEY_INT, 222).apply();
+        sp.edit().putBoolean(PREF_KEY_BOOLEAN, true).apply();
+
+        StoreAccessor<Long> longAccessor = sharedPrefProxyManager.installProxy(PREF_KEY_LONG, SharedPrefProxyManager.DataType.LONG);
+        StoreAccessor<Integer> intAccessor = sharedPrefProxyManager.installProxy(PREF_KEY_INT, SharedPrefProxyManager.DataType.INT);
+        StoreAccessor<Boolean> boolAccessor = sharedPrefProxyManager.installProxy(PREF_KEY_BOOLEAN, SharedPrefProxyManager.DataType.BOOLEAN);
+
+        assertThat(longAccessor.read()).isEqualTo(111L);
+        assertThat(intAccessor.read()).isEqualTo(222);
+        assertThat(boolAccessor.read()).isEqualTo(true);
+
     }
 }

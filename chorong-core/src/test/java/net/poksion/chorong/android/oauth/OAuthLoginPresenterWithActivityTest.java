@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,5 +54,30 @@ public class OAuthLoginPresenterWithActivityTest {
         // if double completed, then result should be null
         result = oAuthLoginPresenter.completeOAuth(OAuthLoginPresenter.OAuthState.OAUTH_ON_RESUME);
         assertThat(result).isNull();
+    }
+
+    @Test
+    public void start_and_complete_oauth_should_be_called_with_valid_state() {
+
+        boolean caught = false;
+        try {
+            oAuthLoginPresenter.startOAuth(OAuthLoginPresenter.OAuthState.OAUTH_ON_RESUME, "next-request");
+            fail("should be OAUTH_EMPTY");
+        } catch(AssertionError e) {
+            caught = true;
+        }
+
+        assertThat(caught).isTrue();
+
+        caught = false;
+        try {
+            oAuthLoginPresenter.completeOAuth(OAuthLoginPresenter.OAuthState.OAUTH_EMPTY);
+            fail("should be OAUTH_ON_RESUME");
+        } catch(AssertionError e) {
+            caught = true;
+        }
+
+        assertThat(caught).isTrue();
+
     }
 }
