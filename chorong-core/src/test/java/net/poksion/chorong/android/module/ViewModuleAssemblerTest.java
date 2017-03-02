@@ -29,6 +29,7 @@ public class ViewModuleAssemblerTest {
         openBtn = null;
         testPresenter = null;
 
+        ModuleFactory.reset();
         ModuleFactory.init(this, new TestModuleInitializer());
     }
 

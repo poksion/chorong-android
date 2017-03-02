@@ -82,7 +82,7 @@ public final class ModuleFactory {
 
         Object module = assembler.findModule(filedClass, id);
         if (module == null) {
-            throw new AssertionError("Fail finding module");
+            throw new AssertionError("Fail finding module : " + filedClass.getName() + ", (id:" + id + ")");
         }
 
         try {
