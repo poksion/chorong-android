@@ -9,8 +9,8 @@ public interface ObjectStore {
 
     final class Key {
 
-        final String staticKey;
-        final String conditions;
+        public final String staticKey;
+        public final String conditions;
 
         public Key(String staticKey) {
             this(staticKey, "");

@@ -76,10 +76,11 @@ public class SubjectAndStoreObserverTest {
 
         observableContainer.set(key1, value2);
         assertThat(valueChecked[0]).isTrue();
+        valueChecked[0] = false;
 
         // change key2
-        // not change key1 observer
-        valueChecked[0] = false;
+        // since there is not observer for key2,
+        // key1 related observer is not notified
         observableContainer.set(key2, value2);
         assertThat(valueChecked[0]).isFalse();
 
