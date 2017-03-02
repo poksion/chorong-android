@@ -57,6 +57,15 @@ public class OAuthLoginPresenterWithActivityTest {
     }
 
     @Test
+    public void reset_should_be_clear_state() {
+        oAuthLoginPresenter.startOAuth(OAuthLoginPresenter.OAuthState.OAUTH_EMPTY, "next-request");
+        assertThat(oAuthLoginPresenter.getOAuthState()).isEqualTo(OAuthLoginPresenter.OAuthState.OAUTH_ON_RESUME);
+
+        oAuthLoginPresenter.resetOAuth();
+        assertThat(oAuthLoginPresenter.getOAuthState()).isEqualTo(OAuthLoginPresenter.OAuthState.OAUTH_EMPTY);
+    }
+
+    @Test
     public void start_and_complete_oauth_should_be_called_with_valid_state() {
 
         boolean caught = false;

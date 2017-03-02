@@ -8,8 +8,8 @@ public class GoogleSheetApiTest {
 
     @Test
     public void result_by_name_should_be_empty_without_valid_token() {
-        GoogleSheetApi googleSheetApi = new GoogleSheetApiImpl("chorong-api-test");
-        GoogleSheetApi.Result result = googleSheetApi.getResultByName("", "dummy-name", "dummy-sheet-name", -1, -1, -1);
+        GoogleSheetApi googleSheetApi = new GoogleSheetApiImpl();
+        GoogleSheetApi.Result result = googleSheetApi.getResultByName("dummy-token", "dummy-name", "dummy-sheet-name", -1, -1, -1);
 
         assertThat(result.validToken).isFalse();
         assertThat(result.rows).isEmpty();
