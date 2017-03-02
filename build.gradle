@@ -2,8 +2,8 @@
 
 buildscript {
 
-    ext._version_code     = 7
-    ext._version_name     = '0.0.7'
+    ext._version_code     = 8
+    ext._version_name     = '0.0.8'
 
     ext._compile_sdk_ver  = 24
     ext._build_tools_ver  = '24.0.2'
@@ -38,10 +38,12 @@ allprojects {
         jcenter()
     }
 
+    // adding here for jacocoRootReport
     apply plugin: 'jacoco'
 
     jacoco {
         // https://bintray.com/bintray/jcenter/org.jacoco:org.jacoco.core
+        // for Robolectric tests, setup specific version
         toolVersion = "0.7.7.201606060606"
     }
 }
