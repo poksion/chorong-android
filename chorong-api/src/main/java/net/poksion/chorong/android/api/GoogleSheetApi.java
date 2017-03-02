@@ -7,9 +7,10 @@ public interface GoogleSheetApi {
     class Result {
         public boolean validToken = true;
         public boolean paging = false;
-        public boolean lastPage = true;
+        public boolean lastPageHint = false;
         public List< String[] > rows = new ArrayList<>();
     }
 
-    Result getValues(String loginToken, String docName, String sheetName, int colCnt, int rowCnt, int pageIdx);
+    Result getResultByName(String loginToken, String docName, String sheetName, int colCnt, int rowCnt, int pageIdx);
+    Result getResultById(String loginToken, String worksheetId, String sheetName, int colCnt, int rowCnt, int pageIdx);
 }

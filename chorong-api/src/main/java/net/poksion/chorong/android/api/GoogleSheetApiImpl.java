@@ -6,46 +6,48 @@ import com.google.gdata.data.spreadsheet.CellFeed;
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
 import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
+import com.google.gdata.data.spreadsheet.WorksheetFeed;
 import com.google.gdata.util.ServiceException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 public class GoogleSheetApiImpl implements GoogleSheetApi {
 
     private final String applicationName;
+
+    public GoogleSheetApiImpl() {
+        this(null);
+    }
 
     public GoogleSheetApiImpl(String applicationName) {
         this.applicationName = applicationName;
     }
 
     @Override
-    public Result getValues(String loginToken, String docName, String sheetName, int colCnt, int rowCnt, int pageIdx) {
+    public Result getResultByName(String loginToken, String docName, String sheetName, int colCnt, int rowCnt, int pageIdx) {
+        return getResultBy(loginToken, docName, null, sheetName, colCnt, rowCnt, pageIdx);
+    }
+
+    @Override
+    public Result getResultById(String loginToken, String worksheetId, String sheetName, int colCnt, int rowCnt, int pageIdx) {
+        return getResultBy(loginToken, null, worksheetId, sheetName, colCnt, rowCnt, pageIdx);
+    }
+
+    private Result getResultBy(String loginToken, String docName, String docId, String sheetName, int colCnt, int rowCnt, int pageIdx) {
+        SpreadsheetService service = createSpreadsheetService(loginToken);
+        List<WorksheetEntry> doc;
+
         try {
-            SpreadsheetService service = new SpreadsheetService(applicationName);
-            service.setHeader("Authorization", "Bearer " + loginToken);
-
-            URL SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
-            SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
-            WorksheetEntry sheet = null;
-
-            for(SpreadsheetEntry entry : feed.getEntries()){
-                if(entry.getTitle().getPlainText().equals(docName)){
-                    if (sheetName == null) {
-                        sheet = entry.getWorksheets().get(0);
-                    } else {
-                        for (WorksheetEntry sheetEntry : entry.getWorksheets()) {
-                            if (sheetEntry.getTitle().getPlainText().equals(sheetName)) {
-                                sheet = sheetEntry;
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
+            if (docName != null) {
+                doc = getDocByName(service, docName);
+            } else {
+                doc = getDocById(service, loginToken, docId);
             }
 
+            WorksheetEntry sheet = getSheetByName(doc, sheetName);
             return getValuesFromSheet(service, sheet, colCnt, rowCnt, pageIdx);
 
         } catch (ServiceException e) {
@@ -61,8 +63,71 @@ public class GoogleSheetApiImpl implements GoogleSheetApi {
         return null;
     }
 
+    private SpreadsheetService createSpreadsheetService(String loginToken) {
+        SpreadsheetService service = new SpreadsheetService(applicationName);
+
+        if (loginToken != null && loginToken.length() > 0) {
+            service.setHeader("Authorization", "Bearer " + loginToken);
+        }
+
+        return service;
+    }
+
+    private List<WorksheetEntry> getDocByName(SpreadsheetService service, String docName) throws IOException, ServiceException {
+        URL spreadsheetFeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
+        SpreadsheetFeed feed = service.getFeed(spreadsheetFeedUrl, SpreadsheetFeed.class);
+
+        if (feed == null) {
+            return null;
+        }
+
+        for(SpreadsheetEntry entry : feed.getEntries()) {
+            if(entry.getTitle().getPlainText().equals(docName)) {
+                return entry.getWorksheets();
+            }
+        }
+
+        return null;
+    }
+
+    private List<WorksheetEntry> getDocById(SpreadsheetService service, String loginToken, String worksheetId) throws IOException, ServiceException {
+//        https://spreadsheets.google.com/feeds/worksheets/1TYYg55nm-T0LqqnRi6zycz74f41pNDlAaBc8q4d-epc/public/full
+
+        final String accessor = (loginToken != null && loginToken.length() > 0) ? "/private/full" : "/public/full";
+        URL worksheetFeedUrl = new URL("https://spreadsheets.google.com/feeds/worksheets/" + worksheetId + accessor);
+        WorksheetFeed feed = service.getFeed(worksheetFeedUrl, WorksheetFeed.class);
+
+        if (feed == null) {
+            return null;
+        }
+
+        return feed.getEntries();
+    }
+
+    private WorksheetEntry getSheetByName(List<WorksheetEntry> doc, String sheetName) {
+        if (doc == null || doc.isEmpty()) {
+            return null;
+        }
+
+        if (sheetName == null || sheetName.length() == 0) {
+            return doc.get(0);
+        }
+
+        for (WorksheetEntry sheetEntry : doc) {
+            if (sheetEntry.getTitle().getPlainText().equals(sheetName)) {
+                return sheetEntry;
+            }
+        }
+
+        return null;
+    }
+
     private Result getValuesFromSheet(SpreadsheetService service, WorksheetEntry worksheet, int colCnt, int rowCnt, int pageIdx) throws URISyntaxException, IOException, ServiceException{
         Result result = new Result();
+
+        if (worksheet == null) {
+            return result;
+        }
 
         String query = worksheet.getCellFeedUrl().toString() + "?min-col=1&max-col=" + colCnt;
         if (rowCnt > 0 && pageIdx >= 0 ) {
@@ -77,8 +142,10 @@ public class GoogleSheetApiImpl implements GoogleSheetApi {
         CellFeed cellFeed = service.getFeed(cellFeedUrl, CellFeed.class);
 
         if (result.paging) {
-            int totalRowCnt = cellFeed.getEntries().size() / colCnt;
-            result.lastPage = ((pageIdx * rowCnt) + rowCnt >= totalRowCnt);
+            int currentRowCnt = cellFeed.getEntries().size() / colCnt;
+            if (currentRowCnt < rowCnt) {
+                result.lastPageHint = true;
+            }
         }
 
         int colIdx = 1;
