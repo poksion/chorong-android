@@ -28,6 +28,7 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
         private final AtomicInteger count = new AtomicInteger(1);
 
         @SuppressWarnings("NullableProblems")
+        @Override
         public Thread newThread(Runnable r) {
             return new Thread(r, "TaskQueueWithAsync Worker Thread #" + count.getAndIncrement());
         }
