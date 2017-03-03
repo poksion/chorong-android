@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import net.poksion.chorong.android.annotation.VisibleForTesting;
 
 public class GoogleSheetApiImpl implements GoogleSheetApi {
 
@@ -63,7 +64,8 @@ public class GoogleSheetApiImpl implements GoogleSheetApi {
         return null;
     }
 
-    private SpreadsheetService createSpreadsheetService(String loginToken) {
+    @VisibleForTesting
+    SpreadsheetService createSpreadsheetService(String loginToken) {
         SpreadsheetService service = new SpreadsheetService(applicationName);
 
         if (loginToken != null && loginToken.length() > 0) {
@@ -91,8 +93,6 @@ public class GoogleSheetApiImpl implements GoogleSheetApi {
     }
 
     private List<WorksheetEntry> getDocById(SpreadsheetService service, String loginToken, String worksheetId) throws IOException, ServiceException {
-//        https://spreadsheets.google.com/feeds/worksheets/1TYYg55nm-T0LqqnRi6zycz74f41pNDlAaBc8q4d-epc/public/full
-
         final String accessor = (loginToken != null && loginToken.length() > 0) ? "/private/full" : "/public/full";
         URL worksheetFeedUrl = new URL("https://spreadsheets.google.com/feeds/worksheets/" + worksheetId + accessor);
         WorksheetFeed feed = service.getFeed(worksheetFeedUrl, WorksheetFeed.class);
