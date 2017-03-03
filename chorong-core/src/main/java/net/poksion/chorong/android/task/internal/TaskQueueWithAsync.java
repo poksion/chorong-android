@@ -25,11 +25,11 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
     private static final int KEEP_ALIVE = 1;
 
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
-        private final AtomicInteger mCount = new AtomicInteger(1);
+        private final AtomicInteger count = new AtomicInteger(1);
 
         @SuppressWarnings("NullableProblems")
         public Thread newThread(Runnable r) {
-            return new Thread(r, "TaskQueueWithAsync Worker Thread #" + mCount.getAndIncrement());
+            return new Thread(r, "TaskQueueWithAsync Worker Thread #" + count.getAndIncrement());
         }
     };
 
