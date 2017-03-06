@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class GoogleSheetApiTest {
 
-    enum TestApiMode {
+    private enum TestApiMode {
         RETURN_NULL_FEED
     }
 
@@ -28,6 +28,10 @@ public class GoogleSheetApiTest {
             return new SpreadsheetService(null) {
                 @Override
                 public <F extends IFeed> F getFeed(URL feedUrl, Class<F> feedClass) throws IOException, ServiceException {
+                    if (testApiMode == TestApiMode.RETURN_NULL_FEED) {
+                        return null;
+                    }
+
                     return null;
                 }
             };
@@ -39,8 +43,8 @@ public class GoogleSheetApiTest {
         GoogleSheetApi googleSheetApi = new TestGoogleSheetApi(TestApiMode.RETURN_NULL_FEED);
         GoogleSheetApi.Result result = googleSheetApi.getResultByName("dummy-token", "dummy-name", "dummy-sheet-name", -1, -1, -1);
 
-        assertThat(result.validToken).isTrue();
-        assertThat(result.rows).isEmpty();
+        assertThat(result.error).isEqualTo(ApiResult.Error.None);
+        assertThat(result.data).isEmpty();
     }
 
     @Test
@@ -48,8 +52,8 @@ public class GoogleSheetApiTest {
         GoogleSheetApi googleSheetApi = new GoogleSheetApiImpl();
         GoogleSheetApi.Result result = googleSheetApi.getResultByName("dummy-token", "dummy-name", "dummy-sheet-name", -1, -1, -1);
 
-        assertThat(result.validToken).isFalse();
-        assertThat(result.rows).isEmpty();
+        assertThat(result.error).isEqualTo(ApiResult.Error.Auth);
+        assertThat(result.data).isEmpty();
     }
 
     @Test
@@ -61,12 +65,12 @@ public class GoogleSheetApiTest {
         // request second page (idx 1)
         GoogleSheetApi.Result result = googleSheetApi.getResultById("", "1TYYg55nm-T0LqqnRi6zycz74f41pNDlAaBc8q4d-epc", "", 3, 2, 1);
 
-        assertThat(result.validToken).isTrue();
+        assertThat(result.error).isEqualTo(ApiResult.Error.None);
 
         // total 3 row
         // 2 pages and each page has 1 row
         assertThat(result.paging).isTrue();
-        assertThat(result.rows.size()).isEqualTo(1);
+        assertThat(result.data.size()).isEqualTo(1);
         assertThat(result.lastPageHint).isTrue();
     }
 }

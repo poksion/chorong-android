@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface GoogleSheetApi {
-    class Result {
-        public boolean validToken = true;
+    class Result extends ApiResult<List<String[]>> {
+        Result() {
+            data = new ArrayList<>();
+        }
+
         public boolean paging = false;
         public boolean lastPageHint = false;
-        public List< String[] > rows = new ArrayList<>();
     }
 
     Result getResultByName(String loginToken, String docName, String sheetName, int colCnt, int rowCnt, int pageIdx);

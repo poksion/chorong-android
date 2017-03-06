@@ -15,7 +15,7 @@ import java.net.URL;
 import java.util.List;
 import net.poksion.chorong.android.annotation.VisibleForTesting;
 
-public class GoogleSheetApiImpl implements GoogleSheetApi {
+public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
 
     private final String applicationName;
 
@@ -37,41 +37,37 @@ public class GoogleSheetApiImpl implements GoogleSheetApi {
         return getResultBy(loginToken, null, worksheetId, sheetName, colCnt, rowCnt, pageIdx);
     }
 
-    private Result getResultBy(String loginToken, String docName, String docId, String sheetName, int colCnt, int rowCnt, int pageIdx) {
-        SpreadsheetService service = createSpreadsheetService(loginToken);
-        List<WorksheetEntry> doc;
+    private Result getResultBy(
+            final String loginToken,
+            final String docName,
+            final String docId,
+            final String sheetName,
+            final int colCnt,
+            final int rowCnt,
+            final int pageIdx) {
 
-        try {
-            if (docName != null) {
-                doc = getDocByName(service, docName);
-            } else {
-                doc = getDocById(service, loginToken, docId);
+        Command<Result> command = new Command<Result>() {
+            @Override
+            public Result onTry() throws ServiceException, URISyntaxException, IOException {
+                SpreadsheetService service = createSpreadsheetService(loginToken);
+                List<WorksheetEntry> doc = docName != null? getDocByName(service, docName) : getDocById(service, loginToken, docId);
+                WorksheetEntry sheet = getSheetByName(doc, sheetName);
+                return getValuesFromSheet(service, sheet, colCnt, rowCnt, pageIdx);
             }
 
-            WorksheetEntry sheet = getSheetByName(doc, sheetName);
-            return getValuesFromSheet(service, sheet, colCnt, rowCnt, pageIdx);
+            @Override
+            public Result getEmptyResult() {
+                return new Result();
+            }
+        };
 
-        } catch (ServiceException e) {
-            e.printStackTrace();
-            Result result = new Result();
-            result.validToken = false;
-            return result;
-
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return invoke(command);
     }
 
     @VisibleForTesting
     SpreadsheetService createSpreadsheetService(String loginToken) {
         SpreadsheetService service = new SpreadsheetService(applicationName);
-
-        if (loginToken != null && loginToken.length() > 0) {
-            service.setHeader("Authorization", "Bearer " + loginToken);
-        }
-
+        setBearerToken(service, loginToken);
         return service;
     }
 
@@ -164,10 +160,10 @@ public class GoogleSheetApiImpl implements GoogleSheetApi {
                 if (!headPassed) {
                     headPassed = true;
                     if (result.paging) {
-                        result.rows.add(cols);
+                        result.data.add(cols);
                     }
                 } else {
-                    result.rows.add(cols);
+                    result.data.add(cols);
                 }
                 cols = null;
             } else {
