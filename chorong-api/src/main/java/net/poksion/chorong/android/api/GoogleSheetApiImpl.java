@@ -13,18 +13,17 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import net.poksion.chorong.android.annotation.VisibleForTesting;
 
 public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
 
-    private final String applicationName;
+    private final SpreadsheetService service;
 
     public GoogleSheetApiImpl() {
         this(null);
     }
 
     public GoogleSheetApiImpl(String applicationName) {
-        this.applicationName = applicationName;
+        service = createService(SpreadsheetService.class, applicationName);
     }
 
     @Override
@@ -49,10 +48,10 @@ public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
         Command<Result> command = new Command<Result>() {
             @Override
             public Result onTry() throws ServiceException, URISyntaxException, IOException {
-                SpreadsheetService service = createSpreadsheetService(loginToken);
-                List<WorksheetEntry> doc = docName != null? getDocByName(service, docName) : getDocById(service, loginToken, docId);
+                setBearerToken(service, loginToken);
+                List<WorksheetEntry> doc = docName != null? getDocByName(docName) : getDocById(loginToken, docId);
                 WorksheetEntry sheet = getSheetByName(doc, sheetName);
-                return getValuesFromSheet(service, sheet, colCnt, rowCnt, pageIdx);
+                return getValuesFromSheet(sheet, colCnt, rowCnt, pageIdx);
             }
 
             @Override
@@ -64,14 +63,7 @@ public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
         return invoke(command);
     }
 
-    @VisibleForTesting
-    SpreadsheetService createSpreadsheetService(String loginToken) {
-        SpreadsheetService service = new SpreadsheetService(applicationName);
-        setBearerToken(service, loginToken);
-        return service;
-    }
-
-    private List<WorksheetEntry> getDocByName(SpreadsheetService service, String docName) throws IOException, ServiceException {
+    private List<WorksheetEntry> getDocByName(String docName) throws IOException, ServiceException {
         URL spreadsheetFeedUrl = new URL("https://spreadsheets.google.com/feeds/spreadsheets/private/full");
         SpreadsheetFeed feed = service.getFeed(spreadsheetFeedUrl, SpreadsheetFeed.class);
 
@@ -88,7 +80,7 @@ public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
         return null;
     }
 
-    private List<WorksheetEntry> getDocById(SpreadsheetService service, String loginToken, String worksheetId) throws IOException, ServiceException {
+    private List<WorksheetEntry> getDocById(String loginToken, String worksheetId) throws IOException, ServiceException {
         final String accessor = (loginToken != null && loginToken.length() > 0) ? "/private/full" : "/public/full";
         URL worksheetFeedUrl = new URL("https://spreadsheets.google.com/feeds/worksheets/" + worksheetId + accessor);
         WorksheetFeed feed = service.getFeed(worksheetFeedUrl, WorksheetFeed.class);
@@ -118,7 +110,7 @@ public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
         return null;
     }
 
-    private Result getValuesFromSheet(SpreadsheetService service, WorksheetEntry worksheet, int colCnt, int rowCnt, int pageIdx) throws URISyntaxException, IOException, ServiceException{
+    private Result getValuesFromSheet(WorksheetEntry worksheet, int colCnt, int rowCnt, int pageIdx) throws URISyntaxException, IOException, ServiceException{
         Result result = new Result();
 
         if (worksheet == null) {

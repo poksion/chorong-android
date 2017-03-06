@@ -2,6 +2,7 @@ package net.poksion.chorong.android.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.gdata.client.Service;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import java.io.IOException;
@@ -73,6 +74,14 @@ public class ApiTemplateTest {
         command = new ExceptionCommand(Type.Io);
         result = apiTemplate.invoke(command);
         assertThat(result.error).isEqualTo(ApiResult.Error.Network);
+    }
+
+    @Test
+    public void create_service_is_proper_for_string_param_string_class() {
+        ApiTemplate apiTemplate = new ApiTemplate();
+
+        Service service = apiTemplate.createService(Service.class, null);
+        assertThat(service).isNull();
     }
 
 }

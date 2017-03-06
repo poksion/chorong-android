@@ -2,6 +2,7 @@ package net.poksion.chorong.android.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.gdata.client.Service;
 import com.google.gdata.client.photos.PicasawebService;
 import com.google.gdata.data.IFeed;
 import com.google.gdata.util.ServiceException;
@@ -24,8 +25,8 @@ public class PicasaWebApiTest {
         }
 
         @Override
-        PicasawebService createPicasawebService(String loginToken) {
-            return new PicasawebService(null) {
+        <T extends Service> T createService(Class<T> serviceClass, String applicationName) {
+            Service service = new PicasawebService(null) {
                 @Override
                 public <F extends IFeed> F getFeed(URL feedUrl, Class<F> feedClass) throws IOException, ServiceException {
                     if (testApiMode == TestApiMode.RETURN_NULL_FEED) {
@@ -35,6 +36,9 @@ public class PicasaWebApiTest {
                     return null;
                 }
             };
+
+            //noinspection unchecked
+            return (T)service;
         }
     }
 

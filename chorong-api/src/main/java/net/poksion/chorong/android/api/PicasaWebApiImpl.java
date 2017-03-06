@@ -10,11 +10,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import net.poksion.chorong.android.annotation.VisibleForTesting;
 
 public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
 
-    private final String applicationName;
+    private final PicasawebService service;
 
     private String cachedToken;
     private final Map<String, String> cached = new HashMap<>();
@@ -24,7 +23,7 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
     }
 
     public PicasaWebApiImpl(String applicationName) {
-        this.applicationName = applicationName;
+        service = createService(PicasawebService.class, applicationName);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
         Command<Result> command = new Command<Result>() {
             @Override
             public Result onTry() throws ServiceException, URISyntaxException, IOException {
-                PicasawebService service = createPicasawebService(loginToken);
+                setBearerToken(service, loginToken);
 
                 URL feedUrl = new URL("https://picasaweb.google.com/data/feed/api/user/" + username + "/albumid/" + albumId);
                 AlbumFeed feed = service.getFeed(feedUrl, AlbumFeed.class);
@@ -76,12 +75,5 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
         };
 
         return invoke(command);
-    }
-
-    @VisibleForTesting
-    PicasawebService createPicasawebService(String loginToken) {
-        PicasawebService service = new PicasawebService(applicationName);
-        setBearerToken(service, loginToken);
-        return service;
     }
 }

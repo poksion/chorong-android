@@ -40,7 +40,6 @@ publish {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(path: ':chorong-core')
 
     testCompile "junit:junit:$_junit_ver"
     testCompile "org.mockito:mockito-all:$_mockito_ver"
