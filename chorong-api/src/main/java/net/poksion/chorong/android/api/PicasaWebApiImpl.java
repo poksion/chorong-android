@@ -51,6 +51,11 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
                 URL feedUrl = new URL("https://picasaweb.google.com/data/feed/api/user/" + username + "/albumid/" + albumId);
                 AlbumFeed feed = service.getFeed(feedUrl, AlbumFeed.class);
 
+                Result result = new Result();
+                if (feed == null) {
+                    return result;
+                }
+
                 for(GphotoEntry<?> photo : feed.getEntries()) {
                     String photoFileName = photo.getTitle().getPlainText();
 
@@ -60,7 +65,6 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
                     cached.put(albumId + "/" + photoFileName, photoRealLink);
                 }
 
-                Result result = new Result();
                 result.data = cached.get(cacheKey);
                 return result;
             }

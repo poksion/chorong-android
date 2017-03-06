@@ -19,6 +19,8 @@ public class SharedPrefProxyManagerTest {
     private static final String PREF_NAME = "pref-name";
 
     private static final String PREF_KEY_STR = "pref-key-str";
+    private static final String PREF_KEY_STR_PREV = "pref-key-str-prev";
+
     private static final String PREF_KEY_LONG = "pref-key-long";
     private static final String PREF_KEY_INT = "pref-key-int";
     private static final String PREF_KEY_BOOLEAN = "pref-key-boolean";
@@ -67,5 +69,27 @@ public class SharedPrefProxyManagerTest {
         assertThat(intAccessor.read()).isEqualTo(222);
         assertThat(boolAccessor.read()).isEqualTo(true);
 
+        longAccessor.write(333L);
+        intAccessor.write(444);
+        boolAccessor.write(false);
+
+        assertThat(longAccessor.read()).isEqualTo(333L);
+        assertThat(intAccessor.read()).isEqualTo(444);
+        assertThat(boolAccessor.read()).isEqualTo(false);
+    }
+
+    @Test
+    public void data_migrated_if_target_data_is_null() {
+        SharedPreferences sp = getRobolectricSharedPreferences();
+        sp.edit().putString(PREF_KEY_STR, null).apply();
+        sp.edit().putString(PREF_KEY_STR_PREV, "prev-data").apply();
+
+        StoreAccessor<String> storeAccessor = sharedPrefProxyManager.installProxy(
+                PREF_KEY_STR,
+                SharedPrefProxyManager.DataType.STRING,
+                PREF_NAME,
+                PREF_KEY_STR_PREV);
+
+        assertThat(storeAccessor.read()).isEqualTo("prev-data");
     }
 }
