@@ -50,7 +50,7 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
                 URL feedUrl = new URL("https://picasaweb.google.com/data/feed/api/user/" + username + "/albumid/" + albumId);
                 AlbumFeed feed = service.getFeed(feedUrl, AlbumFeed.class);
 
-                Result result = new Result();
+                Result result = getEmptyResult();
                 if (feed == null) {
                     return result;
                 }

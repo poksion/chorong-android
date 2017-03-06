@@ -77,9 +77,10 @@ public class ApiTemplateTest {
     }
 
     @Test
-    public void create_service_is_proper_for_string_param_string_class() {
+    public void create_service_is_only_for_string_param_constructor() {
         ApiTemplate apiTemplate = new ApiTemplate();
 
+        // Service does not have string param constructor
         Service service = apiTemplate.createService(Service.class, null);
         assertThat(service).isNull();
     }

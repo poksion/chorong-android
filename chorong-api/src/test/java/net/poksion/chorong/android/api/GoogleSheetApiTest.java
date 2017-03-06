@@ -49,6 +49,10 @@ public class GoogleSheetApiTest {
 
         assertThat(result.error).isEqualTo(ApiResult.Error.None);
         assertThat(result.data).isEmpty();
+
+        result = googleSheetApi.getResultById("dummy-token", "dummy-id", "dummy-sheet-name", -1, -1, -1);
+        assertThat(result.error).isEqualTo(ApiResult.Error.None);
+        assertThat(result.data).isEmpty();
     }
 
     @Test
