@@ -7,7 +7,7 @@ import net.poksion.chorong.android.annotation.Nullable;
 
 public interface GoogleSheetApi {
     class Result extends ApiResult<List<String[]>> {
-        Result() {
+        public Result() {
             data = new ArrayList<>();
         }
 
