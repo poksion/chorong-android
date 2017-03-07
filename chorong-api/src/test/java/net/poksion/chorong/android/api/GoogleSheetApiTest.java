@@ -45,12 +45,12 @@ public class GoogleSheetApiTest {
     @Test
     public void result_by_name_works_only_private_token_mode() {
         GoogleSheetApi googleSheetApi = new TestGoogleSheetApi(TestApiMode.RETURN_NULL_FEED);
-        GoogleSheetApi.Result result = googleSheetApi.getResultByName("dummy-token", "dummy-name", "dummy-sheet-name", -1, -1, -1);
+        GoogleSheetApi.Result result = googleSheetApi.getSheetByName("dummy-token", "dummy-name", "dummy-sheet-name", -1, -1, -1);
 
         assertThat(result.error).isEqualTo(ApiResult.Error.None);
         assertThat(result.data).isEmpty();
 
-        result = googleSheetApi.getResultById("dummy-token", "dummy-id", "dummy-sheet-name", -1, -1, -1);
+        result = googleSheetApi.getSheetById("dummy-token", "dummy-id", "dummy-sheet-name", -1, -1, -1);
         assertThat(result.error).isEqualTo(ApiResult.Error.None);
         assertThat(result.data).isEmpty();
     }
@@ -58,7 +58,7 @@ public class GoogleSheetApiTest {
     @Test
     public void result_by_name_should_be_empty_without_valid_token() {
         GoogleSheetApi googleSheetApi = new GoogleSheetApiImpl();
-        GoogleSheetApi.Result result = googleSheetApi.getResultByName("dummy-token", "dummy-name", "dummy-sheet-name", -1, -1, -1);
+        GoogleSheetApi.Result result = googleSheetApi.getSheetByName("dummy-token", "dummy-name", "dummy-sheet-name", -1, -1, -1);
 
         assertThat(result.error).isEqualTo(ApiResult.Error.Auth);
         assertThat(result.data).isEmpty();
@@ -71,7 +71,7 @@ public class GoogleSheetApiTest {
         // 3 column table
         // 2 row in each page (totally 3 rows now)
         // request second page (idx 1)
-        GoogleSheetApi.Result result = googleSheetApi.getResultById("", "1TYYg55nm-T0LqqnRi6zycz74f41pNDlAaBc8q4d-epc", "", 3, 2, 1);
+        GoogleSheetApi.Result result = googleSheetApi.getSheetById("", "1TYYg55nm-T0LqqnRi6zycz74f41pNDlAaBc8q4d-epc", "", 3, 2, 1);
 
         assertThat(result.error).isEqualTo(ApiResult.Error.None);
 

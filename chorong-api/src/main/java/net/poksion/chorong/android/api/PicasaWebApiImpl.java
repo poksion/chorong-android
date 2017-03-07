@@ -10,6 +10,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import net.poksion.chorong.android.annotation.NonNull;
+import net.poksion.chorong.android.annotation.Nullable;
 
 public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
 
@@ -22,12 +24,16 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
         this(null);
     }
 
-    public PicasaWebApiImpl(String applicationName) {
+    public PicasaWebApiImpl(@Nullable String applicationName) {
         service = createService(PicasawebService.class, applicationName);
     }
 
     @Override
-    public Result getPhotoUrl(final String loginToken, final String username, final String albumId, final String filename) {
+    public Result getPhotoUrl(
+            @NonNull final String loginToken,
+            @NonNull final String username,
+            @NonNull final String albumId,
+            @NonNull final String filename) {
 
         if (loginToken == null || loginToken.length() == 0 || !loginToken.equals(cachedToken)) {
             cachedToken = loginToken;

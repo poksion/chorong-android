@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import net.poksion.chorong.android.annotation.NonNull;
+import net.poksion.chorong.android.annotation.Nullable;
 
 public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
 
@@ -22,21 +24,35 @@ public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
         this(null);
     }
 
-    public GoogleSheetApiImpl(String applicationName) {
+    public GoogleSheetApiImpl(@Nullable String applicationName) {
         service = createService(SpreadsheetService.class, applicationName);
     }
 
     @Override
-    public Result getResultByName(String loginToken, String docName, String sheetName, int colCnt, int rowCnt, int pageIdx) {
-        return getResultBy(loginToken, docName, null, sheetName, colCnt, rowCnt, pageIdx);
+    public Result getSheetByName(
+        @NonNull String loginToken,
+        @NonNull String docName,
+        @Nullable String sheetName,
+        int colCnt,
+        int rowCnt,
+        int pageIdx) {
+
+        return getSheetBy(loginToken, docName, null, sheetName, colCnt, rowCnt, pageIdx);
     }
 
     @Override
-    public Result getResultById(String loginToken, String worksheetId, String sheetName, int colCnt, int rowCnt, int pageIdx) {
-        return getResultBy(loginToken, null, worksheetId, sheetName, colCnt, rowCnt, pageIdx);
+    public Result getSheetById(
+        @Nullable String loginToken,
+        @NonNull String worksheetId,
+        @Nullable String sheetName,
+        int colCnt,
+        int rowCnt,
+        int pageIdx) {
+
+        return getSheetBy(loginToken, null, worksheetId, sheetName, colCnt, rowCnt, pageIdx);
     }
 
-    private Result getResultBy(
+    private Result getSheetBy(
             final String loginToken,
             final String docName,
             final String docId,

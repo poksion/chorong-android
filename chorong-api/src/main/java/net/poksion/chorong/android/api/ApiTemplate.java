@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import net.poksion.chorong.android.annotation.Nullable;
 
 class ApiTemplate {
 
@@ -15,7 +16,7 @@ class ApiTemplate {
         T getEmptyResult();
     }
 
-    <T extends Service> T createService(Class<T> serviceClass, String applicationName) {
+    <T extends Service> T createService(Class<T> serviceClass, @Nullable String applicationName) {
         try {
             Constructor<T> constructor = serviceClass.getConstructor(String.class);
             return constructor.newInstance(applicationName);
@@ -25,7 +26,7 @@ class ApiTemplate {
         }
     }
 
-    void setBearerToken(Service service, String loginToken) {
+    void setBearerToken(Service service, @Nullable String loginToken) {
         if (loginToken != null && loginToken.length() > 0) {
             service.setHeader("Authorization", "Bearer " + loginToken);
         } else {
