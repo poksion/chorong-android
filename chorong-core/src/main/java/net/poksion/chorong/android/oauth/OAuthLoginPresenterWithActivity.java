@@ -1,6 +1,6 @@
 package net.poksion.chorong.android.oauth;
 
-import net.poksion.chorong.android.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 public abstract class OAuthLoginPresenterWithActivity implements OAuthLoginPresenter {
 

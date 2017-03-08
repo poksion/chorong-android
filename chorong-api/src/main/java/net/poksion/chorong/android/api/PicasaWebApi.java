@@ -1,6 +1,6 @@
 package net.poksion.chorong.android.api;
 
-import net.poksion.chorong.android.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 public interface PicasaWebApi {
     class Result extends ApiResult<String> {

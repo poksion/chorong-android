@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 
+import android.support.annotation.NonNull;
 import net.poksion.chorong.android.task.Task;
 
 import java.lang.ref.WeakReference;
@@ -27,9 +28,8 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
     private static final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger count = new AtomicInteger(1);
 
-        @SuppressWarnings("NullableProblems")
         @Override
-        public Thread newThread(Runnable r) {
+        public Thread newThread(@NonNull Runnable r) {
             return new Thread(r, "TaskQueueWithAsync Worker Thread #" + count.getAndIncrement());
         }
     };

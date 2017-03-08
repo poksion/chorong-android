@@ -1,5 +1,6 @@
 package net.poksion.chorong.android.api;
 
+import android.support.annotation.Nullable;
 import com.google.gdata.client.Service;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
@@ -7,7 +8,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import net.poksion.chorong.android.annotation.Nullable;
 
 class ApiTemplate {
 

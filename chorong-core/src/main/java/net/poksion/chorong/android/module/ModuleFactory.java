@@ -1,7 +1,5 @@
 package net.poksion.chorong.android.module;
 
-import net.poksion.chorong.android.annotation.Assemble;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -54,15 +52,15 @@ public final class ModuleFactory {
 
     public static void assemble(Object host, Assembler assembler) {
         for(Field field : assembler.getClass().getDeclaredFields()){
-            assemble(assembler, field, getAssemble(field), assembler);
+            assemble(assembler, field, getAssembleAnnotation(field), assembler);
         }
 
         for(Field field : host.getClass().getDeclaredFields()){
-            assemble(host, field, getAssemble(field), assembler);
+            assemble(host, field, getAssembleAnnotation(field), assembler);
         }
     }
 
-    private static Assemble getAssemble(Field field) {
+    private static Assemble getAssembleAnnotation(Field field) {
         for (Annotation annotation : field.getDeclaredAnnotations()) {
             if (annotation instanceof Assemble) {
                 return (Assemble)annotation;
@@ -72,13 +70,13 @@ public final class ModuleFactory {
         return null;
     }
 
-    private static void assemble(Object host, Field field, Assemble assemble, Assembler assembler) {
-        if (assemble == null) {
+    private static void assemble(Object host, Field field, Assemble assembleAnnotation, Assembler assembler) {
+        if (assembleAnnotation == null) {
             return;
         }
 
         Class<?> filedClass = field.getType();
-        int id = assemble.value();
+        int id = assembleAnnotation.value();
 
         Object module = assembler.findModule(filedClass, id);
         if (module == null) {

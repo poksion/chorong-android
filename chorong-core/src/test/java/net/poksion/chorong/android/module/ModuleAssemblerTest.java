@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.lang.reflect.Field;
-import net.poksion.chorong.android.annotation.Assemble;
 import org.junit.Before;
 import org.junit.Test;
 

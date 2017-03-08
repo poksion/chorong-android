@@ -1,5 +1,7 @@
 package net.poksion.chorong.android.api;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.google.gdata.client.photos.PicasawebService;
 import com.google.gdata.data.MediaContent;
 import com.google.gdata.data.photos.AlbumFeed;
@@ -10,8 +12,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import net.poksion.chorong.android.annotation.NonNull;
-import net.poksion.chorong.android.annotation.Nullable;
 
 public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
 

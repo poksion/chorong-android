@@ -40,7 +40,7 @@ publish {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(path: ':chorong-core')
+    compile "com.android.support:support-annotations:$_support_lib_ver"
 
     testCompile "junit:junit:$_junit_ver"
     testCompile "org.mockito:mockito-all:$_mockito_ver"

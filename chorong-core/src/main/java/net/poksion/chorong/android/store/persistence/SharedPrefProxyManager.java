@@ -3,7 +3,7 @@ package net.poksion.chorong.android.store.persistence;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import net.poksion.chorong.android.annotation.Nullable;
+import android.support.annotation.Nullable;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.ObjectStoreApplication;
 import net.poksion.chorong.android.store.StoreAccessor;

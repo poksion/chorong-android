@@ -5,8 +5,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
-import net.poksion.chorong.android.annotation.Assemble;
-
 import org.junit.Before;
 import org.junit.Test;
 

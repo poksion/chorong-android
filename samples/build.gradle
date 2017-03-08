@@ -31,8 +31,10 @@ dependencies {
     compile project(path: ':chorong-ui')
     compile "com.android.support:appcompat-v7:$_support_lib_ver"
 
-    androidTestCompile "junit:junit:$_junit_ver"
+    // set annotation version explicitly to avoid support test version
     androidTestCompile "com.android.support:support-annotations:$_support_lib_ver"
+
+    androidTestCompile "junit:junit:$_junit_ver"
     androidTestCompile "com.android.support.test.espresso:espresso-core:$_espresso_ver"
     androidTestCompile "com.android.support.test:runner:$_support_test_ver"
     androidTestCompile "com.android.support.test:rules:$_support_test_ver"

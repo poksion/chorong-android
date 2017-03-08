@@ -1,5 +1,7 @@
 package net.poksion.chorong.android.api;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.CellFeed;
@@ -13,8 +15,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import net.poksion.chorong.android.annotation.NonNull;
-import net.poksion.chorong.android.annotation.Nullable;
 
 public class GoogleSheetApiImpl extends ApiTemplate implements GoogleSheetApi {
 

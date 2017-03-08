@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
-import net.poksion.chorong.android.annotation.Assemble;
+import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.StoreObserver;

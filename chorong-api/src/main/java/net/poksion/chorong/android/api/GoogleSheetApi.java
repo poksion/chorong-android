@@ -1,9 +1,9 @@
 package net.poksion.chorong.android.api;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import net.poksion.chorong.android.annotation.NonNull;
-import net.poksion.chorong.android.annotation.Nullable;
 
 public interface GoogleSheetApi {
     class Result extends ApiResult<List<String[]>> {
