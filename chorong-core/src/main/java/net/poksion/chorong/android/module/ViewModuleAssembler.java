@@ -8,12 +8,12 @@ public abstract class ViewModuleAssembler implements Assembler {
     private final Activity activity;
     private final View view;
 
-    public ViewModuleAssembler(Activity activity) {
+    protected ViewModuleAssembler(Activity activity) {
         this.activity = activity;
         this.view = null;
     }
 
-    public ViewModuleAssembler(View view) {
+    protected ViewModuleAssembler(View view) {
         this.activity = null;
         this.view = view;
     }

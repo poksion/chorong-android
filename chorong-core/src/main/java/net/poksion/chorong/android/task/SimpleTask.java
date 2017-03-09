@@ -2,14 +2,6 @@ package net.poksion.chorong.android.task;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Simple version of "Task"
- * It is for only one result notification and valid listener
- * Many cases SimpleTask is more conveniently usable
- *
- * @param <T_Result> Result of Task
- * @param <T_Listener> Listener for Task Result
- */
 public abstract class SimpleTask<T_Result, T_Listener> implements Task<T_Listener> {
 
     protected abstract T_Result onWorkSimple();
