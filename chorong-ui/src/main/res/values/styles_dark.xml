@@ -51,6 +51,7 @@
         <!-- selectable style by theme -->
         <item name="myToolbarTitleStyle">@style/MyDarkToolbarTitle</item>
         <item name="myToolbarTheme">@style/MyDarkToolbarTheme</item>
+        <item name="myNavigationViewTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <style name="MyAppTheme.Dark" parent="MyAppThemeBase.Dark">

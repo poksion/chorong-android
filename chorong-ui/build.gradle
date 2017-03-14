@@ -35,6 +35,8 @@ publish {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$_support_lib_ver"
     compile project(path: ':chorong-core')
+    compile "com.android.support:appcompat-v7:$_support_lib_ver"
+    compile "com.android.support:support-core-ui:$_support_lib_ver"
+    compile "com.android.support:design:$_support_lib_ver"
 }

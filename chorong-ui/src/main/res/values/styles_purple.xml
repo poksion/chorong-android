@@ -28,6 +28,7 @@
         <item name="android:textViewStyle">@style/MyPurpleTextViewStyle</item>
         <item name="myToolbarTitleStyle">@style/MyPurpleToolbarTitle</item>
         <item name="myToolbarTheme">@style/MyPurpleToolbarTheme</item>
+        <item name="myNavigationViewTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <style name="MyAppTheme.Purple" parent="MyAppThemeBase.Purple">

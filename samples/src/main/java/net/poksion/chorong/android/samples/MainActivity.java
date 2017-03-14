@@ -17,9 +17,9 @@ import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.StoreObserver;
 import net.poksion.chorong.android.ui.dialog.AlertDialogActivity;
-import net.poksion.chorong.android.ui.main.OneSubjectMainActivity;
+import net.poksion.chorong.android.ui.main.ToolbarActivity;
 
-public class MainActivity extends OneSubjectMainActivity {
+public class MainActivity extends ToolbarActivity {
 
     // Assembling member with MainActivityAssembler
     // 1. LinearLayout is set directly in MainActivityAssembler.
@@ -63,6 +63,19 @@ public class MainActivity extends OneSubjectMainActivity {
         }
 
         return false;
+    }
+
+    @Override
+    protected NavigationInfo getNavigationInfo() {
+//        return NavigationInfo.newUpNavigation();
+        return NavigationInfo.newMenuNavigation(R.layout.navigation_header, R.menu.navigation_menu);
+    }
+
+    @Override
+    protected void onNavigationMenuSelected(int id) {
+        if (id == R.id.nav_menu_1) {
+            Toast.makeText(this, "Navigation menu1 clicked", Toast.LENGTH_LONG).show();
+        }
     }
 
     // Store Observer

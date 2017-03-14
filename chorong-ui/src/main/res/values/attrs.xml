@@ -2,4 +2,5 @@
 <resources>
     <attr name="myToolbarTitleStyle" format="reference"/>
     <attr name="myToolbarTheme" format="reference" />
+    <attr name="myNavigationViewTheme" format="reference" />
 </resources>
