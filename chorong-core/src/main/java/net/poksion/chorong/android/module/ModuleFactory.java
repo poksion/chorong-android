@@ -50,6 +50,11 @@ public final class ModuleFactory {
         return modules.get(name);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T get(Class<T> moduleClass) {
+        return (T)modules.get(moduleClass.getName());
+    }
+
     public static void assemble(Object host, Assembler assembler) {
         for(Field field : assembler.getClass().getDeclaredFields()){
             assemble(assembler, field, getAssembleAnnotation(field), assembler);

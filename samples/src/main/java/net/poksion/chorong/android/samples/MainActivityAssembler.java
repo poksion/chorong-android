@@ -12,7 +12,7 @@ class MainActivityAssembler extends ViewModuleAssembler {
     private final ViewGroup container;
 
     MainActivityAssembler(MainActivity mainActivity, ViewGroup container) {
-        super(mainActivity);
+        super(null, mainActivity);
 
         this.mainActivity = mainActivity;
         this.container = container;

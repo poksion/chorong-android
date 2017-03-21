@@ -47,7 +47,7 @@ public class TaskQueueRunnerTest {
                     taskQueue = new TaskQueueWithSimpleThread<>(this);
                     break;
                 case HANDLER_THREAD:
-                    taskQueue = new TaskQueueWithAsync<>(this, looper, false);
+                    taskQueue = new TaskQueueWithAsync<>(this, looper, TaskQueueWithAsync.ThreadType.USE_BACKGROUND_EXECUTOR);
                     break;
                 default:
                     taskQueue = null;

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">chorong-ui</string>
     <string name="desc_open_drawer">Open drawer</string>
     <string name="desc_close_drawer">Close drawer</string>
 </resources>

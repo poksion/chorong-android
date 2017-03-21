@@ -2,5 +2,7 @@
 <resources>
     <style name="MyAppTheme.Purple" parent="MyAppThemeBase.Purple">
         <item name="android:navigationBarColor">@color/purplePrimaryDark</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

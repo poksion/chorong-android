@@ -42,6 +42,9 @@ public class ViewModuleAssemblerTest {
         assertThat(openBtn.getTag()).isEqualTo("dummy-btn");
 
         assertThat(testPresenter).isNotNull();
+
+        TestPresenter manualAssembledPresenter = ModuleFactory.get(TestPresenter.class);
+        assertThat(manualAssembledPresenter).isNotNull();
     }
 
     @Test
@@ -88,11 +91,11 @@ public class ViewModuleAssemblerTest {
     private static class TestViewModuleAssembler extends ViewModuleAssembler {
 
         TestViewModuleAssembler(Activity activity) {
-            super(activity);
+            super(null, activity);
         }
 
         TestViewModuleAssembler(View view) {
-            super(view);
+            super(view, null);
         }
 
         @Override

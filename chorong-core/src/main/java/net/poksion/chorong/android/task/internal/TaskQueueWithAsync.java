@@ -19,6 +19,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
 
+    public enum ThreadType {
+        USE_DEDICATED,
+        USE_EXECUTOR,
+        USE_BACKGROUND_EXECUTOR
+    }
+
     // Thread executor
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -78,17 +84,13 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
     }
 
     private final InternalHandler<T_Listener> internalHandler;
-    private final boolean useSharedExecutor;
+    private final ThreadType threadType;
 
-    public TaskQueueWithAsync(T_Listener listener) {
-        this(listener, Looper.getMainLooper(), true);
-    }
-
-    public TaskQueueWithAsync(T_Listener listener, Looper looper, boolean useSharedExecutor) {
+    public TaskQueueWithAsync(T_Listener listener, Looper looper, ThreadType threadType) {
         super(listener);
 
         internalHandler = new InternalHandler<>(looper, this);
-        this.useSharedExecutor = useSharedExecutor;
+        this.threadType = threadType;
     }
 
     @Override
@@ -96,7 +98,7 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (useSharedExecutor) {
+                if (threadType == ThreadType.USE_BACKGROUND_EXECUTOR) {
                     // down priority to background
                     Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 }
@@ -105,10 +107,10 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
             }
         };
 
-        if (useSharedExecutor) {
-            sThreadPoolExecutor.execute(runnable);
-        } else {
+        if (threadType == ThreadType.USE_DEDICATED) {
             new Thread(runnable).start();
+        } else {
+            sThreadPoolExecutor.execute(runnable);
         }
     }
 

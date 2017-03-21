@@ -2,5 +2,7 @@
 <resources>
     <style name="MyAppTheme.Sky" parent="MyAppThemeBase.Sky">
         <item name="android:navigationBarColor">@color/skyPrimaryDark</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>

@@ -40,6 +40,14 @@ public class TaskRunnerEtcTest {
         taskRunner.runBlockingTask(makeDummyTask("async-shared"));
         assertThat(dummyListener.result).isEqualTo("async-shared");
 
+        taskRunner = new TaskRunnerAsyncDedicated<>(dummyListener);
+        taskRunner.runBlockingTask(makeDummyTask("async-dedicated"));
+        assertThat(dummyListener.result).isEqualTo("async-dedicated");
+
+        taskRunner = new TaskRunnerAsyncExecutor<>(dummyListener);
+        taskRunner.runBlockingTask(makeDummyTask("async-executor"));
+        assertThat(dummyListener.result).isEqualTo("async-executor");
+
         taskRunner = new TaskRunnerSync<>(dummyListener);
         taskRunner.runBlockingTask(makeDummyTask("sync"));
         assertThat(dummyListener.result).isEqualTo("sync");

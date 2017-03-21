@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="darkPrimaryDark">#4a4a50</color>
+
     <style name="MyDarkTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textColor">#4a4a50</item>
     </style>
 
     <style name="MyDarkToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title" >
         <item name="android:textColor">#ffffff</item>
-        <!--<item name="android:textSize">30dp</item>-->
-        <!--<item name="android:textStyle">bold</item>-->
     </style>
 
     <style name="MyDarkToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -16,42 +16,19 @@
     </style>
 
     <style name="MyAppThemeBase.Dark" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- if not NoActionBar, adding windowActionBar-false and windowNoTitle -->
-        <!--<item name="windowActionBar">false</item>-->
-        <!--<item name="windowNoTitle">true</item>-->
+        <item name="android:windowBackground">@color/darkPrimaryDark</item>
 
-        <item name="colorPrimaryDark">#4a4a50</item>
+        <item name="colorPrimaryDark">@color/darkPrimaryDark</item>
+        <item name="colorAccent">@color/darkPrimaryDark</item>
+        <item name="colorControlHighlight">@color/darkPrimaryDark</item>
+
         <item name="colorPrimary">#4a4a50</item>
-
-        <item name="colorAccent">#4a4a50</item>
-
-        <!-- it affects on menu button color and scrollbar -->
-        <!-- if menu button and scrollbar have different color, use custom toolbar theme -->
         <item name="colorControlNormal">#999999</item>
-        <item name="colorControlHighlight">#999999</item>
 
-        <!-- title color -->
-        <!-- Do not use this. it affects on actionMenuTextColor -->
-        <!-- just override AppCompat.Toolbar.Title title -->
-        <!--<item name="android:textColorPrimary">#ffffff</item>-->
-
-        <!-- menu text color -->
-        <!-- if android:Widget.TextView override, this value is ignored -->
-        <!--<item name="actionMenuTextColor">#ffffff</item>-->
-
-        <!-- menu button color -->
-        <!-- Do not use this. it conflicts on colorControlNormal -->
-        <!-- (actually, colorControlNormal referred textColorSecondary -->
-        <!-- just use colorControlNormal -->
-        <!--<item name="android:textColorSecondary">#ffffff</item>-->
-
-        <!-- global affection : TextView -->
         <item name="android:textViewStyle">@style/MyDarkTextViewStyle</item>
-
-        <!-- selectable style by theme -->
         <item name="myToolbarTitleStyle">@style/MyDarkToolbarTitle</item>
         <item name="myToolbarTheme">@style/MyDarkToolbarTheme</item>
-        <item name="myNavigationViewTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="myNavigationViewTheme">@style/ThemeOverlay.AppCompat.Dark</item>
     </style>
 
     <style name="MyAppTheme.Dark" parent="MyAppThemeBase.Dark">
