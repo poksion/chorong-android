@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <View
+      android:id="@+id/card_title_blank"
+      android:layout_width="match_parent"
+      android:background="@color/flatCardBlank"
+      android:layout_height="15dp"/>
+
+    <TextView
+      android:layout_below="@+id/card_title_blank"
+      android:id="@+id/card_title_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="13dp"
+      android:textColor="@color/flatCardTitle"
+      android:textSize="17sp"
+      android:textStyle="normal" />
+
+    <TextView
+      android:id="@+id/card_sub_title_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_toRightOf="@id/card_title_text"
+      android:layout_alignBottom="@id/card_title_text"
+      android:textColor="@color/flatCardSubTitle"
+      android:textSize="14sp"
+      android:textStyle="normal" />
+
+</merge>

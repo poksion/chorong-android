@@ -1,38 +1,51 @@
 package net.poksion.chorong.android.samples;
 
+import android.app.Activity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import java.lang.reflect.Field;
 import net.poksion.chorong.android.module.ViewModuleAssembler;
+import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 
-class MainActivityAssembler extends ViewModuleAssembler {
+class ActivityAssembler extends ViewModuleAssembler {
 
-    private final MainActivity mainActivity;
+    private final Activity activity;
     private final ViewGroup container;
 
-    MainActivityAssembler(MainActivity mainActivity, ViewGroup container) {
-        super(null, mainActivity);
+    ActivityAssembler(Activity activity, ViewGroup container) {
+        super(null, activity);
 
-        this.mainActivity = mainActivity;
+        this.activity = activity;
         this.container = container;
     }
 
     @Override
     public Object findModule(Class<?> filedClass, int id) {
 
-        if (filedClass.isAssignableFrom(LinearLayout.class)) {
+        if (filedClass.equals(LinearLayout.class)) {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            ScrollView scrollView = new ScrollView(mainActivity);
+            ScrollView scrollView = new ScrollView(activity);
             container.addView(scrollView, params);
 
-            LinearLayout linearLayout = new LinearLayout(mainActivity);
+            LinearLayout linearLayout = new LinearLayout(activity);
             scrollView.addView(linearLayout, params);
 
             return linearLayout;
+        }
+
+        if (filedClass.equals(FlatCardRecyclerView.class)) {
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+
+            FlatCardRecyclerView flatCardRecyclerView = new FlatCardRecyclerView(activity);
+            container.addView(flatCardRecyclerView, params);
+
+            return flatCardRecyclerView;
         }
 
         return super.findModule(filedClass, id);

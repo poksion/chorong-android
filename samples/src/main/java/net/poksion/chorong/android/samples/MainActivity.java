@@ -21,9 +21,9 @@ import net.poksion.chorong.android.ui.main.ToolbarActivity;
 
 public class MainActivity extends ToolbarActivity {
 
-    // Assembling member with MainActivityAssembler
-    // 1. LinearLayout is set directly in MainActivityAssembler.
-    // 2. Since MainActivityAssembler extends ViewModuleAssembler,
+    // Assembling member with ActivityAssembler
+    // 1. LinearLayout is set directly in ActivityAssembler.
+    // 2. Since ActivityAssembler extends ViewModuleAssembler,
     // automatically assemble
     //   2-1. ObjectStore (provided by App-ModuleFactory.Initializer) and
     //   2-2. FrameLayout (finding in ViewModuleAssembler with assemble id)
@@ -35,11 +35,12 @@ public class MainActivity extends ToolbarActivity {
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new MainActivityAssembler(this, container));
+        ModuleFactory.assemble(this, new ActivityAssembler(this, container));
 
         contentView.setBackgroundColor(Color.WHITE);
 
         addAlertDialogSample();
+        addFlatCardSample();
     }
 
     @Override
@@ -67,7 +68,6 @@ public class MainActivity extends ToolbarActivity {
 
     @Override
     protected NavigationInfo getNavigationInfo() {
-//        return NavigationInfo.newUpNavigation();
         return NavigationInfo.newMenuNavigation(R.layout.navigation_header, R.menu.navigation_menu);
     }
 
@@ -115,5 +115,20 @@ public class MainActivity extends ToolbarActivity {
         });
 
         buttonContainer.addView(button);
+    }
+
+    private void addFlatCardSample() {
+        Button button = new Button(this);
+        button.setText(R.string.button_flat_card);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, FlatCardActivity.class);
+                startActivity(i);
+            }
+        });
+
+        buttonContainer.addView(button);
+
     }
 }
