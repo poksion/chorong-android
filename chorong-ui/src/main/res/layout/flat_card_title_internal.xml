@@ -5,16 +5,16 @@
       android:id="@+id/card_title_blank"
       android:layout_width="match_parent"
       android:background="@color/flatCardBlank"
-      android:layout_height="15dp"/>
+      android:layout_height="@dimen/card_blank_height"/>
 
     <TextView
       android:layout_below="@+id/card_title_blank"
       android:id="@+id/card_title_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="13dp"
+      android:layout_margin="@dimen/card_title_margin"
+      android:textSize="@dimen/card_title_text_size"
       android:textColor="@color/flatCardTitle"
-      android:textSize="17sp"
       android:textStyle="normal" />
 
     <TextView
@@ -24,7 +24,7 @@
       android:layout_toRightOf="@id/card_title_text"
       android:layout_alignBottom="@id/card_title_text"
       android:textColor="@color/flatCardSubTitle"
-      android:textSize="14sp"
+      android:textSize="@dimen/card_sub_title_text_size"
       android:textStyle="normal" />
 
 </merge>

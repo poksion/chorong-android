@@ -32,6 +32,8 @@ class ActivityAssembler extends ViewModuleAssembler {
             container.addView(scrollView, params);
 
             LinearLayout linearLayout = new LinearLayout(activity);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+
             scrollView.addView(linearLayout, params);
 
             return linearLayout;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <TextView
+    android:id="@+id/card_general_text_content"
+    android:lineSpacingMultiplier="1.1"
+    android:textSize="@dimen/card_content_text_size"
+    android:layout_marginLeft="@dimen/card_content_margin"
+    android:layout_marginRight="@dimen/card_content_margin"
+    android:layout_marginBottom="@dimen/card_content_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+  <FrameLayout
+    android:id="@+id/card_general_box_content"
+    android:layout_below="@+id/card_general_text_content"
+    android:layout_marginBottom="@dimen/card_content_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true" />
+
+</merge>

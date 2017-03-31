@@ -38,7 +38,11 @@ public class FlatCardRecyclerView extends RecyclerView {
         adapter.notifyDataSetChanged();
     }
 
-    public ViewModel<FlatTitleView, String[]> makeTitleViewModel(String title, String subTitle) {
+    public ViewModel<FlatTitleView, String[]> makeTitleViewModel(String title, @Nullable String subTitle) {
         return new ViewModel<>(R.layout.flat_card_title, new String[] { title, subTitle } );
+    }
+
+    public ViewModel<FlatCardGeneralContentView, String> makeGeneralContentViewModel(@Nullable String content) {
+        return new ViewModel<>(R.layout.flat_card_general_content, content);
     }
 }

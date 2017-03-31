@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="card_blank_height">15dp</dimen>
+    <dimen name="card_title_margin">13dp</dimen>
+    <dimen name="card_title_text_size">17sp</dimen>
+    <dimen name="card_sub_title_text_size">14sp</dimen>
+
+    <dimen name="card_content_text_size">15sp</dimen>
+    <dimen name="card_content_margin">15dp</dimen>
+</resources>

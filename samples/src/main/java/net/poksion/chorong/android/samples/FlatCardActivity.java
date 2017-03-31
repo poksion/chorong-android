@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
+import net.poksion.chorong.android.ui.card.FlatCardGeneralContentView;
 import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 import net.poksion.chorong.android.ui.card.FlatTitleView;
 import net.poksion.chorong.android.ui.card.ViewModel;
@@ -23,10 +24,12 @@ public class FlatCardActivity extends ToolbarActivity {
         ViewModelBinder<FlatTitleView, String[]> titleViewModelBinder = makeTitleViewModelBinder();
 
         ViewModel<FlatTitleView, String[]> firstTitle = flatCardRecyclerView.makeTitleViewModel("First card title", null);
-        ViewModel<FlatTitleView, String[]> secondTitle = new ViewModel<>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"});
-
         flatCardRecyclerView.addItem(firstTitle, titleViewModelBinder);
+
+        ViewModel<FlatTitleView, String[]> secondTitle = new ViewModel<>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"});
         flatCardRecyclerView.addItem(secondTitle, titleViewModelBinder);
+        ViewModel<FlatCardGeneralContentView, String> secondContent = flatCardRecyclerView.makeGeneralContentViewModel("Card item : general content");
+        flatCardRecyclerView.addItem(secondContent, makeGeneralContentViewModelBinder());
 
         flatCardRecyclerView.notifyDataSetChanged();
     }
@@ -41,6 +44,16 @@ public class FlatCardActivity extends ToolbarActivity {
                     view.showBlank();
                 }
                 view.setTitle(model[0], model[1]);
+            }
+        };
+    }
+
+    private ViewModelBinder<FlatCardGeneralContentView, String> makeGeneralContentViewModelBinder() {
+        return new ViewModelBinder<FlatCardGeneralContentView, String>() {
+            @Override
+            public void onBind(FlatCardGeneralContentView view, String model) {
+                view.setTextContent(model);
+                view.hideBoxContent();
             }
         };
     }
