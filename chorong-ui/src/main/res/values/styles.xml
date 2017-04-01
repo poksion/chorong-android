@@ -4,4 +4,7 @@
         <item name="android:windowEnterAnimation">@anim/alert_dialog_dummy</item>
         <item name="android:windowExitAnimation">@anim/alert_dialog_dummy</item>
     </style>
+    <style name="ProgressBarCircleStyle" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/progress_circle</item>
+    </style>
 </resources>

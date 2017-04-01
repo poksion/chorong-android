@@ -45,4 +45,8 @@ public class FlatCardRecyclerView extends RecyclerView {
     public ViewModel<FlatCardGeneralContentView, String> makeGeneralContentViewModel(@Nullable String content) {
         return new ViewModel<>(R.layout.flat_card_general_content, content);
     }
+
+    public ViewModel<FlatCardLoadingView, FlatCardLoadingView.LoadingState> makeLoadingViewModel() {
+        return new ViewModel<>(R.layout.flat_card_loading, FlatCardLoadingView.LoadingState.START);
+    }
 }

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.ui.card.FlatCardGeneralContentView;
+import net.poksion.chorong.android.ui.card.FlatCardLoadingView;
 import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 import net.poksion.chorong.android.ui.card.FlatTitleView;
 import net.poksion.chorong.android.ui.card.ViewModel;
@@ -31,6 +32,9 @@ public class FlatCardActivity extends ToolbarActivity {
         ViewModel<FlatCardGeneralContentView, String> secondContent = flatCardRecyclerView.makeGeneralContentViewModel("Card item : general content");
         flatCardRecyclerView.addItem(secondContent, makeGeneralContentViewModelBinder());
 
+        ViewModel<FlatCardLoadingView, FlatCardLoadingView.LoadingState> thirdLoading = flatCardRecyclerView.makeLoadingViewModel();
+        flatCardRecyclerView.addItem(thirdLoading, makeLoadingViewModelBinder());
+
         flatCardRecyclerView.notifyDataSetChanged();
     }
 
@@ -54,6 +58,25 @@ public class FlatCardActivity extends ToolbarActivity {
             public void onBind(FlatCardGeneralContentView view, String model) {
                 view.setTextContent(model);
                 view.hideBoxContent();
+            }
+        };
+    }
+
+    private ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState> makeLoadingViewModelBinder() {
+        return new ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState>() {
+            @Override
+            public void onBind(FlatCardLoadingView view, FlatCardLoadingView.LoadingState model) {
+                switch(model) {
+                    case START:
+                        view.startLoading();
+                        break;
+                    case STOP:
+                        view.stopLoading();
+                        break;
+                    case FAIL:
+                        view.failLoading("Fail loading", null);
+                        break;
+                }
             }
         };
     }

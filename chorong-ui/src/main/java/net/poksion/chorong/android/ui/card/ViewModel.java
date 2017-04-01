@@ -1,5 +1,6 @@
 package net.poksion.chorong.android.ui.card;
 
+import android.support.annotation.LayoutRes;
 import android.view.View;
 
 public final class ViewModel<V, M> extends ViewUpdater {
@@ -10,7 +11,7 @@ public final class ViewModel<V, M> extends ViewUpdater {
     private ViewUpdatableAdapter viewUpdatableAdapter;
     private int modelIdx = -1;
 
-    public ViewModel(int viewResId, M model) {
+    public ViewModel(@LayoutRes int viewResId, M model) {
         super(viewResId);
         this.model = model;
     }
