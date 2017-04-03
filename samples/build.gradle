@@ -29,7 +29,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(path: ':chorong-core')
     compile project(path: ':chorong-ui')
-    compile "com.android.support:appcompat-v7:$_support_lib_ver"
 
     // set annotation version explicitly to avoid support test version
     androidTestCompile "com.android.support:support-annotations:$_support_lib_ver"

@@ -1,6 +1,7 @@
 package net.poksion.chorong.android.ui.card;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -34,12 +35,13 @@ public class FlatTitleView extends RelativeLayout {
         subTitleTextView = (TextView) findViewById(R.id.card_sub_title_text);
     }
 
-    public void setTitle(String title, @Nullable String subTitle) {
+    public void setTitle(@NonNull String title, @Nullable String subTitle) {
         titleTextView.setText(title);
 
         if (subTitle == null || subTitle.length() == 0) {
             subTitleTextView.setVisibility(GONE);
         } else {
+            subTitleTextView.setVisibility(VISIBLE);
             subTitleTextView.setText(subTitle);
         }
     }
