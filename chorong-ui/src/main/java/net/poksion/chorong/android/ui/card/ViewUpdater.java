@@ -15,5 +15,6 @@ abstract class ViewUpdater {
 
 
     abstract void onUpdateView(View view);
+    abstract void updateModelIndex(int modelIdx);
 
 }

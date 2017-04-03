@@ -56,4 +56,19 @@ class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdapter.Rec
         viewModel.setAdapterInformation(viewModelBinder, this, nextPos);
     }
 
+    void removeItem(int modelIdx) {
+        if (modelIdx < 0 || modelIdx >= viewUpdaterList.size()) {
+            return;
+        }
+
+        viewUpdaterList.remove(modelIdx);
+        int newListSize = viewUpdaterList.size();
+        for (int i = modelIdx; i < newListSize; ++i) {
+            viewUpdaterList.get(i).updateModelIndex(i);
+        }
+
+        notifyItemRemoved(modelIdx);
+        notifyItemRangeChanged(modelIdx, newListSize - modelIdx);
+    }
+
 }

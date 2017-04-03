@@ -24,12 +24,27 @@ public final class ViewModel<V, M> extends ViewUpdater {
         }
     }
 
+    public void unbind() {
+        if (viewUpdatableAdapter != null) {
+            viewUpdatableAdapter.removeItem(modelIdx);
+        }
+
+        viewModelBinder = null;
+        viewUpdatableAdapter = null;
+        modelIdx = -1;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     void onUpdateView(View view) {
         if (viewModelBinder != null) {
             viewModelBinder.onBind((V)view, model);
         }
+    }
+
+    @Override
+    void updateModelIndex(int modelIdx) {
+        this.modelIdx = modelIdx;
     }
 
     void setAdapterInformation(ViewModelBinder<V, M> viewModelBinder, ViewUpdatableAdapter viewUpdatableAdapter, int modelIdx) {
