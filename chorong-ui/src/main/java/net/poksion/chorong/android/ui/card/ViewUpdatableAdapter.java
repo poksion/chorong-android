@@ -1,5 +1,6 @@
 package net.poksion.chorong.android.ui.card;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,18 +57,43 @@ class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdapter.Rec
         viewModel.setAdapterInformation(viewModelBinder, this, nextPos);
     }
 
-    void removeItem(int modelIdx) {
+    <V, M> void insertOrRemoveItem(int modelIdx, boolean insertMode,
+            @Nullable ViewModel<V, M> viewModel,
+            @Nullable ViewModelBinder<V, M> viewModelBinder) {
+
         if (modelIdx < 0 || modelIdx >= viewUpdaterList.size()) {
             return;
         }
 
-        viewUpdaterList.remove(modelIdx);
+        if (insertMode && viewModel == null) {
+            return;
+        }
+
+        if (insertMode) {
+            // insert next current model index
+            modelIdx++;
+
+            if (modelIdx == viewUpdaterList.size()) {
+                viewUpdaterList.add(viewModel);
+            } else {
+                viewUpdaterList.add(modelIdx, viewModel);
+            }
+            viewModel.setAdapterInformation(viewModelBinder, this, modelIdx);
+        } else {
+            viewUpdaterList.remove(modelIdx);
+        }
+
         int newListSize = viewUpdaterList.size();
         for (int i = modelIdx; i < newListSize; ++i) {
             viewUpdaterList.get(i).updateModelIndex(i);
         }
 
-        notifyItemRemoved(modelIdx);
+        if (insertMode) {
+            notifyItemInserted(modelIdx);
+        } else {
+            notifyItemRemoved(modelIdx);
+        }
+
         notifyItemRangeChanged(modelIdx, newListSize - modelIdx);
     }
 
