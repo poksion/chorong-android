@@ -22,64 +22,50 @@ public class FlatCardActivity extends ToolbarActivity {
 
         ModuleFactory.assemble(this, new ActivityAssembler(this, container));
 
-        ViewModelBinder<FlatTitleView, String[]> titleViewModelBinder = makeTitleViewModelBinder();
-
-        ViewModel<FlatTitleView, String[]> firstTitle = flatCardRecyclerView.makeTitleViewModel("First card title", null);
-        flatCardRecyclerView.addItem(firstTitle, titleViewModelBinder);
-
-        ViewModel<FlatTitleView, String[]> secondTitle = new ViewModel<>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"});
-        flatCardRecyclerView.addItem(secondTitle, titleViewModelBinder);
-        ViewModel<FlatCardGeneralContentView, String> secondContent = flatCardRecyclerView.makeGeneralContentViewModel("Card item : general content");
-        flatCardRecyclerView.addItem(secondContent, makeGeneralContentViewModelBinder());
-
-        ViewModel<FlatCardLoadingView, FlatCardLoadingView.LoadingState> thirdLoading = flatCardRecyclerView.makeLoadingViewModel();
-        flatCardRecyclerView.addItem(thirdLoading, makeLoadingViewModelBinder());
+        flatCardRecyclerView.addItem(flatCardRecyclerView.makeTitleViewModel("First card title", null), titleViewModelBinder);
+        flatCardRecyclerView.addItem(new ViewModel<FlatTitleView, String[]>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"}), titleViewModelBinder);
+        flatCardRecyclerView.addItem(flatCardRecyclerView.makeGeneralContentViewModel("Card item : general content"), generalContentViewModelBinder);
+        flatCardRecyclerView.addItem(flatCardRecyclerView.makeLoadingViewModel(), loadingViewModelBinder);
 
         flatCardRecyclerView.notifyDataSetChanged();
     }
 
-    private ViewModelBinder<FlatTitleView, String[]> makeTitleViewModelBinder() {
-        return new ViewModelBinder<FlatTitleView, String[]>() {
-            @Override
-            public void onBind(FlatTitleView view, String[] model) {
-                if (model[1] == null) {
-                    view.hideBlank();
-                } else {
-                    view.showBlank();
-                }
-                view.setTitle(model[0], model[1]);
+    private final ViewModelBinder<FlatTitleView, String[]> titleViewModelBinder = new ViewModelBinder<FlatTitleView, String[]>() {
+        @Override
+        public void onBind(FlatTitleView view, String[] model) {
+            if (model[1] == null) {
+                view.hideBlank();
+            } else {
+                view.showBlank();
             }
-        };
-    }
+            view.setTitle(model[0], model[1]);
+        }
+    };
 
-    private ViewModelBinder<FlatCardGeneralContentView, String> makeGeneralContentViewModelBinder() {
-        return new ViewModelBinder<FlatCardGeneralContentView, String>() {
-            @Override
-            public void onBind(FlatCardGeneralContentView view, String model) {
-                view.setTextContent(model);
-                view.hideBoxContent();
-            }
-        };
-    }
+    private final ViewModelBinder<FlatCardGeneralContentView, String> generalContentViewModelBinder = new ViewModelBinder<FlatCardGeneralContentView, String>() {
+        @Override
+        public void onBind(FlatCardGeneralContentView view, String model) {
+            view.setTextContent(model);
+            view.hideBoxContent();
+        }
+    };
 
-    private ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState> makeLoadingViewModelBinder() {
-        return new ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState>() {
-            @Override
-            public void onBind(FlatCardLoadingView view, FlatCardLoadingView.LoadingState model) {
-                switch(model) {
-                    case START:
-                        view.startLoading();
-                        break;
-                    case STOP:
-                        view.stopLoading();
-                        break;
-                    case FAIL:
-                        view.failLoading("Fail loading", null);
-                        break;
-                }
+    private final ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState> loadingViewModelBinder = new ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState>() {
+        @Override
+        public void onBind(FlatCardLoadingView view, FlatCardLoadingView.LoadingState model) {
+            switch(model) {
+                case START:
+                    view.startLoading();
+                    break;
+                case STOP:
+                    view.stopLoading();
+                    break;
+                case FAIL:
+                    view.failLoading("Fail loading", null);
+                    break;
             }
-        };
-    }
+        }
+    };
 
     @Override
     protected ThemeType getThemeType() {

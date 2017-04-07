@@ -37,6 +37,7 @@ public class MainActivity extends ToolbarActivity {
 
         ModuleFactory.assemble(this, new ActivityAssembler(this, container));
 
+        // after assembling, it is possible to access contentView
         contentView.setBackgroundColor(Color.WHITE);
 
         addAlertDialogSample();
