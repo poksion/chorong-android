@@ -35,8 +35,16 @@ public final class ViewModel<V, M> extends ViewUpdater {
     }
 
     public <V2, M2> void concat(ViewModel<V2, M2> viewModel, ViewModelBinder<V2, M2> viewModelBinder) {
+        insert(modelIdx, viewModel, viewModelBinder);
+    }
+
+    public <V2, M2> void concatInverse(ViewModel<V2, M2> viewModel, ViewModelBinder<V2, M2> viewModelBinder) {
+        insert(modelIdx-1, viewModel, viewModelBinder);
+    }
+
+    private <V2, M2> void insert(int idx, ViewModel<V2, M2> viewModel, ViewModelBinder<V2, M2> viewModelBinder) {
         if (viewUpdatableAdapter != null) {
-            viewUpdatableAdapter.insertOrRemoveItem(modelIdx, true, viewModel, viewModelBinder);
+            viewUpdatableAdapter.insertOrRemoveItem(idx, true, viewModel, viewModelBinder);
         }
     }
 

@@ -61,12 +61,14 @@ class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdapter.Rec
             @Nullable ViewModel<V, M> viewModel,
             @Nullable ViewModelBinder<V, M> viewModelBinder) {
 
-        if (modelIdx < 0 || modelIdx >= viewUpdaterList.size()) {
-            return;
+        if (modelIdx < 0) {
+            if (modelIdx != -1 || !insertMode) {
+                throw new IllegalArgumentException("modelIdx : " + modelIdx);
+            }
         }
 
-        if (insertMode && viewModel == null) {
-            return;
+        if (modelIdx >= viewUpdaterList.size() || (insertMode && viewModel == null)) {
+            throw new IllegalArgumentException("modelIdx : " + modelIdx + ", modelSize : " + viewUpdaterList.size());
         }
 
         if (insertMode) {
