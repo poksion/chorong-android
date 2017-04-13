@@ -50,16 +50,16 @@ class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdapter.Rec
         return viewUpdaterList.get(position).getViewResId();
     }
 
-    <V, M> void addItem(ViewModel<V, M> viewModel, ViewModelBinder<V, M> viewModelBinder) {
+    <V, M> void addItem(ViewModel<V, M> viewModel, ViewBinder<V, M> viewBinder) {
         int nextPos = viewUpdaterList.size();
 
         viewUpdaterList.add(viewModel);
-        viewModel.setAdapterInformation(viewModelBinder, this, nextPos);
+        viewModel.setAdapterInformation(viewBinder, this, nextPos);
     }
 
     <V, M> void insertOrRemoveItem(int modelIdx, boolean insertMode,
             @Nullable ViewModel<V, M> viewModel,
-            @Nullable ViewModelBinder<V, M> viewModelBinder) {
+            @Nullable ViewBinder<V, M> viewBinder) {
 
         if (modelIdx < 0) {
             if (modelIdx != -1 || !insertMode) {
@@ -80,7 +80,7 @@ class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdapter.Rec
             } else {
                 viewUpdaterList.add(modelIdx, viewModel);
             }
-            viewModel.setAdapterInformation(viewModelBinder, this, modelIdx);
+            viewModel.setAdapterInformation(viewBinder, this, modelIdx);
         } else {
             viewUpdaterList.remove(modelIdx);
         }

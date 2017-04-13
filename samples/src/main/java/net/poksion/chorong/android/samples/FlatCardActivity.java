@@ -9,8 +9,8 @@ import net.poksion.chorong.android.ui.card.FlatCardGeneralContentView;
 import net.poksion.chorong.android.ui.card.FlatCardLoadingView;
 import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 import net.poksion.chorong.android.ui.card.FlatTitleView;
+import net.poksion.chorong.android.ui.card.ViewBinder;
 import net.poksion.chorong.android.ui.card.ViewModel;
-import net.poksion.chorong.android.ui.card.ViewModelBinder;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
 
 public class FlatCardActivity extends ToolbarActivity {
@@ -22,15 +22,15 @@ public class FlatCardActivity extends ToolbarActivity {
 
         ModuleFactory.assemble(this, new ActivityAssembler(this, container));
 
-        flatCardRecyclerView.addItem(flatCardRecyclerView.makeTitleViewModel("First card title", null), titleViewModelBinder);
-        flatCardRecyclerView.addItem(new ViewModel<FlatTitleView, String[]>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"}), titleViewModelBinder);
-        flatCardRecyclerView.addItem(flatCardRecyclerView.makeGeneralContentViewModel("Card item : general content"), generalContentViewModelBinder);
-        flatCardRecyclerView.addItem(flatCardRecyclerView.makeLoadingViewModel(), loadingViewModelBinder);
+        flatCardRecyclerView.addItem(flatCardRecyclerView.makeTitleViewModel("First card title", null), titleViewBinder);
+        flatCardRecyclerView.addItem(new ViewModel<FlatTitleView, String[]>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"}), titleViewBinder);
+        flatCardRecyclerView.addItem(flatCardRecyclerView.makeGeneralContentViewModel("Card item : general content"), generalContentViewBinder);
+        flatCardRecyclerView.addItem(flatCardRecyclerView.makeLoadingViewModel(), loadingViewBinder);
 
         flatCardRecyclerView.notifyDataSetChanged();
     }
 
-    private final ViewModelBinder<FlatTitleView, String[]> titleViewModelBinder = new ViewModelBinder<FlatTitleView, String[]>() {
+    private final ViewBinder<FlatTitleView, String[]> titleViewBinder = new ViewBinder<FlatTitleView, String[]>() {
         @Override
         public void onBind(FlatTitleView view, String[] model) {
             if (model[1] == null) {
@@ -42,7 +42,7 @@ public class FlatCardActivity extends ToolbarActivity {
         }
     };
 
-    private final ViewModelBinder<FlatCardGeneralContentView, String> generalContentViewModelBinder = new ViewModelBinder<FlatCardGeneralContentView, String>() {
+    private final ViewBinder<FlatCardGeneralContentView, String> generalContentViewBinder = new ViewBinder<FlatCardGeneralContentView, String>() {
         @Override
         public void onBind(FlatCardGeneralContentView view, String model) {
             view.setTextContent(model);
@@ -50,7 +50,7 @@ public class FlatCardActivity extends ToolbarActivity {
         }
     };
 
-    private final ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState> loadingViewModelBinder = new ViewModelBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState>() {
+    private final ViewBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState> loadingViewBinder = new ViewBinder<FlatCardLoadingView, FlatCardLoadingView.LoadingState>() {
         @Override
         public void onBind(FlatCardLoadingView view, FlatCardLoadingView.LoadingState model) {
             switch(model) {

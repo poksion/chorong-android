@@ -30,8 +30,8 @@ public class FlatCardRecyclerView extends RecyclerView {
         setAdapter(adapter);
     }
 
-    public <V, M> void addItem(ViewModel<V, M> viewModel, ViewModelBinder<V, M> viewModelBinder) {
-        adapter.addItem(viewModel, viewModelBinder);
+    public <V, M> void addItem(ViewModel<V, M> viewModel, ViewBinder<V, M> viewBinder) {
+        adapter.addItem(viewModel, viewBinder);
     }
 
     public void notifyDataSetChanged() {

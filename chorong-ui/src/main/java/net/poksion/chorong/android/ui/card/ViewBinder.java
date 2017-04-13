@@ -1,5 +1,5 @@
 package net.poksion.chorong.android.ui.card;
 
-public interface ViewModelBinder<V, M> {
+public interface ViewBinder<V, M> {
     void onBind(V view, M model);
 }
