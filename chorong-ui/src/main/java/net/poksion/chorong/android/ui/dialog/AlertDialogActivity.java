@@ -22,7 +22,6 @@ public class AlertDialogActivity extends Activity {
 
         public Builder(Context context, String title, String body) {
             i = new Intent(context, AlertDialogActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             i.putExtra("title", title);
             i.putExtra("body", body);
@@ -37,6 +36,11 @@ public class AlertDialogActivity extends Activity {
 
         public Builder closeable(String closeEventKey) {
             i.putExtra("close-event-key", closeEventKey);
+            return this;
+        }
+
+        public Builder asNewTask() {
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             return this;
         }
 
