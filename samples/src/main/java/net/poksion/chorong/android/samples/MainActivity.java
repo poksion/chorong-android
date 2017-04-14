@@ -1,7 +1,6 @@
 package net.poksion.chorong.android.samples;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,31 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
-import net.poksion.chorong.android.store.ObjectStore;
-import net.poksion.chorong.android.store.StoreObserver;
-import net.poksion.chorong.android.ui.dialog.AlertDialogActivity;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
 
 public class MainActivity extends ToolbarActivity {
 
-    // Assembling member with ActivityAssembler
-    // 1. LinearLayout is set directly in ActivityAssembler.
-    // 2. Since ActivityAssembler extends ViewModuleAssembler,
-    // automatically assemble
-    //   2-1. ObjectStore (provided by App-ModuleFactory.Initializer) and
-    //   2-2. FrameLayout (finding in ViewModuleAssembler with assemble id)
-
     @Assemble LinearLayout buttonContainer;
-    @Assemble ObjectStore objectStore;
-    @Assemble(R.id.main_content) FrameLayout contentView;
 
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new ActivityAssembler(this, container));
-
-        // after assembling, it is possible to access contentView
-        contentView.setBackgroundColor(Color.WHITE);
+        ModuleFactory.assemble(this, new SampleAssembler(this, container));
 
         addAlertDialogSample();
         addFlatCardSample();
@@ -79,38 +63,13 @@ public class MainActivity extends ToolbarActivity {
         }
     }
 
-    // Store Observer
-    // CAUTION
-    // In Object Store, the observer reference is managed "weak".
-    // Hence should manage the observer reference.
-    private StoreObserver<Boolean> alertDialogBtnObserver = new StoreObserver<Boolean>() {
-        @Override
-        protected void onChanged(Boolean aBoolean) {
-            if (aBoolean) {
-                Toast.makeText(MainActivity.this, "Yes clicked", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(MainActivity.this, "No clicked", Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-
     private void addAlertDialogSample() {
-
-        // button clicked event
-        final String ALERT_DIALOG_CLICKED_EVENT = "alert-dialog-click-event";
-
-        // observer for click event
-        objectStore.addWeakObserver(ALERT_DIALOG_CLICKED_EVENT, alertDialogBtnObserver, false);
-
         Button button = new Button(this);
         button.setText(R.string.button_alert_dialog);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new AlertDialogActivity.Builder(MainActivity.this, "Sample Alert", "Sample Alert Dialog Body")
-                        .clickable("yes button", "no button", ALERT_DIALOG_CLICKED_EVENT)
-                        .build();
-
+                Intent i = new Intent(MainActivity.this, SampleForAlertDialog.class);
                 startActivity(i);
             }
         });
@@ -124,7 +83,7 @@ public class MainActivity extends ToolbarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, FlatCardActivity.class);
+                Intent i = new Intent(MainActivity.this, SampleForFlatCard.class);
                 startActivity(i);
             }
         });

@@ -18,7 +18,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".FlatCardActivity">
+        <activity android:name=".SampleForAlertDialog">
+        </activity>
+
+        <activity android:name=".SampleForFlatCard">
         </activity>
 
     </application>

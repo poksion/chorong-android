@@ -13,14 +13,14 @@ import net.poksion.chorong.android.ui.card.ViewBinder;
 import net.poksion.chorong.android.ui.card.ViewModel;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
 
-public class FlatCardActivity extends ToolbarActivity {
+public class SampleForFlatCard extends ToolbarActivity {
 
     @Assemble FlatCardRecyclerView flatCardRecyclerView;
 
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new ActivityAssembler(this, container));
+        ModuleFactory.assemble(this, new SampleAssembler(this, container));
 
         flatCardRecyclerView.addItem(flatCardRecyclerView.makeTitleViewModel("First card title", null), titleViewBinder);
         flatCardRecyclerView.addItem(new ViewModel<FlatTitleView, String[]>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"}), titleViewBinder);

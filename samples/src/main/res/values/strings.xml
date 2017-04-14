@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">chorong-android</string>
-    <string name="button_alert_dialog">Alert Dialog</string>
-    <string name="button_flat_card">Flat Card</string>
+
+    <string name="button_alert_dialog">Alert Dialog Sample</string>
+    <string name="button_flat_card">Flat Card Sample</string>
+
+    <string name="button_open_alert_dialog">Open Alert dialog</string>
 
     <string name="menu_info">Information</string>
 </resources>

@@ -1,6 +1,7 @@
 package net.poksion.chorong.android.samples;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -8,12 +9,12 @@ import java.lang.reflect.Field;
 import net.poksion.chorong.android.module.ViewModuleAssembler;
 import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 
-class ActivityAssembler extends ViewModuleAssembler {
+class SampleAssembler extends ViewModuleAssembler {
 
     private final Activity activity;
     private final ViewGroup container;
 
-    ActivityAssembler(Activity activity, ViewGroup container) {
+    SampleAssembler(Activity activity, ViewGroup container) {
         super(null, activity);
 
         this.activity = activity;
@@ -24,6 +25,7 @@ class ActivityAssembler extends ViewModuleAssembler {
     public Object findModule(Class<?> filedClass, int id) {
 
         if (filedClass.equals(LinearLayout.class)) {
+            container.setBackgroundColor(Color.WHITE);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -33,7 +35,6 @@ class ActivityAssembler extends ViewModuleAssembler {
 
             LinearLayout linearLayout = new LinearLayout(activity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-
             scrollView.addView(linearLayout, params);
 
             return linearLayout;
