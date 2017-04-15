@@ -106,10 +106,11 @@ public abstract class ToolbarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_toolbar);
 
         setToolbar();
-        setDrawer();
 
         ViewGroup container = (ViewGroup) findViewById(R.id.main_content);
         onCreateContentView(getLayoutInflater(), container, savedInstanceState);
+
+        setDrawer();
 
         // remove background for performance
         getWindow().setBackgroundDrawable(null);
