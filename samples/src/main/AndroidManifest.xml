@@ -24,6 +24,9 @@
         <activity android:name=".SampleForFlatCard">
         </activity>
 
+        <activity android:name=".SampleForRouting">
+        </activity>
+
     </application>
 
 </manifest>

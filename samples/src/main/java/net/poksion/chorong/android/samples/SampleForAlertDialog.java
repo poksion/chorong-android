@@ -80,6 +80,6 @@ public class SampleForAlertDialog extends ToolbarActivity {
 
     @Override
     protected ThemeType getThemeType() {
-        return ThemeType.SKY;
+        return ThemeType.DARK;
     }
 }

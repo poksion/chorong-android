@@ -2,11 +2,11 @@ package net.poksion.chorong.android.samples;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -24,13 +24,23 @@ public class MainActivity extends ToolbarActivity {
 
         ModuleFactory.assemble(this, new SampleAssembler(this, container));
 
-        addAlertDialogSample();
-        addFlatCardSample();
+        addSampleOpener(R.string.button_sample_alert_dialog, SampleForAlertDialog.class);
+        addSampleOpener(R.string.button_sample_flat_card, SampleForFlatCard.class);
+        addSampleOpener(R.string.button_sample_routing, SampleForRouting.class);
     }
 
-    @Override
-    protected ThemeType getThemeType() {
-        return ThemeType.SKY;
+    private void addSampleOpener(@StringRes int buttonStrRes, final Class<?> sampleActivityClass) {
+        Button button = new Button(this);
+        button.setText(buttonStrRes);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, sampleActivityClass);
+                startActivity(i);
+            }
+        });
+
+        buttonContainer.addView(button);
     }
 
     @Override
@@ -52,43 +62,7 @@ public class MainActivity extends ToolbarActivity {
     }
 
     @Override
-    protected NavigationInfo getNavigationInfo() {
-        return NavigationInfo.newMenuNavigation(R.layout.navigation_header, R.menu.navigation_menu);
-    }
-
-    @Override
-    protected void onNavigationMenuSelected(int id) {
-        if (id == R.id.nav_menu_1) {
-            Toast.makeText(this, "Navigation menu1 clicked", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void addAlertDialogSample() {
-        Button button = new Button(this);
-        button.setText(R.string.button_alert_dialog);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, SampleForAlertDialog.class);
-                startActivity(i);
-            }
-        });
-
-        buttonContainer.addView(button);
-    }
-
-    private void addFlatCardSample() {
-        Button button = new Button(this);
-        button.setText(R.string.button_flat_card);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, SampleForFlatCard.class);
-                startActivity(i);
-            }
-        });
-
-        buttonContainer.addView(button);
-
+    protected ThemeType getThemeType() {
+        return ThemeType.SKY;
     }
 }

@@ -11,7 +11,9 @@ import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 
 class SampleAssembler extends ViewModuleAssembler {
 
-    private final Activity activity;
+    final Activity activity;
+    final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
     private final ViewGroup container;
 
     SampleAssembler(Activity activity, ViewGroup container) {
@@ -19,23 +21,21 @@ class SampleAssembler extends ViewModuleAssembler {
 
         this.activity = activity;
         this.container = container;
+
+        container.setBackgroundColor(Color.WHITE);
     }
 
     @Override
     public Object findModule(Class<?> filedClass, int id) {
 
         if (filedClass.equals(LinearLayout.class)) {
-            container.setBackgroundColor(Color.WHITE);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
 
             ScrollView scrollView = new ScrollView(activity);
-            container.addView(scrollView, params);
+            container.addView(scrollView, layoutParams);
 
             LinearLayout linearLayout = new LinearLayout(activity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            scrollView.addView(linearLayout, params);
+            scrollView.addView(linearLayout, layoutParams);
 
             return linearLayout;
         }
