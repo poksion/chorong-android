@@ -37,12 +37,23 @@ public class Subject {
 
     public synchronized void addWeakObserver(String key, Observer observer, boolean readExistValue) {
         List<WeakReference<Observer>> relatedObservers = observers.get(key);
+
         if(relatedObservers == null){
             relatedObservers = new LinkedList<>();
             observers.put(key, relatedObservers);
         }
 
-        relatedObservers.add(new WeakReference<>(observer));
+        boolean hasSameObserver = false;
+        for (WeakReference<Observer> weakRef : relatedObservers) {
+            if (weakRef.get() == observer) {
+                hasSameObserver = true;
+                break;
+            }
+        }
+
+        if (!hasSameObserver) {
+            relatedObservers.add(new WeakReference<>(observer));
+        }
 
         if (readExistValue) {
             Object data = container.get(key);

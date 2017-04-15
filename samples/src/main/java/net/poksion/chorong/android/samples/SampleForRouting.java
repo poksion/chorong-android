@@ -35,4 +35,11 @@ public class SampleForRouting extends ToolbarActivity {
     protected void onNavigationMenuSelected(int id) {
         router.navigateTo(id);
     }
+
+    @Override
+    protected void onDestroy() {
+        router.halt();
+
+        super.onDestroy();
+    }
 }

@@ -27,33 +27,32 @@ public class SampleForAlertDialog extends ToolbarActivity {
     // In Object Store, the observer reference is managed "weak".
     // Hence should manage the observer reference.
     @SuppressWarnings("FieldCanBeLocal")
-    private StoreObserver<Boolean> alertDialogBtnObserver;
+    private StoreObserver<Boolean> alertDialogBtnObserver = new StoreObserver<Boolean>() {
+        @Override
+        protected void onChanged(Boolean aBoolean) {
+            if (isFinishing()) {
+                return;
+            }
+
+            if (aBoolean) {
+                Toast.makeText(SampleForAlertDialog.this, "Yes clicked", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(SampleForAlertDialog.this, "No clicked", Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
         ModuleFactory.assemble(this, new SampleAssembler(this, container));
 
-        registerAlertDialogCallback();
         addAlertDialogOpener();
     }
 
-    private void registerAlertDialogCallback() {
-        alertDialogBtnObserver = new StoreObserver<Boolean>() {
-            @Override
-            protected void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    Toast.makeText(SampleForAlertDialog.this, "Yes clicked", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(SampleForAlertDialog.this, "No clicked", Toast.LENGTH_LONG).show();
-                }
-            }
-        };
-
-        objectStore.addWeakObserver(ALERT_DIALOG_CLICKED_EVENT, alertDialogBtnObserver, false);
-    }
-
     private void addAlertDialogOpener() {
+        objectStore.addWeakObserver(ALERT_DIALOG_CLICKED_EVENT, alertDialogBtnObserver, false);
+
         Button button = new Button(this);
         button.setText(R.string.button_open_alert_dialog);
         button.setOnClickListener(new View.OnClickListener() {
