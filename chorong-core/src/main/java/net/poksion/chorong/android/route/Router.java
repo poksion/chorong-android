@@ -1,4 +1,4 @@
-package net.poksion.chorong.android.ui.route;
+package net.poksion.chorong.android.route;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,13 +7,13 @@ import net.poksion.chorong.android.store.StoreObserver;
 
 public class Router<N> {
 
-    private static final ObjectStore.Key PERFORM_CMD_KEY = new ObjectStore.Key("router-perform-cmd");
-
     private static class PerformCmd<N> {
         private N from;
         private N to;
         private Bundle bundle;
     }
+
+    private final ObjectStore.Key routingKey;
 
     private ObjectStore objectStore;
     private N current;
@@ -31,14 +31,24 @@ public class Router<N> {
         }
     };
 
+    public Router(String routingKey) {
+        this.routingKey = new ObjectStore.Key(routingKey);
+    }
+
     public void init(ObjectStore objectStore, N current) {
         this.objectStore = objectStore;
         this.current = current;
 
-        objectStore.addWeakObserver(PERFORM_CMD_KEY.staticKey, storeObserver, false);
+        objectStore.addWeakObserver(routingKey.staticKey, storeObserver, false);
+    }
+
+    public void setPerformer(Performer<N> performer) {
+        this.performer = performer;
     }
 
     public void halt() {
+        objectStore.removeWeakObserver(routingKey.staticKey, storeObserver);
+
         objectStore = null;
         performer = null;
     }
@@ -58,10 +68,6 @@ public class Router<N> {
         performCmd.to = to;
         performCmd.bundle = bundle;
 
-        objectStore.set(PERFORM_CMD_KEY, performCmd);
-    }
-
-    public void setPerformer(Performer<N> performer) {
-        this.performer = performer;
+        objectStore.set(routingKey, performCmd);
     }
 }

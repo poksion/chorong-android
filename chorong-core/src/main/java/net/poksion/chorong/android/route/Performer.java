@@ -1,4 +1,4 @@
-package net.poksion.chorong.android.ui.route;
+package net.poksion.chorong.android.route;
 
 import android.os.Bundle;
 

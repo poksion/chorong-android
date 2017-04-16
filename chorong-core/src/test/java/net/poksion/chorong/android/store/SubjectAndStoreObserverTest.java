@@ -93,4 +93,31 @@ public class SubjectAndStoreObserverTest {
         observableContainer.set(key1, value1);
         assertThat(valueChecked[0]).isFalse();
     }
+
+    @Test
+    public void observer_should_not_receive_message_after_removing_observer() {
+        Subject observableContainer = new Subject();
+
+        @SuppressWarnings("MismatchedReadAndWriteOfArray")
+        final boolean[] valueChecked = new boolean[1];
+
+        valueChecked[0] = false;
+        StoreObserver<String> observer = new StoreObserver<String>() {
+            @Override
+            protected void onChanged(String s) {
+                assertThat(s).isEqualTo(value1);
+                valueChecked[0] = true;
+            }
+        };
+
+        observableContainer.addWeakObserver(key1, observer, false);
+        observableContainer.set(key1, value1);
+
+        assertThat(valueChecked[0]).isTrue();
+        valueChecked[0] = false;
+
+        observableContainer.removeWeakObserver(key1, observer);
+        observableContainer.set(key1, value2);
+        assertThat(valueChecked[0]).isFalse();
+    }
 }

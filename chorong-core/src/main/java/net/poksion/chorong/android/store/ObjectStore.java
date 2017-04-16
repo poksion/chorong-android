@@ -27,6 +27,8 @@ public interface ObjectStore {
     Object get(Key key);
 
     void setPersistenceProxy(String staticKey, PersistenceProxy persistenceProxy);
+
     void addWeakObserver(String staticKey, StoreObserver observer, boolean readExistValue);
+    void removeWeakObserver(String staticKey, StoreObserver observer);
 
 }

@@ -25,8 +25,4 @@ public class StoreAccessor<T_Value> {
     public void write(T_Value value) {
         store.set(key, value);
     }
-
-    public void addWeakObserver(StoreObserver observer, boolean readExistValue) {
-        store.addWeakObserver(key.staticKey, observer, readExistValue);
-    }
 }

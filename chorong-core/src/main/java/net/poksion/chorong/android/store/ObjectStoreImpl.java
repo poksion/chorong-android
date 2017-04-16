@@ -57,4 +57,9 @@ public class ObjectStoreImpl implements ObjectStore {
             observableContainer.set(staticKey, "");
         }
     }
+
+    @Override
+    public void removeWeakObserver(String staticKey, StoreObserver observer) {
+        observableContainer.removeWeakObserver(staticKey, observer);
+    }
 }

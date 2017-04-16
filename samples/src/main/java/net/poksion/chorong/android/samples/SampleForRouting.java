@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
-import net.poksion.chorong.android.ui.route.Router;
+import net.poksion.chorong.android.route.Router;
 
 public class SampleForRouting extends ToolbarActivity {
 

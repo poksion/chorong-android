@@ -25,4 +25,9 @@ public abstract class ObjectStoreApplication extends Application implements Obje
     public void addWeakObserver(String staticKey, StoreObserver observer, boolean readExistValue) {
         objectStore.addWeakObserver(staticKey, observer, readExistValue);
     }
+
+    @Override
+    public void removeWeakObserver(String staticKey, StoreObserver observer) {
+        objectStore.removeWeakObserver(staticKey, observer);
+    }
 }

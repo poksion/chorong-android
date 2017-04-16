@@ -10,12 +10,49 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import net.poksion.chorong.android.route.Performer;
+import net.poksion.chorong.android.route.Router;
 import net.poksion.chorong.android.store.ObjectStore;
-import net.poksion.chorong.android.store.StoreAccessor;
-import net.poksion.chorong.android.store.StoreObserver;
 import net.poksion.chorong.android.ui.R;
 
 public class AlertDialogActivity extends Activity {
+
+    private enum EndPoint {
+        DIALOG,
+        DIALOG_YES,
+        DIALOG_NO,
+        DIALOG_CLOSE
+    }
+
+    public static abstract class OnClickCallback implements Performer<EndPoint> {
+        public void onNavigateTo(EndPoint to, Bundle bundle) {
+            if (to == EndPoint.DIALOG_YES) {
+                onClick(true);
+            } else if (to == EndPoint.DIALOG_NO) {
+                onClick(false);
+            }
+        }
+
+        protected abstract void onClick(boolean yes);
+    }
+
+    public static class EventRouter extends Router<EndPoint> {
+        private EventRouter(String routingKey) {
+            super(routingKey);
+        }
+
+        public void closeDialog() {
+            navigateTo(EndPoint.DIALOG_CLOSE);
+        }
+    }
+
+    public static EventRouter makeEventRouter(ObjectStore objectStore, OnClickCallback clickCallback) {
+        EventRouter eventRouter = new EventRouter("alert-dialog-activity");
+        eventRouter.init(objectStore, EndPoint.DIALOG);
+        eventRouter.setPerformer(clickCallback);
+
+        return eventRouter;
+    }
 
     public static class Builder {
         private final Intent i;
@@ -27,15 +64,19 @@ public class AlertDialogActivity extends Activity {
             i.putExtra("body", body);
         }
 
-        public Builder clickable(String yes, String no, String clickEventKey) {
+        public Builder clickable(String yes, String no, EventRouter eventRouter) {
+            if (eventRouter == null) {
+                throw new IllegalArgumentException("clickable needs event router");
+            }
+
             i.putExtra("yes", yes);
             i.putExtra("no", no);
-            i.putExtra("click-event-key", clickEventKey);
+            i.putExtra("click-event-key", true);
             return this;
         }
 
-        public Builder closeable(String closeEventKey) {
-            i.putExtra("close-event-key", closeEventKey);
+        public Builder nonCancelable() {
+            i.putExtra("close-event-key", true);
             return this;
         }
 
@@ -50,8 +91,8 @@ public class AlertDialogActivity extends Activity {
 
     }
 
-    private StoreAccessor<Boolean> clickEventStoreAccessor;
-    private StoreAccessor<Boolean> closeEventStoreAccessor;
+    private EventRouter eventRouter;
+    private boolean nonCancelable = false;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -68,7 +109,7 @@ public class AlertDialogActivity extends Activity {
         builder.setTitle(i.getStringExtra("title"));
         builder.setMessage(i.getStringExtra("body"));
 
-        updateStoreAccessor(i, getApplication());
+        updateFromIntent(i, getApplication());
 
         // yes button
         String yes = i.getStringExtra("yes");
@@ -94,15 +135,16 @@ public class AlertDialogActivity extends Activity {
             });
         }
 
-        // close event
-        updateCloseEvent();
-
         AlertDialog alert = builder.create();
 
         //noinspection ConstantConditions
         alert.getWindow().setWindowAnimations(R.style.AlertDialogNoAnimation);
 
-        if (closeEventStoreAccessor == null) {
+        if (nonCancelable) {
+            setFinishOnTouchOutside(false);
+            alert.setCanceledOnTouchOutside(false);
+            alert.setCancelable(false);
+        } else {
             setFinishOnTouchOutside(true);
             alert.setCanceledOnTouchOutside(true);
             alert.setCancelable(true);
@@ -112,10 +154,6 @@ public class AlertDialogActivity extends Activity {
                     finishDialog();
                 }
             });
-        } else {
-            setFinishOnTouchOutside(false);
-            alert.setCanceledOnTouchOutside(false);
-            alert.setCancelable(false);
         }
 
         alert.show();
@@ -125,57 +163,56 @@ public class AlertDialogActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (closeEventStoreAccessor == null) {
+        if (!nonCancelable) {
             finishDialog();
         }
     }
 
-    private void updateStoreAccessor(Intent i, Application application) {
+    @Override
+    protected void onDestroy() {
+        if (eventRouter != null) {
+            eventRouter.halt();
+        }
+
+        super.onDestroy();
+    }
+
+    private void updateFromIntent(Intent i, Application application) {
+        nonCancelable = i.getBooleanExtra("close-event-key", false);
+
         if (!(application instanceof ObjectStore)) {
             return;
         }
 
         ObjectStore objectStore = (ObjectStore) application;
+        eventRouter = makeEventRouter(objectStore, null);
 
-        String clickEventKey = i.getStringExtra("click-event-key");
-        if (clickEventKey != null) {
-            clickEventStoreAccessor = new StoreAccessor<>(clickEventKey, objectStore);
-        }
-
-        String closeEventKey = i.getStringExtra("close-event-key");
-        if (closeEventKey != null) {
-            closeEventStoreAccessor = new StoreAccessor<>(closeEventKey, objectStore);
+        if (nonCancelable) {
+            eventRouter.setPerformer(new Performer<EndPoint>() {
+                @Override
+                public void onNavigateTo(EndPoint to, Bundle bundle) {
+                    if (to == EndPoint.DIALOG_CLOSE) {
+                        finishDialog();
+                    }
+                }
+            });
         }
     }
 
     private void updateClickEvent(boolean yes) {
-        if (clickEventStoreAccessor == null) {
+        if (eventRouter == null) {
             return;
         }
 
-        clickEventStoreAccessor.write(yes);
-    }
-
-    private StoreObserver<Boolean> closeEventObserver = new StoreObserver<Boolean>() {
-        @Override
-        protected void onChanged(Boolean aBoolean) {
-            if (aBoolean == null || !aBoolean) {
-                return;
-            }
-
-            finishDialog();
-        }
-    };
-
-    private void updateCloseEvent() {
-        if (closeEventStoreAccessor == null) {
-            return;
-        }
-
-        closeEventStoreAccessor.addWeakObserver(closeEventObserver, false);
+        EndPoint endPoint = yes? EndPoint.DIALOG_YES : EndPoint.DIALOG_NO;
+        eventRouter.navigateTo(endPoint);
     }
 
     private void finishDialog() {
+        if (isFinishing()) {
+            return;
+        }
+
         setResult(RESULT_CANCELED);
         finish();
     }

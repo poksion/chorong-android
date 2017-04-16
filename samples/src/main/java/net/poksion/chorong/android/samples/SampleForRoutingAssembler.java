@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
-import net.poksion.chorong.android.ui.route.Performer;
-import net.poksion.chorong.android.ui.route.Router;
+import net.poksion.chorong.android.route.Performer;
+import net.poksion.chorong.android.route.Router;
 
 final class SampleForRoutingAssembler extends SampleAssembler {
 
@@ -80,7 +80,7 @@ final class SampleForRoutingAssembler extends SampleAssembler {
         }
 
         if (filedClass.equals(Router.class)) {
-            Router<Integer> router = new Router<>();
+            Router<Integer> router = new Router<>("sample-router");
             router.init(objectStore, currentRoutingId);
             router.setPerformer(performer);
 

@@ -43,15 +43,7 @@ public class Subject {
             observers.put(key, relatedObservers);
         }
 
-        boolean hasSameObserver = false;
-        for (WeakReference<Observer> weakRef : relatedObservers) {
-            if (weakRef.get() == observer) {
-                hasSameObserver = true;
-                break;
-            }
-        }
-
-        if (!hasSameObserver) {
+        if (findObserverIndex(relatedObservers, observer) == -1) {
             relatedObservers.add(new WeakReference<>(observer));
         }
 
@@ -61,6 +53,32 @@ public class Subject {
                 observer.onObjectChanged(data);
             }
         }
+    }
+
+    public synchronized void removeWeakObserver(String key, Observer observer) {
+        List<WeakReference<Observer>> relatedObservers = observers.get(key);
+        if (relatedObservers == null) {
+            return;
+        }
+
+        int idx = findObserverIndex(relatedObservers, observer);
+        if (idx == -1) {
+            return;
+        }
+
+        relatedObservers.remove(idx);
+    }
+
+    private int findObserverIndex(List<WeakReference<Observer>> relatedObservers, Observer observer) {
+        int idx = 0;
+        for (WeakReference<Observer> weakRef : relatedObservers) {
+            if (weakRef.get() == observer) {
+                return idx;
+            }
+            idx++;
+        }
+
+        return -1;
     }
 
 }
