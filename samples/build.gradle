@@ -10,7 +10,7 @@ android {
         versionCode      _version_code
         versionName      _version_name
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "net.poksion.chorong.android.samples.test.Instrumentation"
     }
 
     buildTypes {
@@ -37,4 +37,12 @@ dependencies {
     androidTestCompile "com.android.support.test.espresso:espresso-core:$_espresso_ver"
     androidTestCompile "com.android.support.test:runner:$_support_test_ver"
     androidTestCompile "com.android.support.test:rules:$_support_test_ver"
+
+    // functional test
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestCompile 'org.assertj:assertj-core:1.7.1'
+    androidTestCompile('info.cukes:cucumber-android:1.2.5') {
+        exclude module: 'cucumber-jvm-deps'
+    }
+    androidTestCompile 'info.cukes:cucumber-jvm-deps:1.0.3'
 }

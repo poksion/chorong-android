@@ -25,8 +25,6 @@ public class MainActivityTest {
         MainActivity mainActivity = mainActivityTestRule.getActivity();
 
         assertNotNull(mainActivity.buttonContainer);
-        assertNotNull(mainActivity.objectStore);
-        assertNotNull(mainActivity.contentView);
     }
 
     @Test
