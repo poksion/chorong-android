@@ -7,11 +7,10 @@ import android.widget.TextView;
 import java.lang.reflect.Field;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.store.ObjectStore;
-import net.poksion.chorong.android.ui.main.ToolbarActivity;
 import net.poksion.chorong.android.route.Performer;
 import net.poksion.chorong.android.route.Router;
 
-final class SampleForRoutingAssembler extends SampleAssembler {
+final class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
 
     private static final String ROUTING_ID_KEY = "routing-id-key";
 
@@ -34,7 +33,7 @@ final class SampleForRoutingAssembler extends SampleAssembler {
         }
     };
 
-    SampleForRoutingAssembler(ToolbarActivity activity, ViewGroup container) {
+    SampleForRoutingAssembler(SampleForRouting activity, ViewGroup container) {
         super(activity, container);
 
         Intent i = activity.getIntent();
@@ -64,7 +63,7 @@ final class SampleForRoutingAssembler extends SampleAssembler {
 
         TextView textView = new TextView(activity);
         textView.setText(R.string.text_routing_sample);
-        container.addView(textView, layoutParams);
+        container.addView(textView, wrapHeightParams);
     }
 
     @Override

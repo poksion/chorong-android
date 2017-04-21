@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <data>
+    <variable name="item" type="net.poksion.chorong.android.samples.domain.DbItemModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/flatCard"
+    android:paddingBottom="10dp"
+    android:orientation="horizontal"
+    android:weightSum="6">
+
+    <TextView
+      android:layout_weight="1"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:textAlignment="center"
+      android:text="@{item.id}"/>
+
+    <TextView
+      android:layout_weight="2"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:textAlignment="center"
+      android:text="@{item.name}"/>
+
+    <TextView
+      android:layout_weight="3"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:textAlignment="center"
+      android:text="@{item.date}"/>
+  </LinearLayout>
+
+</layout>

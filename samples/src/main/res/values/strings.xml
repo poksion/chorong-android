@@ -4,6 +4,7 @@
     <string name="button_sample_alert_dialog">Alert Dialog Sample</string>
     <string name="button_sample_flat_card">Flat Card Sample</string>
     <string name="button_sample_routing">Routing Sample</string>
+    <string name="button_sample_persistence">Persistence data Sample</string>
 
     <string name="button_open_alert_dialog">Open Alert dialog</string>
 

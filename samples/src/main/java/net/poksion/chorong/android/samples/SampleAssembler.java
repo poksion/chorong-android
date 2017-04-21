@@ -9,14 +9,14 @@ import java.lang.reflect.Field;
 import net.poksion.chorong.android.module.ViewModuleAssembler;
 import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 
-class SampleAssembler extends ViewModuleAssembler {
+class SampleAssembler<T extends Activity> extends ViewModuleAssembler {
 
-    final Activity activity;
-    final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    final T activity;
+    final ViewGroup.LayoutParams wrapHeightParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
     private final ViewGroup container;
 
-    SampleAssembler(Activity activity, ViewGroup container) {
+    SampleAssembler(T activity, ViewGroup container) {
         super(null, activity);
 
         this.activity = activity;
@@ -31,11 +31,11 @@ class SampleAssembler extends ViewModuleAssembler {
         if (filedClass.equals(LinearLayout.class)) {
 
             ScrollView scrollView = new ScrollView(activity);
-            container.addView(scrollView, layoutParams);
+            container.addView(scrollView, wrapHeightParams);
 
             LinearLayout linearLayout = new LinearLayout(activity);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
-            scrollView.addView(linearLayout, layoutParams);
+            scrollView.addView(linearLayout, wrapHeightParams);
 
             return linearLayout;
         }

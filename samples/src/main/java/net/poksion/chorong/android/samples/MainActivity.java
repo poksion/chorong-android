@@ -22,11 +22,12 @@ public class MainActivity extends ToolbarActivity {
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new SampleAssembler(this, container));
+        ModuleFactory.assemble(this, new SampleAssembler<>(this, container));
 
         addSampleOpener(R.string.button_sample_alert_dialog, SampleForAlertDialog.class);
         addSampleOpener(R.string.button_sample_flat_card, SampleForFlatCard.class);
         addSampleOpener(R.string.button_sample_routing, SampleForRouting.class);
+        addSampleOpener(R.string.button_sample_persistence, SampleForPersistence.class);
     }
 
     private void addSampleOpener(@StringRes int buttonStrRes, final Class<?> sampleActivityClass) {

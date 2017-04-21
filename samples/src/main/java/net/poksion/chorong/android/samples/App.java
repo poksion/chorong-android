@@ -1,7 +1,7 @@
 package net.poksion.chorong.android.samples;
 
+import com.facebook.stetho.Stetho;
 import net.poksion.chorong.android.module.ModuleFactory;
-import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.ObjectStoreApplication;
 
 public class App extends ObjectStoreApplication {
@@ -10,19 +10,13 @@ public class App extends ObjectStoreApplication {
     public void onCreate() {
         super.onCreate();
 
-        // most case, "reset" does not need to call
+        // in most case, "reset" does not need to call
         // because "App onCreate" is first call in this process
         ModuleFactory.reset();
 
-        ModuleFactory.init(this, new ModuleFactory.Initializer() {
-            @Override
-            public void onInit(Object host, ModuleFactory.SingletonBinder singletonBinder) {
-                ObjectStore objectStore = (ObjectStore) host;
-                singletonBinder.bind(ObjectStore.class, objectStore);
+        ModuleFactory.init(this, new AppModule());
 
-                // custom key binding is possible
-                singletonBinder.bind("application-object-store", objectStore);
-            }
-        });
+        // for debugging
+        Stetho.initializeWithDefaults(this);
     }
 }

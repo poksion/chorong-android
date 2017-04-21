@@ -20,7 +20,7 @@ public final class ViewModel<V, M> extends ViewUpdater {
         this.model = model;
 
         if (viewUpdatableAdapter != null && modelIdx >= 0) {
-            viewUpdatableAdapter.notifyItemChanged(modelIdx);
+            viewUpdatableAdapter.notifyItemRangeChangedSafely(modelIdx, 1);
         }
     }
 
