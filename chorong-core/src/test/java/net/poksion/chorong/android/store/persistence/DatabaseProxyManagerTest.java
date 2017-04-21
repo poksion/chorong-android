@@ -81,11 +81,11 @@ public class DatabaseProxyManagerTest {
         rows.appendCell("id_1", Result.Primitive.STRING, "01");
         rows.appendCell("id_2", Result.Primitive.STRING, "001");
         
-        String whereClause = DatabaseProxyManager.simpleWhereClause(rows.getPrimaryKeys());
+        String whereClause = DatabaseProxyManager.whereClause(rows.getPrimaryKeys());
         String expectedClause = "id_1=? and id_2=?";
         assertThat(whereClause).isEqualTo(expectedClause);
 
-        String[] whereArgs = DatabaseProxyManager.simpleWhereArgs(rows, rows.getPrimaryKeys());
+        String[] whereArgs = DatabaseProxyManager.whereArgs(rows.getRow(0), rows.getPrimaryKeys());
         assertThat(whereArgs[0]).isEqualTo("01");
         assertThat(whereArgs[1]).isEqualTo("001");
     }

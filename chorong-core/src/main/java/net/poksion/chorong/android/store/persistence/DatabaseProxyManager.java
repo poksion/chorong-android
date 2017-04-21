@@ -51,8 +51,8 @@ public class DatabaseProxyManager {
         }
 
         private void setSimple(SQLiteDatabase db, String conditions, String[] primaryKeys, Map<String, Pair<Result.Primitive, Object>> row) {
-            String whereStatement = simpleWhereClause(primaryKeys);
-            String[] whereArgs = simpleWhereArgs(row, primaryKeys);
+            String whereStatement = whereClause(primaryKeys);
+            String[] whereArgs = whereArgs(row, primaryKeys);
 
             //noinspection IfCanBeSwitch
             if (conditions.equals(SIMPLE_ADDING)) {
@@ -324,7 +324,7 @@ public class DatabaseProxyManager {
         }
     }
 
-    static String simpleWhereClause(String[] primaryKeys) {
+    static String whereClause(String[] primaryKeys) {
         int cnt = primaryKeys.length;
         if (cnt == 0) {
             throw new IllegalArgumentException("the primary key should be at least one on writing");
@@ -339,7 +339,7 @@ public class DatabaseProxyManager {
         return sb.toString();
     }
 
-    static String[] simpleWhereArgs(Map<String, Pair<Result.Primitive, Object>> row, String[] primaryKeys) {
+    static String[] whereArgs(Map<String, Pair<Result.Primitive, Object>> row, String[] primaryKeys) {
         String[] args = new String[primaryKeys.length];
 
         for (int i = 0; i < primaryKeys.length; ++i) {
