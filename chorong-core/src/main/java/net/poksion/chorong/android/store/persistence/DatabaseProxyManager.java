@@ -17,6 +17,10 @@ import net.poksion.chorong.android.store.StoreAccessor;
 
 public class DatabaseProxyManager {
 
+    public interface ProxyFactory {
+        ObjectStore.PersistenceProxy onNewInstance(SQLiteOpenHelper helper);
+    }
+
     private static final String SIMPLE_ADDING = "addItemAndGetAll";
     private static final String SIMPLE_REMOVING = "removeItemAndGetAll";
 
@@ -213,7 +217,6 @@ public class DatabaseProxyManager {
         objectStore.setPersistenceProxy(staticKey, simpleDbProxy);
     }
 
-
     public StoreAccessor<Result.Rows> makeSimpleAddingAccessor(String staticKey) {
         return makeSimpleAccessor(staticKey, SIMPLE_ADDING);
     }
@@ -224,6 +227,10 @@ public class DatabaseProxyManager {
 
     public StoreAccessor<Result.Rows> makeSimpleAccessor(String staticKey, String condition) {
         return new StoreAccessor<>(new ObjectStore.Key(staticKey, condition), objectStore);
+    }
+
+    public void installDbProxy(String staticKey, ProxyFactory factory) {
+        objectStore.setPersistenceProxy(staticKey, factory.onNewInstance(dbHelper));
     }
 
     static Result.Scheme getScheme(List<Result.Scheme> schemes, int version) {

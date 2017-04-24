@@ -22,28 +22,17 @@ public class DbManager {
         DB_SCHEMES.add(scheme);
     }
 
-
     private final static String DB_STATIC_KEY = "sample-db-static-key";
-    private final StoreAccessor<Result.Rows> dbAddingAccessor;
-
-    // using memory cache for db changed observer
-    private final static String DB_MEM_CACHE_KEY = "sample-db-mem-cache-key";
-    private final StoreAccessor<Result.Rows> dbMemCacheAccessor;
+    private final StoreAccessor<Result.Rows> dbSimpleAddingAccessor;
 
     public DbManager(DatabaseProxyManager dbProxyManager) {
         dbProxyManager.installSimpleProxy(DB_STATIC_KEY, DB_TABLE);
-        dbAddingAccessor = dbProxyManager.makeSimpleAddingAccessor(DB_STATIC_KEY);
-
-        dbMemCacheAccessor = dbProxyManager.makeSimpleAccessor(DB_MEM_CACHE_KEY, "");
+        dbSimpleAddingAccessor = dbProxyManager.makeSimpleAddingAccessor(DB_STATIC_KEY);
     }
 
     public List<DbItemModel> addItems(List<DbItemModel> items) {
-        dbAddingAccessor.write(convertModel(items));
-
-        Result.Rows rows = dbAddingAccessor.read();
-        dbMemCacheAccessor.write(rows);
-
-        return convertModel(rows);
+        dbSimpleAddingAccessor.write(convertModel(items));
+        return convertModel(dbSimpleAddingAccessor.read());
     }
 
     private Result.Rows convertModel(List<DbItemModel> items) {
