@@ -59,7 +59,7 @@ There are two main components:
  * [TaskRunner](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunner.java)
  * [DbManager](samples/src/main/java/net/poksion/chorong/android/samples/domain/DbManager.java)
 
-TaskRunner provides how running task - synchronous or asynchronous, running on executor, etc. I pefer to use [TaskRunnerAsyncShared](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerAsyncShared.java) for IO task and [TaskRunnerSync](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerSync.java) for testing (for easy to test, if the test does not need to run asynchronously)
+TaskRunner provides how running tasks - synchronous or asynchronous, running on executor, etc. I pefer to use [TaskRunnerAsyncShared](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerAsyncShared.java) for IO task and [TaskRunnerSync](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerSync.java) for testing (for easy to test, if the test does not need to run asynchronously)
 
 [DbManager](samples/src/main/java/net/poksion/chorong/android/samples/domain/DbManager.java) is model that handles the database. chrong-android provides utils handing model like [ObjectStore](chorong-core/src/main/java/net/poksion/chorong/android/store/ObjectStore.java), [StoreAccessor](chorong-core/src/main/java/net/poksion/chorong/android/store/StoreAccessor.java) - DbManager is the application commponent that using [DatabaseProxyManager](chorong-core/src/main/java/net/poksion/chorong/android/store/persistence/DatabaseProxyManager.java) and DatabaseProxyManager basically uses ObjectStore/StoreAccessor.
 
@@ -83,11 +83,15 @@ public void test_add_item() {
     List<DbItemModel> values = captor.getValue();
     assertThat(values.size()).isEqualTo(1);
     assertThat(values.get(0).id).isEqualTo("dummy-id");
-}}
+}
 ```
 
 See also : Task
 
 ### C. Model : DbManager
+
+[DbManager](samples/src/main/java/net/poksion/chorong/android/samples/domain/DbManager.java) is the core model in this sample. It uses [DatabaseProxyManager](chorong-core/src/main/java/net/poksion/chorong/android/store/persistence/DatabaseProxyManager.java) to save entity to DB.
+
+DatabaseProxyManager manages persistence proxies that read/write data from DB when realted [StoreAccessor](chorong-core/src/main/java/net/poksion/chorong/android/store/StoreAccessor.java) is called with getter/setter.
 
 See also : Store
