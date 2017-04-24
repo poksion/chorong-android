@@ -10,7 +10,7 @@ public class SampleForPersistencePresenter {
     public interface View {
         boolean isFinishing();
 
-        void loadItems(List<DbItemModel> itemList);
+        void showItems(List<DbItemModel> itemList);
     }
 
     private final TaskRunner<View> taskRunner;
@@ -34,7 +34,7 @@ public class SampleForPersistencePresenter {
                     return;
                 }
 
-                view.loadItems(dbItemModels);
+                view.showItems(dbItemModels);
             }
         });
     }

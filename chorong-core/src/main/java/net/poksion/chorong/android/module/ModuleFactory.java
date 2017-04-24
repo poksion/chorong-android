@@ -5,6 +5,12 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Module Factory.
+ * The two important roles of Module Factory are
+ *  - Initializing application modules (should be singleton)
+ *  - Assembling modules to host (with {@link Assembler}
+ */
 public final class ModuleFactory {
 
     public final static class SingletonBinder {

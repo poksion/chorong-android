@@ -26,6 +26,11 @@ public class SampleForPersistence extends ToolbarActivity implements SampleForPe
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         ModuleFactory.assemble(this, new SampleForPersistenceAssembler(this, container));
 
+        initCardView();
+        presenter.addItems(buildSampleDbItem());
+    }
+
+    private void initCardView() {
         cardRecyclerView.setCustomItemViewInflater(dbItemViewModelUtil.getItemViewInflater());
 
         cardRecyclerView.addItem(
@@ -37,12 +42,10 @@ public class SampleForPersistence extends ToolbarActivity implements SampleForPe
                 dbItemViewModelUtil.getViewBinder());
 
         cardRecyclerView.notifyDataSetChanged();
-
-        presenter.addItems(buildSampleDbItem());
     }
 
     @Override
-    public void loadItems(List<DbItemModel> itemList) {
+    public void showItems(List<DbItemModel> itemList) {
         for (DbItemModel model : itemList) {
             cardRecyclerView.addItem(
                     dbItemViewModelUtil.makeViewModel(model),
