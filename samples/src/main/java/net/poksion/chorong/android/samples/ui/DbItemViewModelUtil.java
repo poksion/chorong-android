@@ -10,11 +10,11 @@ import net.poksion.chorong.android.samples.databinding.DbRowBinding;
 import net.poksion.chorong.android.samples.domain.DbItemModel;
 import net.poksion.chorong.android.ui.card.ViewBinder;
 import net.poksion.chorong.android.ui.card.ViewModel;
-import net.poksion.chorong.android.ui.card.ViewUpdatableAdapter;
+import net.poksion.chorong.android.ui.card.ItemAdapter;
 
 public class DbItemViewModelUtil {
 
-    private ViewUpdatableAdapter.ItemViewInflater itemViewInflater = new ViewUpdatableAdapter.ItemViewInflater() {
+    private ItemAdapter.ViewInflater itemViewInflater = new ItemAdapter.ViewInflater() {
 
         @Override
         public View inflate(LayoutInflater layoutInflater, @LayoutRes int resId, ViewGroup parent) {
@@ -54,7 +54,7 @@ public class DbItemViewModelUtil {
         return viewBinder;
     }
 
-    public ViewUpdatableAdapter.ItemViewInflater getItemViewInflater() {
+    public ItemAdapter.ViewInflater getItemViewInflater() {
         return itemViewInflater;
     }
 }

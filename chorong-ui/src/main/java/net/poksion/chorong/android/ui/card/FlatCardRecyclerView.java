@@ -10,7 +10,7 @@ import net.poksion.chorong.android.ui.R;
 
 public class FlatCardRecyclerView extends RecyclerView {
 
-    private final ViewUpdatableAdapter adapter;
+    private final ItemAdapter adapter;
 
     public FlatCardRecyclerView(Context context) {
         this(context, null);
@@ -26,7 +26,7 @@ public class FlatCardRecyclerView extends RecyclerView {
         setLayoutManager(new LinearLayoutManager(context));
         setBackgroundColor(ContextCompat.getColor(context, R.color.flatCardBlank));
 
-        adapter = new ViewUpdatableAdapter(this);
+        adapter = new ItemAdapter(this);
         setAdapter(adapter);
     }
 
@@ -38,7 +38,7 @@ public class FlatCardRecyclerView extends RecyclerView {
         adapter.notifyDataSetChanged();
     }
 
-    public void setCustomItemViewInflater(ViewUpdatableAdapter.ItemViewInflater itemViewInflater) {
+    public void setCustomItemViewInflater(ItemAdapter.ViewInflater itemViewInflater) {
         adapter.setCustomItemViewInflater(itemViewInflater);
     }
 

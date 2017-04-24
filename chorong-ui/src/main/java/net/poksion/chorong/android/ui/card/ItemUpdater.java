@@ -2,10 +2,10 @@ package net.poksion.chorong.android.ui.card;
 
 import android.view.View;
 
-abstract class ViewUpdater {
+abstract class ItemUpdater {
     private final int viewResId;
 
-    ViewUpdater(int viewResId) {
+    ItemUpdater(int viewResId) {
         this.viewResId = viewResId;
     }
 
@@ -13,8 +13,6 @@ abstract class ViewUpdater {
         return viewResId;
     }
 
-
     abstract void onUpdateView(View view);
     abstract void updateModelIndex(int modelIdx);
-
 }

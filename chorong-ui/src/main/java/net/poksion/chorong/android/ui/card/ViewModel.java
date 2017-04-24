@@ -3,12 +3,12 @@ package net.poksion.chorong.android.ui.card;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-public final class ViewModel<V, M> extends ViewUpdater {
+public final class ViewModel<V, M> extends ItemUpdater {
 
     private M model;
     private ViewBinder<V, M> viewBinder;
 
-    private ViewUpdatableAdapter viewUpdatableAdapter;
+    private ItemAdapter itemAdapter;
     private int modelIdx = -1;
 
     public ViewModel(@LayoutRes int viewResId, M model) {
@@ -19,18 +19,18 @@ public final class ViewModel<V, M> extends ViewUpdater {
     public void updateModel(M model) {
         this.model = model;
 
-        if (viewUpdatableAdapter != null && modelIdx >= 0) {
-            viewUpdatableAdapter.notifyItemRangeChangedSafely(modelIdx, 1);
+        if (itemAdapter != null && modelIdx >= 0) {
+            itemAdapter.notifyItemRangeChangedSafely(modelIdx, 1);
         }
     }
 
     public void unbind() {
-        if (viewUpdatableAdapter != null) {
-            viewUpdatableAdapter.insertOrRemoveItem(modelIdx, false, null, null);
+        if (itemAdapter != null) {
+            itemAdapter.insertOrRemoveItem(modelIdx, false, null, null);
         }
 
         viewBinder = null;
-        viewUpdatableAdapter = null;
+        itemAdapter = null;
         modelIdx = -1;
     }
 
@@ -43,8 +43,8 @@ public final class ViewModel<V, M> extends ViewUpdater {
     }
 
     private <V2, M2> void insert(int idx, ViewModel<V2, M2> viewModel, ViewBinder<V2, M2> viewBinder) {
-        if (viewUpdatableAdapter != null) {
-            viewUpdatableAdapter.insertOrRemoveItem(idx, true, viewModel, viewBinder);
+        if (itemAdapter != null) {
+            itemAdapter.insertOrRemoveItem(idx, true, viewModel, viewBinder);
         }
     }
 
@@ -61,9 +61,9 @@ public final class ViewModel<V, M> extends ViewUpdater {
         this.modelIdx = modelIdx;
     }
 
-    void setAdapterInformation(ViewBinder<V, M> viewBinder, ViewUpdatableAdapter viewUpdatableAdapter, int modelIdx) {
+    void setAdapterInformation(ViewBinder<V, M> viewBinder, ItemAdapter itemAdapter, int modelIdx) {
         this.viewBinder = viewBinder;
-        this.viewUpdatableAdapter = viewUpdatableAdapter;
+        this.itemAdapter = itemAdapter;
         this.modelIdx = modelIdx;
     }
 }

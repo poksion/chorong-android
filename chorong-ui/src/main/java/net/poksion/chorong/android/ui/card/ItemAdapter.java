@@ -9,38 +9,31 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdapter.RecycleViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.RecycleViewHolder> {
 
-    public static class ItemViewInflater {
+    public static class ViewInflater {
         public View inflate(LayoutInflater layoutInflater, @LayoutRes int resId, ViewGroup parent) {
             return layoutInflater.inflate(resId, parent, false);
         }
     }
 
     static class RecycleViewHolder extends RecyclerView.ViewHolder {
-
-        final View view;
-
         RecycleViewHolder(View itemView) {
             super(itemView);
-
-            this.view = itemView;
         }
     }
 
-    private List<ViewUpdater> viewUpdaterList = new ArrayList<>();
+    private final List<ItemUpdater> itemUpdaterList = new ArrayList<>();
     private final RecyclerView recyclerView;
 
-    private ItemViewInflater itemViewInflater;
+    private ViewInflater itemViewInflater = new ViewInflater();
     private boolean isOnBinding = false;
 
-    public ViewUpdatableAdapter(RecyclerView recyclerView) {
+    public ItemAdapter(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
-
-        itemViewInflater = new ItemViewInflater();
     }
 
-    public void setCustomItemViewInflater(ItemViewInflater itemViewInflater) {
+    public void setCustomItemViewInflater(ViewInflater itemViewInflater) {
         this.itemViewInflater = itemViewInflater;
     }
 
@@ -54,24 +47,24 @@ public class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdap
     @Override
     public void onBindViewHolder(RecycleViewHolder holder, int position) {
         isOnBinding = true;
-        viewUpdaterList.get(position).onUpdateView(holder.view);
+        itemUpdaterList.get(position).onUpdateView(holder.itemView);
         isOnBinding = false;
     }
 
     @Override
     public int getItemCount() {
-        return viewUpdaterList.size();
+        return itemUpdaterList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        return viewUpdaterList.get(position).getViewResId();
+        return itemUpdaterList.get(position).getViewResId();
     }
 
     <V, M> void addItem(ViewModel<V, M> viewModel, ViewBinder<V, M> viewBinder) {
-        int nextPos = viewUpdaterList.size();
+        int nextPos = itemUpdaterList.size();
 
-        viewUpdaterList.add(viewModel);
+        itemUpdaterList.add(viewModel);
         viewModel.setAdapterInformation(viewBinder, this, nextPos);
     }
 
@@ -99,27 +92,27 @@ public class ViewUpdatableAdapter extends RecyclerView.Adapter<ViewUpdatableAdap
             }
         }
 
-        if (modelIdx >= viewUpdaterList.size() || (insertMode && viewModel == null)) {
-            throw new IllegalArgumentException("modelIdx : " + modelIdx + ", modelSize : " + viewUpdaterList.size());
+        if (modelIdx >= itemUpdaterList.size() || (insertMode && viewModel == null)) {
+            throw new IllegalArgumentException("modelIdx : " + modelIdx + ", modelSize : " + itemUpdaterList.size());
         }
 
         if (insertMode) {
             // insert next current model index
             modelIdx++;
 
-            if (modelIdx == viewUpdaterList.size()) {
-                viewUpdaterList.add(viewModel);
+            if (modelIdx == itemUpdaterList.size()) {
+                itemUpdaterList.add(viewModel);
             } else {
-                viewUpdaterList.add(modelIdx, viewModel);
+                itemUpdaterList.add(modelIdx, viewModel);
             }
             viewModel.setAdapterInformation(viewBinder, this, modelIdx);
         } else {
-            viewUpdaterList.remove(modelIdx);
+            itemUpdaterList.remove(modelIdx);
         }
 
-        int newListSize = viewUpdaterList.size();
+        int newListSize = itemUpdaterList.size();
         for (int i = modelIdx; i < newListSize; ++i) {
-            viewUpdaterList.get(i).updateModelIndex(i);
+            itemUpdaterList.get(i).updateModelIndex(i);
         }
 
         if (insertMode) {
