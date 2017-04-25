@@ -8,7 +8,7 @@ import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.ui.card.FlatCardGeneralContentView;
 import net.poksion.chorong.android.ui.card.FlatCardLoadingView;
 import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
-import net.poksion.chorong.android.ui.card.FlatTitleView;
+import net.poksion.chorong.android.ui.card.FlatCardTitleView;
 import net.poksion.chorong.android.ui.card.ViewBinder;
 import net.poksion.chorong.android.ui.card.ViewModel;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
@@ -23,16 +23,16 @@ public class SampleForFlatCard extends ToolbarActivity {
         ModuleFactory.assemble(this, new SampleAssembler<>(this, container));
 
         flatCardRecyclerView.addItem(flatCardRecyclerView.makeTitleViewModel("First card title", null), titleViewBinder);
-        flatCardRecyclerView.addItem(new ViewModel<FlatTitleView, String[]>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"}), titleViewBinder);
+        flatCardRecyclerView.addItem(new ViewModel<FlatCardTitleView, String[]>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"}), titleViewBinder);
         flatCardRecyclerView.addItem(flatCardRecyclerView.makeGeneralContentViewModel("Card item : general content"), generalContentViewBinder);
         flatCardRecyclerView.addItem(flatCardRecyclerView.makeLoadingViewModel(), loadingViewBinder);
 
         flatCardRecyclerView.notifyDataSetChanged();
     }
 
-    private final ViewBinder<FlatTitleView, String[]> titleViewBinder = new ViewBinder<FlatTitleView, String[]>() {
+    private final ViewBinder<FlatCardTitleView, String[]> titleViewBinder = new ViewBinder<FlatCardTitleView, String[]>() {
         @Override
-        public void onBind(FlatTitleView view, String[] model) {
+        public void onBind(FlatCardTitleView view, String[] model) {
             if (model[1] == null) {
                 view.hideBlank();
             } else {

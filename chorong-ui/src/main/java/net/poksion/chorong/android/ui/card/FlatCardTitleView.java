@@ -10,21 +10,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import net.poksion.chorong.android.ui.R;
 
-public class FlatTitleView extends RelativeLayout {
+public class FlatCardTitleView extends RelativeLayout {
 
     private final View blankView;
     private final TextView titleTextView;
     private final TextView subTitleTextView;
 
-    public FlatTitleView(Context context) {
+    public FlatCardTitleView(Context context) {
         this(context, null);
     }
 
-    public FlatTitleView(Context context, AttributeSet attrs) {
+    public FlatCardTitleView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FlatTitleView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FlatCardTitleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         LayoutInflater inflater = LayoutInflater.from(context);

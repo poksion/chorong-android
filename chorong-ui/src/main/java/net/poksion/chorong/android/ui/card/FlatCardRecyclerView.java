@@ -42,14 +42,14 @@ public class FlatCardRecyclerView extends RecyclerView {
         adapter.setCustomItemViewInflater(itemViewInflater);
     }
 
-    public ViewModel<FlatTitleView, String[]> makeTitleViewModel(String title, @Nullable String subTitle) {
+    public ViewModel<FlatCardTitleView, String[]> makeTitleViewModel(String title, @Nullable String subTitle) {
         return new ViewModel<>(R.layout.flat_card_title, new String[] { title, subTitle } );
     }
 
-    public ViewBinder<FlatTitleView, String[]> makeTitleViewBinder() {
-        return new ViewBinder<FlatTitleView, String[]>() {
+    public ViewBinder<FlatCardTitleView, String[]> makeTitleViewBinder() {
+        return new ViewBinder<FlatCardTitleView, String[]>() {
             @Override
-            public void onBind(FlatTitleView view, String[] model) {
+            public void onBind(FlatCardTitleView view, String[] model) {
                 view.setTitle(model[0], model[1]);
             }
         };
