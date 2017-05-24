@@ -80,7 +80,7 @@ public class ModuleAssemblerTest {
         try {
             ModuleFactory.assemble(PrivateMemberClass.class, testClassForNonAccessibleField, new TestModuleAssembler());
             fail("impossible since non-accessible on PrivateMemberClass fileds");
-        } catch(AssertionError e) {
+        } catch(Exception e) {
             caught = true;
         }
 
