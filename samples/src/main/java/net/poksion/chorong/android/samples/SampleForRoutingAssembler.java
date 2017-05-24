@@ -10,7 +10,7 @@ import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.route.Performer;
 import net.poksion.chorong.android.route.Router;
 
-final class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
+class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
 
     private static final String ROUTING_ID_KEY = "routing-id-key";
 

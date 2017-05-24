@@ -20,7 +20,7 @@ public class SampleForFlatCard extends ToolbarActivity {
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new SampleAssembler<>(this, container));
+        ModuleFactory.assemble(SampleForFlatCard.class, this, new SampleAssembler<>(this, container));
 
         flatCardRecyclerView.addItem(flatCardRecyclerView.makeTitleViewModel("First card title", null), titleViewBinder);
         flatCardRecyclerView.addItem(new ViewModel<FlatCardTitleView, String[]>(R.layout.flat_card_title, new String[] {"Second card title", "first sub title"}), titleViewBinder);

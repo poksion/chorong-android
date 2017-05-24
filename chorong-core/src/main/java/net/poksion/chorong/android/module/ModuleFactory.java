@@ -2,6 +2,8 @@ package net.poksion.chorong.android.module;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,23 +31,34 @@ public final class ModuleFactory {
         void onInit(Object host, SingletonBinder singletonBinder);
     }
 
-    private static Map<String, Object> modules = new ConcurrentHashMap<>();
+    private final static class AssemblingField {
+        private final Field field;
+        private final int id;
+
+        private AssemblingField(Field field, int id) {
+            this.field = field;
+            this.id = id;
+        }
+    }
+
+    private final static Map<String, Object> MODULES = new ConcurrentHashMap<>();
+    private final static Map<String, List<AssemblingField>> CACHED_ASSEMBLE_FIELDS = new ConcurrentHashMap<>();
 
     private ModuleFactory() {
 
     }
 
     public static void reset() {
-        modules.clear();
+        MODULES.clear();
     }
 
     public static void init(Object host, Initializer initializer) {
-        if (!modules.isEmpty()) {
+        if (!MODULES.isEmpty()) {
             return;
         }
 
         SingletonBinder singletonBinder = new SingletonBinder();
-        singletonBinder.moduleMap = modules;
+        singletonBinder.moduleMap = MODULES;
 
         initializer.onInit(host, singletonBinder);
 
@@ -53,21 +66,61 @@ public final class ModuleFactory {
     }
 
     public static Object get(String name) {
-        return modules.get(name);
+        return MODULES.get(name);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T get(Class<T> moduleClass) {
-        return (T)modules.get(moduleClass.getName());
+        return (T) MODULES.get(moduleClass.getName());
     }
 
-    public static void assemble(Object host, Assembler assembler) {
-        for(Field field : assembler.getClass().getDeclaredFields()){
-            assemble(assembler, field, getAssembleAnnotation(field), assembler);
+    public static <T> void assemble(Class<T> hostClass, T host, Assembler assembler) {
+
+        Class<?> assembleOwnerClass = assembler.getClass();
+        while (assembleOwnerClass != Object.class) {
+            assemble(assembler, getAssembleFields(assembleOwnerClass), assembler);
+            assembleOwnerClass = assembleOwnerClass.getSuperclass();
         }
 
-        for(Field field : host.getClass().getDeclaredFields()){
-            assemble(host, field, getAssembleAnnotation(field), assembler);
+        assembleOwnerClass = host.getClass();
+        Class<?> hostParentClass = hostClass.getSuperclass();
+        while (assembleOwnerClass != hostParentClass) {
+            assemble(host, getAssembleFields(assembleOwnerClass), assembler);
+            assembleOwnerClass = assembleOwnerClass.getSuperclass();
+        }
+    }
+
+    private static List<AssemblingField> getAssembleFields(Class<?> assembleOwnerClass) {
+        List<AssemblingField> cachedFields = CACHED_ASSEMBLE_FIELDS.get(assembleOwnerClass.getName());
+        if (cachedFields == null) {
+            cachedFields = new ArrayList<>();
+            for (Field field : assembleOwnerClass.getDeclaredFields()) {
+                Assemble assembleAnnotation = getAssembleAnnotation(field);
+                if (assembleAnnotation != null) {
+                    cachedFields.add(new AssemblingField(field, assembleAnnotation.value()));
+                }
+            }
+            CACHED_ASSEMBLE_FIELDS.put(assembleOwnerClass.getName(), cachedFields);
+        }
+
+        return cachedFields;
+    }
+
+    private static void assemble(Object host, List<AssemblingField> assemblingFields, Assembler assembler) {
+        for (AssemblingField assemblingField : assemblingFields) {
+
+            Class<?> filedClass = assemblingField.field.getType();
+
+            Object module = assembler.findModule(filedClass, assemblingField.id);
+            if (module == null) {
+                throw new AssertionError("Fail finding module : " + filedClass.getName() + ", (id:" + assemblingField.id + ")");
+            }
+
+            try {
+                assembler.setField(assemblingField.field, host, module);
+            } catch(IllegalAccessException e) {
+                throw new AssertionError(e);
+            }
         }
     }
 
@@ -79,26 +132,6 @@ public final class ModuleFactory {
         }
 
         return null;
-    }
-
-    private static void assemble(Object host, Field field, Assemble assembleAnnotation, Assembler assembler) {
-        if (assembleAnnotation == null) {
-            return;
-        }
-
-        Class<?> filedClass = field.getType();
-        int id = assembleAnnotation.value();
-
-        Object module = assembler.findModule(filedClass, id);
-        if (module == null) {
-            throw new AssertionError("Fail finding module : " + filedClass.getName() + ", (id:" + id + ")");
-        }
-
-        try {
-            assembler.setField(field, host, module);
-        } catch(IllegalAccessException e) {
-            throw new AssertionError(e);
-        }
     }
 
 }

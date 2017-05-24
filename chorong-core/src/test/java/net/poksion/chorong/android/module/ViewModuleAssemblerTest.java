@@ -32,8 +32,17 @@ public class ViewModuleAssemblerTest {
     }
 
     @Test
+    public void view_module_assembler_can_have_assembling_field() {
+        ChildTestViewModuleAssembler childTestViewModuleAssembler = new ChildTestViewModuleAssembler(makeMockActivity("dummy-frame", "dummy-btn"));
+        ModuleFactory.assemble(ViewModuleAssemblerTest.class, this, childTestViewModuleAssembler);
+
+        assertThat(childTestViewModuleAssembler.testPresenter).isNotNull();
+        assertThat(childTestViewModuleAssembler.testChildPresenter).isNotNull();
+    }
+
+    @Test
     public void view_module_assembler_should_assemble_view_from_activity() {
-        ModuleFactory.assemble(this, new TestViewModuleAssembler(makeMockActivity("dummy-frame", "dummy-btn")));
+        ModuleFactory.assemble(ViewModuleAssemblerTest.class, this, new TestViewModuleAssembler(makeMockActivity("dummy-frame", "dummy-btn")));
 
         assertThat(mainFrame).isNotNull();
         assertThat(mainFrame.getTag()).isEqualTo("dummy-frame");
@@ -49,7 +58,7 @@ public class ViewModuleAssemblerTest {
 
     @Test
     public void view_module_assembler_should_assemble_view_from_view() {
-        ModuleFactory.assemble(this, new TestViewModuleAssembler(makeMockView("dummy-frame", "dummy-btn")));
+        ModuleFactory.assemble(ViewModuleAssemblerTest.class, this, new TestViewModuleAssembler(makeMockView("dummy-frame", "dummy-btn")));
 
         assertThat(mainFrame).isNotNull();
         assertThat(mainFrame.getTag()).isEqualTo("dummy-frame");
@@ -90,6 +99,8 @@ public class ViewModuleAssemblerTest {
 
     private static class TestViewModuleAssembler extends ViewModuleAssembler {
 
+        @Assemble TestPresenter testPresenter;
+
         TestViewModuleAssembler(Activity activity) {
             super(null, activity);
         }
@@ -101,6 +112,15 @@ public class ViewModuleAssemblerTest {
         @Override
         public void setField(Field filed, Object object, Object value) throws IllegalAccessException {
             filed.set(object, value);
+        }
+    }
+
+    private static class ChildTestViewModuleAssembler extends TestViewModuleAssembler {
+
+        @Assemble TestPresenter testChildPresenter;
+
+        ChildTestViewModuleAssembler(Activity activity) {
+            super(activity);
         }
     }
 

@@ -24,7 +24,7 @@ public class SampleForPersistence extends ToolbarActivity implements SampleForPe
 
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
-        ModuleFactory.assemble(this, new SampleForPersistenceAssembler(this, container));
+        ModuleFactory.assemble(SampleForPersistence.class, this, new SampleForPersistenceAssembler(this, container));
 
         initCardView();
         presenter.addItems(buildSampleDbItem());

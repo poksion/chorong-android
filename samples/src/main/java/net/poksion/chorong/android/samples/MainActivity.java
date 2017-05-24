@@ -22,7 +22,7 @@ public class MainActivity extends ToolbarActivity {
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new SampleAssembler<>(this, container));
+        ModuleFactory.assemble(MainActivity.class, this, new SampleAssembler<>(this, container));
 
         addSampleOpener(R.string.button_sample_alert_dialog, SampleForAlertDialog.class);
         addSampleOpener(R.string.button_sample_flat_card, SampleForFlatCard.class);

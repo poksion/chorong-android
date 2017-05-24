@@ -9,7 +9,7 @@ import net.poksion.chorong.android.samples.ui.DbItemViewModelUtil;
 import net.poksion.chorong.android.task.TaskRunnerAsyncShared;
 
 @SuppressWarnings("unused")
-final class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence> {
+class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence> {
 
     @Assemble private DbManager dbManager;
 

@@ -18,7 +18,7 @@ public class SampleForRouting extends ToolbarActivity {
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new SampleForRoutingAssembler(this, container));
+        ModuleFactory.assemble(SampleForRouting.class, this, new SampleForRoutingAssembler(this, container));
     }
 
     @Override

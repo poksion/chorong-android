@@ -66,7 +66,7 @@ public class ModuleAssemblerTest {
             }
         });
 
-        ModuleFactory.assemble(this, new TestModuleAssembler());
+        ModuleFactory.assemble(ModuleAssemblerTest.class, this, new TestModuleAssembler());
 
         assertThat(assembledDummyModule.value).isEqualTo("dummy-module");
         assertThat(idAssembled1).isEqualTo("id-assembled-1");
@@ -75,11 +75,11 @@ public class ModuleAssemblerTest {
 
     @Test
     public void check_error_if_does_not_have_access_right() {
-        PackageVisibilityClass testClassForNonAccessibleField = new PackageVisibilityClass();
+        PrivateMemberClass testClassForNonAccessibleField = new PrivateMemberClass();
         boolean caught = false;
         try {
-            ModuleFactory.assemble(testClassForNonAccessibleField, new TestModuleAssembler());
-            fail("impossible since non-accessible on PackageVisibilityClass fileds");
+            ModuleFactory.assemble(PrivateMemberClass.class, testClassForNonAccessibleField, new TestModuleAssembler());
+            fail("impossible since non-accessible on PrivateMemberClass fileds");
         } catch(AssertionError e) {
             caught = true;
         }
@@ -90,7 +90,7 @@ public class ModuleAssemblerTest {
 }
 
 @SuppressWarnings("unused")
-class PackageVisibilityClass {
+class PrivateMemberClass {
     private @Assemble(1) String idAssembled1;
     private @Assemble(2) String idAssembled2;
 }

@@ -24,7 +24,7 @@ public class SampleForAlertDialog extends ToolbarActivity {
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ModuleFactory.assemble(this, new SampleAssembler<>(this, container));
+        ModuleFactory.assemble(SampleForAlertDialog.class, this, new SampleAssembler<>(this, container));
 
         addAlertDialogOpener();
     }

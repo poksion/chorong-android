@@ -6,12 +6,12 @@ import android.view.View;
 
 public abstract class ViewModuleAssembler implements Assembler {
 
-    private final View resIdView;
-    private final Activity resIdActivity;
+    private final View containerView;
+    private final Activity containerActivity;
 
-    protected ViewModuleAssembler(@Nullable View resIdView, @Nullable Activity resIdActivity) {
-        this.resIdView = resIdView;
-        this.resIdActivity = resIdActivity;
+    protected ViewModuleAssembler(@Nullable View containerView, @Nullable Activity containerActivity) {
+        this.containerView = containerView;
+        this.containerActivity = containerActivity;
     }
 
     @Override
@@ -24,12 +24,12 @@ public abstract class ViewModuleAssembler implements Assembler {
             return null;
         }
 
-        if (resIdView != null) {
-            return resIdView.findViewById(id);
+        if (containerView != null) {
+            return containerView.findViewById(id);
         }
 
-        if (resIdActivity != null) {
-            return resIdActivity.findViewById(id);
+        if (containerActivity != null) {
+            return containerActivity.findViewById(id);
         }
 
         return null;
