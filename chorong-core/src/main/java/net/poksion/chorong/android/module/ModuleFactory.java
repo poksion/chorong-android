@@ -113,13 +113,26 @@ public final class ModuleFactory {
 
             Object module = assembler.findModule(filedClass, assemblingField.id);
             if (module == null) {
-                throw new AssertionError("Fail finding module : " + filedClass.getName() + ", (id:" + assemblingField.id + ")");
+                try {
+                    Object member = assemblingField.field.get(host);
+                    if (member != null) {
+                        return;
+                    }
+                } catch(IllegalAccessException ignored) {}
+
+                String message =
+                        "Fail finding module for : " +
+                        filedClass.getName() + ", (id:" + assemblingField.id + ") " +
+                        "Check findModule method in Assembler or " +
+                        "order of ModuleFactory.assemble (The subclass should call it before)";
+
+                throw new RuntimeException(message);
             }
 
             try {
                 assembler.setField(assemblingField.field, host, module);
             } catch(IllegalAccessException e) {
-                throw new AssertionError(e);
+                throw new RuntimeException(e);
             }
         }
     }
