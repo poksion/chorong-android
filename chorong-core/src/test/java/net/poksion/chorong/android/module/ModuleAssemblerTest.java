@@ -22,7 +22,7 @@ public class ModuleAssemblerTest {
         }
     }
 
-    private static class TestModuleAssembler implements Assembler {
+    private static class TestModuleAssembler extends ModuleAssembler {
 
         @Override
         public Object findModule(Class<?> filedClass, int id) {
@@ -38,7 +38,7 @@ public class ModuleAssemblerTest {
                 return null;
             }
 
-            return ModuleFactory.get(filedClass.getName());
+            return super.findModule(filedClass, id);
         }
 
         @Override
