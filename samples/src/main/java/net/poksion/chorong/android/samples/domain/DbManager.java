@@ -4,7 +4,9 @@ import android.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.StoreAccessor;
+import net.poksion.chorong.android.store.persistence.DatabaseProxyDefaultFactory;
 import net.poksion.chorong.android.store.persistence.DatabaseProxyManager;
 import net.poksion.chorong.android.store.persistence.Result;
 
@@ -25,9 +27,9 @@ public class DbManager {
     private final static String DB_STATIC_KEY = "sample-db-static-key";
     private final StoreAccessor<Result.Rows> dbSimpleAddingAccessor;
 
-    public DbManager(DatabaseProxyManager dbProxyManager) {
-        dbProxyManager.installSimpleProxy(DB_STATIC_KEY, DB_TABLE);
-        dbSimpleAddingAccessor = dbProxyManager.makeSimpleAddingAccessor(DB_STATIC_KEY);
+    public DbManager(DatabaseProxyManager dbProxyManager, ObjectStore objectStore) {
+        dbProxyManager.installDbProxy(DB_STATIC_KEY, DB_TABLE, new DatabaseProxyDefaultFactory());
+        dbSimpleAddingAccessor = DatabaseProxyDefaultFactory.makeSimpleAddingAccessor(DB_STATIC_KEY, objectStore);
     }
 
     public List<DbItemModel> addItems(List<DbItemModel> items) {

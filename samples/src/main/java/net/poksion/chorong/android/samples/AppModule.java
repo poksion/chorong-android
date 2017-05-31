@@ -19,7 +19,7 @@ class AppModule implements ModuleFactory.Initializer {
         DatabaseProxyManager dbProxyManager = new DatabaseProxyManager(objectStoreApplication, DbManager.DB_NAME, DbManager.DB_SCHEMES);
         singletonBinder.bind(DatabaseProxyManager.class, dbProxyManager);
 
-        DbManager dbManager = new DbManager(dbProxyManager);
+        DbManager dbManager = new DbManager(dbProxyManager, objectStoreApplication);
         singletonBinder.bind(DbManager.class, dbManager);
     }
 }

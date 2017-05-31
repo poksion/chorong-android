@@ -55,7 +55,7 @@ public class DatabaseProxyManagerTest {
     public void test_create_table_statement() {
         Result.Scheme scheme = schemes.get(0);
         for (Map.Entry<String, List<Pair<Result.Primitive, String>>> table :  scheme.tables.entrySet()) {
-            String statement = DatabaseProxyManager.createTableStatement(
+            String statement = DatabaseProxyManager.sqlCreateTable(
                     table.getKey(),
                     table.getValue(),
                     scheme.primaryKeys.get(table.getKey()) );
@@ -72,7 +72,7 @@ public class DatabaseProxyManagerTest {
         primaryKeys.add("id_1");
         primaryKeys.add("id_2");
 
-        String statement = DatabaseProxyManager.primaryKeySqlStatement(primaryKeys);
+        String statement = DatabaseProxyManager.sqlPrimaryKey(primaryKeys);
         String expected = "PRIMARY KEY(id_1,id_2)";
         assertThat(statement).isEqualTo(expected);
 
@@ -81,11 +81,11 @@ public class DatabaseProxyManagerTest {
         rows.appendCell("id_1", Result.Primitive.STRING, "01");
         rows.appendCell("id_2", Result.Primitive.STRING, "001");
         
-        String whereClause = DatabaseProxyManager.whereClause(rows.getPrimaryKeys());
+        String whereClause = DatabaseProxyFactory.whereClause(rows.getPrimaryKeys());
         String expectedClause = "id_1=? and id_2=?";
         assertThat(whereClause).isEqualTo(expectedClause);
 
-        String[] whereArgs = DatabaseProxyManager.whereArgs(rows.getRow(0), rows.getPrimaryKeys());
+        String[] whereArgs = DatabaseProxyFactory.whereArgs(rows.getRow(0), rows.getPrimaryKeys());
         assertThat(whereArgs[0]).isEqualTo("01");
         assertThat(whereArgs[1]).isEqualTo("001");
     }
@@ -99,16 +99,16 @@ public class DatabaseProxyManagerTest {
         assertThat(testTableDiffCols.size()).isEqualTo(1);
         assertThat(testTableDiffCols.get(0).second).isEqualTo("date");
 
-        String alterStatementAdd = DatabaseProxyManager.alterSqlStatement("test_table", testTableDiffCols.get(0), true);
+        String alterStatementAdd = DatabaseProxyManager.sqlAlter("test_table", testTableDiffCols.get(0), true);
         assertThat(alterStatementAdd).isEqualTo("ALTER TABLE test_table ADD COLUMN date TEXT;");
-        String alterStatementDrop = DatabaseProxyManager.alterSqlStatement("test_table", testTableDiffCols.get(0), false);
+        String alterStatementDrop = DatabaseProxyManager.sqlAlter("test_table", testTableDiffCols.get(0), false);
         assertThat(alterStatementDrop).isEqualTo("ALTER TABLE test_table DROP COLUMN date;");
 
         List<Pair<Result.Primitive, String>> testTable2DiffCols = diff.get("test_table2");
         assertThat(testTable2DiffCols.size()).isEqualTo(3);
         assertThat(testTable2DiffCols.size()).isEqualTo(schemes.get(1).tables.get("test_table2").size());
 
-        String[] allCols = DatabaseProxyManager.getAllColNames(testTable2DiffCols);
+        String[] allCols = DatabaseProxyFactory.getAllColNames(testTable2DiffCols);
         assertThat(allCols[0]).isEqualTo("id_1");
         assertThat(allCols[1]).isEqualTo("id_2");
         assertThat(allCols[2]).isEqualTo("name");
@@ -128,13 +128,13 @@ public class DatabaseProxyManagerTest {
         rows.appendCell("age", Result.Primitive.INT, 16);
         rows.appendCell("hits", Result.Primitive.LONG, 654321);
 
-        String idStr = DatabaseProxyManager.getAsStringValue(rows.getRow(0).get("id"));
+        String idStr = DatabaseProxyFactory.getAsStringValue(rows.getRow(0).get("id"));
         assertThat(idStr).isEqualTo("001");
-        String isAdultStr = DatabaseProxyManager.getAsStringValue(rows.getRow(0).get("is_adult"));
+        String isAdultStr = DatabaseProxyFactory.getAsStringValue(rows.getRow(0).get("is_adult"));
         assertThat(isAdultStr).isEqualTo("0");
-        String ageStr = DatabaseProxyManager.getAsStringValue(rows.getRow(0).get("age"));
+        String ageStr = DatabaseProxyFactory.getAsStringValue(rows.getRow(0).get("age"));
         assertThat(ageStr).isEqualTo("16");
-        String hitsStr = DatabaseProxyManager.getAsStringValue(rows.getRow(0).get("hits"));
+        String hitsStr = DatabaseProxyFactory.getAsStringValue(rows.getRow(0).get("hits"));
         assertThat(hitsStr).isEqualTo("654321");
     }
 
