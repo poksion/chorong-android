@@ -7,21 +7,19 @@ import net.poksion.chorong.android.task.ObservingTask;
 
 public abstract class DbObservingTask<T_View extends BaseView> implements ObservingTask<List<DbItemModel>, T_View> {
     private final DbManager dbManager;
-    private final ObjectStore objectStore;
 
-    public DbObservingTask(DbManager dbManager, ObjectStore objectStore) {
+    public DbObservingTask(DbManager dbManager) {
         this.dbManager = dbManager;
-        this.objectStore = objectStore;
     }
 
     @Override
     public ObjectStore getStore() {
-        return objectStore;
+        return dbManager.getRelatedObjectStore();
     }
 
     @Override
     public String getStoreKey() {
-        return dbManager.getDbCacheStaticKey();
+        return dbManager.getRelatedDbMemeCacheStoreKey();
     }
 
     @Override

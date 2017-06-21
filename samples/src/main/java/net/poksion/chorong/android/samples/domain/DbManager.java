@@ -1,5 +1,6 @@
 package net.poksion.chorong.android.samples.domain;
 
+import android.support.annotation.VisibleForTesting;
 import android.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ public class DbManager {
     public final static List<Result.Scheme> DB_SCHEMES = new ArrayList<>();
 
     private final static String DB_TABLE = "sample_table";
+
     static {
         Result.Scheme scheme = new Result.Scheme(1);
         scheme.addCol(DB_TABLE, Result.Primitive.STRING, "id", true);
@@ -25,11 +27,13 @@ public class DbManager {
         DB_SCHEMES.add(scheme);
     }
 
+    private final ObjectStore objectStore;
+
     private final static String DB_STATIC_KEY = "sample-db-static-key";
     private final StoreAccessor<Result.Rows> dbSimpleReadingAccessor;
     private final StoreAccessor<Result.Rows> dbSimpleAddingAccessor;
 
-    private final static String DB_CACHE_STATIC_KEY = "sample-db-cache-static-key";
+    @VisibleForTesting public final static String DB_CACHE_STATIC_KEY = "sample-db-cache-static-key";
     private final StoreAccessor< List<DbItemModel> > dbCacheAccessor;
 
     public DbManager(DatabaseProxyManager dbProxyManager, ObjectStore objectStore) {
@@ -38,10 +42,7 @@ public class DbManager {
         dbSimpleAddingAccessor = DatabaseProxyDefaultFactory.makeSimpleAddingAccessor(DB_STATIC_KEY, objectStore);
 
         dbCacheAccessor = new StoreAccessor<>(DB_CACHE_STATIC_KEY, objectStore);
-    }
-
-    public String getDbCacheStaticKey() {
-        return DB_CACHE_STATIC_KEY;
+        this.objectStore = objectStore;
     }
 
     public List<DbItemModel> readItems(boolean notifyNullResult) {
@@ -51,6 +52,14 @@ public class DbManager {
     public List<DbItemModel> addItems(List<DbItemModel> items) {
         dbSimpleAddingAccessor.write(convertModel(items));
         return readItemsAndNotify(true, true);
+    }
+
+    ObjectStore getRelatedObjectStore() {
+        return objectStore;
+    }
+
+    String getRelatedDbMemeCacheStoreKey() {
+        return DB_CACHE_STATIC_KEY;
     }
 
     private Result.Rows convertModel(List<DbItemModel> items) {

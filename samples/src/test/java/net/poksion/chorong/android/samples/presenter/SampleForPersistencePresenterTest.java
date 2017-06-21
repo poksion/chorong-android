@@ -1,7 +1,6 @@
 package net.poksion.chorong.android.samples.presenter;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -13,13 +12,12 @@ import net.poksion.chorong.android.samples.domain.DbItemModel;
 import net.poksion.chorong.android.samples.domain.DbManager;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.ObjectStoreImpl;
+import net.poksion.chorong.android.store.persistence.DatabaseProxyManager;
 import net.poksion.chorong.android.task.TaskRunnerSync;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -40,23 +38,17 @@ public class SampleForPersistencePresenterTest {
         when(view.isFinishing()).thenReturn(false);
 
         final ObjectStore objectStore = new ObjectStoreImpl();
-        final ObjectStore.Key storeKey = new ObjectStore.Key("db-cache-static-key");
+        final ObjectStore.Key storeKey = new ObjectStore.Key(DbManager.DB_CACHE_STATIC_KEY);
 
-        DbManager dbManager = mock(DbManager.class);
-        when(dbManager.getDbCacheStaticKey()).thenReturn(storeKey.staticKey);
-
-        when(dbManager.addItems(anyListOf(DbItemModel.class))).thenAnswer(new Answer<List<DbItemModel>>() {
+        DbManager dbManager = new DbManager(mock(DatabaseProxyManager.class), objectStore) {
             @Override
-            public List<DbItemModel> answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                List<DbItemModel> result = (List<DbItemModel>) args[0];
-
-                objectStore.set(storeKey, result);
-                return result;
+            public List<DbItemModel> addItems(List<DbItemModel> items) {
+                objectStore.set(storeKey, items);
+                return items;
             }
-        });
+        };
 
-        presenter = new SampleForPersistencePresenter(new TaskRunnerSync<>(view), dbManager, objectStore);
+        presenter = new SampleForPersistencePresenter(new TaskRunnerSync<>(view), dbManager);
     }
 
     @Test

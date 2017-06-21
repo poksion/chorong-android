@@ -9,7 +9,6 @@ import net.poksion.chorong.android.presenter.BaseView;
 import net.poksion.chorong.android.samples.domain.DbItemModel;
 import net.poksion.chorong.android.samples.domain.DbManager;
 import net.poksion.chorong.android.samples.domain.DbObservingTask;
-import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.task.SimpleWorkingTask;
 import net.poksion.chorong.android.task.TaskRunner;
 
@@ -22,11 +21,11 @@ public class SampleForPersistencePresenter {
     private final TaskRunner<View> taskRunner;
     private final DbManager dbManager;
 
-    public SampleForPersistencePresenter(TaskRunner<View> taskRunner, final DbManager dbManager, final ObjectStore objectStore) {
+    public SampleForPersistencePresenter(TaskRunner<View> taskRunner, DbManager dbManager) {
         this.taskRunner = taskRunner;
         this.dbManager = dbManager;
 
-        taskRunner.registerObservingTask(new DbObservingTask<View>(dbManager, objectStore) {
+        taskRunner.registerObservingTask(new DbObservingTask<View>(dbManager) {
             @Override
             public void onChanged(List<DbItemModel> dbItemModels, View view) {
                 view.showItems(dbItemModels);
