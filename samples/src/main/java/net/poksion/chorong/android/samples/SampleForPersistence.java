@@ -3,11 +3,7 @@ package net.poksion.chorong.android.samples;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.samples.domain.DbItemModel;
@@ -27,7 +23,7 @@ public class SampleForPersistence extends ToolbarActivity implements SampleForPe
         ModuleFactory.assemble(SampleForPersistence.class, this, new SampleForPersistenceAssembler(this, container));
 
         initCardView();
-        presenter.addItems(buildSampleDbItem());
+        presenter.readDb();
     }
 
     private void initCardView() {
@@ -55,21 +51,6 @@ public class SampleForPersistence extends ToolbarActivity implements SampleForPe
         cardRecyclerView.notifyDataSetChanged();
     }
 
-    private List<DbItemModel> buildSampleDbItem() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        List<DbItemModel> addingOrUpdatingItems = new ArrayList<>();
-
-        for (int i = 0; i < 4; ++i) {
-            DbItemModel itemModel = new DbItemModel();
-            itemModel.id = "" + (i+1);
-            itemModel.name = "test name " + i;
-            itemModel.date = sdf.format(new Date());
-
-            addingOrUpdatingItems.add(itemModel);
-        }
-
-        return addingOrUpdatingItems;
-    }
 
     @Override
     protected ThemeType getThemeType() {

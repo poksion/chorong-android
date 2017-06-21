@@ -18,4 +18,10 @@ public class TaskQueueRunner<T_Listener> implements TaskRunner<T_Listener> {
     public void runBlockingTask(BlockingTask<T_Listener> blockingTask) {
         taskQueue.execute(blockingTask);
     }
+
+    @Override
+    public <T_Result> void registerObservingTask(ObservingTask<T_Result, T_Listener> observingTask) {
+        taskQueue.register(observingTask);
+    }
+
 }

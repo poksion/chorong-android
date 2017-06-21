@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import net.poksion.chorong.android.samples.domain.DbItemModel;
 import net.poksion.chorong.android.samples.domain.DbManager;
+import net.poksion.chorong.android.store.ObjectStore;
+import net.poksion.chorong.android.store.ObjectStoreImpl;
 import net.poksion.chorong.android.task.TaskRunnerSync;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,17 +37,26 @@ public class SampleForPersistencePresenterTest {
     public void setUp() {
         captor = ArgumentCaptor.forClass((Class) List.class);
         view = mock(SampleForPersistencePresenter.View.class);
+        when(view.isFinishing()).thenReturn(false);
+
+        final ObjectStore objectStore = new ObjectStoreImpl();
+        final ObjectStore.Key storeKey = new ObjectStore.Key("db-cache-static-key");
 
         DbManager dbManager = mock(DbManager.class);
+        when(dbManager.getDbCacheStaticKey()).thenReturn(storeKey.staticKey);
+
         when(dbManager.addItems(anyListOf(DbItemModel.class))).thenAnswer(new Answer<List<DbItemModel>>() {
             @Override
             public List<DbItemModel> answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
-                return (List<DbItemModel>) args[0];
+                List<DbItemModel> result = (List<DbItemModel>) args[0];
+
+                objectStore.set(storeKey, result);
+                return result;
             }
         });
 
-        presenter = new SampleForPersistencePresenter(new TaskRunnerSync<>(view), dbManager);
+        presenter = new SampleForPersistencePresenter(new TaskRunnerSync<>(view), dbManager, objectStore);
     }
 
     @Test

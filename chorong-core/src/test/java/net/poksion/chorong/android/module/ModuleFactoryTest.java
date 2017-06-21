@@ -11,6 +11,18 @@ public class ModuleFactoryTest {
     private static final String KEY = "key";
     private static final String MODULE = "test-module";
 
+    private static class DummyModule {
+        private static int CONSTRUCTOR_CALLING_CNT = 0;
+
+        DummyModule() {
+            CONSTRUCTOR_CALLING_CNT++;
+        }
+
+        int getConstructorCallingCnt() {
+            return CONSTRUCTOR_CALLING_CNT;
+        }
+    }
+
     @Before
     public void setUp() {
         ModuleFactory.reset();
@@ -18,7 +30,11 @@ public class ModuleFactoryTest {
         ModuleFactory.init(this, new ModuleFactory.Initializer() {
             @Override
             public void onInit(Object host, ModuleFactory.SingletonBinder singletonBinder) {
+                // for general binding
                 singletonBinder.bind(KEY, MODULE);
+
+                // for typed binding
+                singletonBinder.bind(DummyModule.class, new DummyModule());
             }
         });
     }
@@ -27,6 +43,15 @@ public class ModuleFactoryTest {
     public void module_factory_should_return_request_module() {
         String testModule = (String) ModuleFactory.get(KEY);
         assertThat(testModule).isEqualTo("test-module");
+    }
+
+    @Test
+    public void requested_module_should_be_singleton() {
+        DummyModule dummyModule = ModuleFactory.get(DummyModule.class);
+        assertThat(dummyModule.getConstructorCallingCnt()).isEqualTo(1);
+
+        dummyModule = ModuleFactory.get(DummyModule.class);
+        assertThat(dummyModule.getConstructorCallingCnt()).isEqualTo(1);
     }
 
     @Test

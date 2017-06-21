@@ -6,12 +6,14 @@ import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.samples.domain.DbManager;
 import net.poksion.chorong.android.samples.presenter.SampleForPersistencePresenter;
 import net.poksion.chorong.android.samples.ui.DbItemViewModelUtil;
+import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.task.TaskRunnerAsyncShared;
 
 @SuppressWarnings("unused")
 class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence> {
 
     @Assemble private DbManager dbManager;
+    @Assemble private ObjectStore objectStore;
 
     SampleForPersistenceAssembler(SampleForPersistence activity, ViewGroup container) {
         super(activity, container);
@@ -22,7 +24,8 @@ class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence
         if (filedClass.equals(SampleForPersistencePresenter.class)) {
             return new SampleForPersistencePresenter(
                     new TaskRunnerAsyncShared<SampleForPersistencePresenter.View>(activity),
-                    dbManager);
+                    dbManager,
+                    objectStore);
         }
 
         if (filedClass.equals(DbItemViewModelUtil.class)) {

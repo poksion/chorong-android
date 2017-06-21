@@ -11,10 +11,11 @@ import net.poksion.chorong.android.store.persistence.DatabaseProxyManager;
 import net.poksion.chorong.android.store.persistence.Result;
 
 public class DbManager {
-    private final static String DB_TABLE = "sample_table";
 
     public final static String DB_NAME = "sample.db";
     public final static List<Result.Scheme> DB_SCHEMES = new ArrayList<>();
+
+    private final static String DB_TABLE = "sample_table";
     static {
         Result.Scheme scheme = new Result.Scheme(1);
         scheme.addCol(DB_TABLE, Result.Primitive.STRING, "id", true);
@@ -25,16 +26,31 @@ public class DbManager {
     }
 
     private final static String DB_STATIC_KEY = "sample-db-static-key";
+    private final StoreAccessor<Result.Rows> dbSimpleReadingAccessor;
     private final StoreAccessor<Result.Rows> dbSimpleAddingAccessor;
+
+    private final static String DB_CACHE_STATIC_KEY = "sample-db-cache-static-key";
+    private final StoreAccessor< List<DbItemModel> > dbCacheAccessor;
 
     public DbManager(DatabaseProxyManager dbProxyManager, ObjectStore objectStore) {
         dbProxyManager.installDbProxy(DB_STATIC_KEY, DB_TABLE, new DatabaseProxyDefaultFactory());
+        dbSimpleReadingAccessor = DatabaseProxyDefaultFactory.makeSimpleReadingAccessor(DB_STATIC_KEY, objectStore);
         dbSimpleAddingAccessor = DatabaseProxyDefaultFactory.makeSimpleAddingAccessor(DB_STATIC_KEY, objectStore);
+
+        dbCacheAccessor = new StoreAccessor<>(DB_CACHE_STATIC_KEY, objectStore);
+    }
+
+    public String getDbCacheStaticKey() {
+        return DB_CACHE_STATIC_KEY;
+    }
+
+    public List<DbItemModel> readItems(boolean notifyNullResult) {
+        return readItemsAndNotify(false, notifyNullResult);
     }
 
     public List<DbItemModel> addItems(List<DbItemModel> items) {
         dbSimpleAddingAccessor.write(convertModel(items));
-        return convertModel(dbSimpleAddingAccessor.read());
+        return readItemsAndNotify(true, true);
     }
 
     private Result.Rows convertModel(List<DbItemModel> items) {
@@ -65,6 +81,21 @@ public class DbManager {
             result.add(model);
         }
 
+        return result;
+    }
+
+    private List<DbItemModel> readItemsAndNotify(boolean refreshCache, boolean notifyNullResult) {
+        List<DbItemModel> result = refreshCache? null : dbCacheAccessor.read();
+
+        if (result == null) {
+            result = convertModel(dbSimpleReadingAccessor.read());
+        }
+
+        if ( (result == null || result.isEmpty()) && !notifyNullResult) {
+            return null;
+        }
+
+        dbCacheAccessor.write(result);
         return result;
     }
 }

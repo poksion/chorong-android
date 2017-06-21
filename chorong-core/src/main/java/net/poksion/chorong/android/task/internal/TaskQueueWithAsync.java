@@ -6,6 +6,8 @@ import android.os.Message;
 import android.os.Process;
 
 import android.support.annotation.NonNull;
+import net.poksion.chorong.android.store.StoreObserver;
+import net.poksion.chorong.android.task.ObservingTask;
 import net.poksion.chorong.android.task.Task;
 
 import java.lang.ref.WeakReference;
@@ -120,6 +122,24 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
             @Override
             public void sendResult(int resultId, Object resultValue, boolean lastResult) {
                 internalHandler.sendMessage(resultId, resultValue, lastResult, taskId);
+            }
+        };
+    }
+
+    @Override
+    protected <T_Result> StoreObserver<T_Result> getStoreObserver(final ObservingTask<T_Result, T_Listener> observingTask) {
+        return new StoreObserver<T_Result>() {
+            @Override
+            protected void onChanged(final T_Result result) {
+
+                final StoreObserver<T_Result> owner = this;
+
+                internalHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        handleObservingTask(observingTask, owner, result);
+                    }
+                });
             }
         };
     }

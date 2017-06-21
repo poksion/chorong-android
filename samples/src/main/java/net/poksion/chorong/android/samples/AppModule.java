@@ -11,6 +11,7 @@ class AppModule implements ModuleFactory.Initializer {
     @Override
     public void onInit(Object host, ModuleFactory.SingletonBinder singletonBinder) {
         ObjectStoreApplication objectStoreApplication = (ObjectStoreApplication) host;
+
         singletonBinder.bind(ObjectStore.class, objectStoreApplication);
 
         // custom key binding is also possible
