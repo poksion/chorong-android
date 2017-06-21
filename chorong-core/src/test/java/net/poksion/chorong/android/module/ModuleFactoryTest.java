@@ -48,10 +48,10 @@ public class ModuleFactoryTest {
     @Test
     public void requested_module_should_be_singleton() {
         DummyModule dummyModule = ModuleFactory.get(DummyModule.class);
-        assertThat(dummyModule.getConstructorCallingCnt()).isEqualTo(1);
+        int currentCallingCnt = dummyModule.getConstructorCallingCnt();
 
         dummyModule = ModuleFactory.get(DummyModule.class);
-        assertThat(dummyModule.getConstructorCallingCnt()).isEqualTo(1);
+        assertThat(dummyModule.getConstructorCallingCnt()).isEqualTo(currentCallingCnt);
     }
 
     @Test
