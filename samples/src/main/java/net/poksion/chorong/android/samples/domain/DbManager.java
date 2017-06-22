@@ -39,7 +39,7 @@ public class DbManager {
     public DbManager(DatabaseProxyManager dbProxyManager, ObjectStore objectStore) {
         dbProxyManager.installDbProxy(DB_STATIC_KEY, DB_TABLE, new DatabaseProxyDefaultFactory());
         dbSimpleReadingAccessor = DatabaseProxyDefaultFactory.makeSimpleReadingAccessor(DB_STATIC_KEY, objectStore);
-        dbSimpleAddingAccessor = DatabaseProxyDefaultFactory.makeSimpleAddingAccessor(DB_STATIC_KEY, objectStore);
+        dbSimpleAddingAccessor = DatabaseProxyDefaultFactory.makeSimpleAddingAccessor(DB_STATIC_KEY, objectStore, false);
 
         dbCacheAccessor = new StoreAccessor<>(DB_CACHE_STATIC_KEY, objectStore);
         this.objectStore = objectStore;

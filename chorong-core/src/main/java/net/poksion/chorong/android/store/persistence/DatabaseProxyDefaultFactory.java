@@ -12,8 +12,8 @@ import net.poksion.chorong.android.store.StoreAccessor;
 
 public class DatabaseProxyDefaultFactory extends DatabaseProxyFactory {
 
-    private static final String SIMPLE_ADDING = "add";
-    private static final String SIMPLE_REMOVING = "remove";
+    private static final String SIMPLE_ADDING = "add_";
+    private static final String SIMPLE_REMOVING = "remove_";
     private static final String SIMPLE_READING = "read:";
 
     private static class SimpleDbProxy implements ObjectStore.PersistenceProxy {
@@ -48,7 +48,7 @@ public class DatabaseProxyDefaultFactory extends DatabaseProxyFactory {
             String whereStatement = whereClause(primaryKeys);
             String[] whereArgs = whereArgs(row, primaryKeys);
 
-            if (conditions.equals(SIMPLE_ADDING)) {
+            if (conditions.startsWith(SIMPLE_ADDING)) {
                 ContentValues contentValues = new ContentValues();
 
                 for (Map.Entry<String, Pair<Result.Primitive, Object>> value : row.entrySet()) {
@@ -73,14 +73,14 @@ public class DatabaseProxyDefaultFactory extends DatabaseProxyFactory {
                     db.insert(table, null, contentValues);
                 }
 
-            } else if (conditions.equals(SIMPLE_REMOVING)) {
+            } else if (conditions.startsWith(SIMPLE_REMOVING)) {
                 db.delete(table, whereStatement, whereArgs);
             }
         }
 
         @Override
         public Object getData(String conditions) {
-            if (!conditions.startsWith("read:")) {
+            if (!conditions.contains("read:")) {
                 return null;
             }
 
@@ -139,11 +139,13 @@ public class DatabaseProxyDefaultFactory extends DatabaseProxyFactory {
         return makeDatabaseStoreAccessor(staticKey, SIMPLE_READING + where, objectStore);
     }
 
-    public static StoreAccessor<Result.Rows> makeSimpleAddingAccessor(String staticKey, ObjectStore objectStore) {
-        return makeDatabaseStoreAccessor(staticKey, SIMPLE_ADDING, objectStore);
+    public static StoreAccessor<Result.Rows> makeSimpleAddingAccessor(String staticKey, ObjectStore objectStore, boolean reloading) {
+        String readingCondition = reloading ? SIMPLE_READING : "";
+        return makeDatabaseStoreAccessor(staticKey, SIMPLE_ADDING + readingCondition, objectStore);
     }
 
-    public static StoreAccessor<Result.Rows> makeSimpleRemovingAccessor(String staticKey, ObjectStore objectStore) {
-        return makeDatabaseStoreAccessor(staticKey, SIMPLE_REMOVING, objectStore);
+    public static StoreAccessor<Result.Rows> makeSimpleRemovingAccessor(String staticKey, ObjectStore objectStore, boolean reloading) {
+        String readingCondition = reloading ? SIMPLE_READING : "";
+        return makeDatabaseStoreAccessor(staticKey, SIMPLE_REMOVING + readingCondition, objectStore);
     }
 }
