@@ -122,7 +122,7 @@ public class DatabaseProxyManager {
                 }
 
                 for (Pair<Result.Primitive, String> resultCol : table.getValue()) {
-                    if (isInSrc(srcCols, resultCol.second)) {
+                    if (isInSrc(srcCols, resultCol)) {
                         continue;
                     }
 
@@ -133,9 +133,9 @@ public class DatabaseProxyManager {
         return result;
     }
 
-    static private boolean isInSrc(List<Pair<Result.Primitive, String>> src, String key) {
+    static private boolean isInSrc(List<Pair<Result.Primitive, String>> src, Pair<Result.Primitive, String> key) {
         for (Pair<Result.Primitive, String> col : src) {
-            if (col.second.equals(key)) {
+            if (col.first.equals(key.first) && col.second.equals(key.second)) {
                 return true;
             }
         }
@@ -154,6 +154,10 @@ public class DatabaseProxyManager {
         sb.append(sqlPrimaryKey(primaryKeys));
         sb.append(");");
 
+        for (String index : sqlIndex(tableName, cols, primaryKeys)) {
+            sb.append(index);
+        }
+
         return sb.toString();
     }
 
@@ -165,6 +169,18 @@ public class DatabaseProxyManager {
         }
 
         return ", ";
+    }
+
+    static private List<String> sqlIndex(String tableName, List<Pair<Result.Primitive, String>> cols, List<String> primaryKeys) {
+        List<String> result = new ArrayList<>();
+        for (String primaryKey : primaryKeys) {
+            for (Pair<Result.Primitive, String> col : cols) {
+                if (col.first != Result.Primitive.INT && col.second.equals(primaryKey)) {
+                    result.add(" CREATE INDEX " + tableName + "_" + primaryKey + "_idx ON " + tableName + "(" + primaryKey + ");");
+                }
+            }
+        }
+        return result;
     }
 
     static String sqlPrimaryKey(List<String> primaryKeys) {

@@ -44,9 +44,14 @@ public class DatabaseProxyManagerTest {
         scheme2.addCol("test_table2", Result.Primitive.STRING, "id_2", true);
         scheme2.addCol("test_table2", Result.Primitive.STRING, "name", false);
 
+        Result.Scheme scheme3 = new Result.Scheme(3);
+        scheme3.addCol("test_table", Result.Primitive.INT, "id", true);
+        scheme3.addCol("test_table", Result.Primitive.STRING, "name", false);
+
         schemes.clear();
         schemes.add(scheme1);
         schemes.add(scheme2);
+        schemes.add(scheme3);
 
         databaseProxyManager = new DatabaseProxyManager(objectStoreApplication, "test.db", schemes);
     }
@@ -60,7 +65,19 @@ public class DatabaseProxyManagerTest {
                     table.getValue(),
                     scheme.primaryKeys.get(table.getKey()) );
 
-            String expected = "CREATE TABLE test_table (id TEXT NOT NULL, name TEXT, PRIMARY KEY(id));";
+            String expected = "CREATE TABLE test_table (id TEXT NOT NULL, name TEXT, PRIMARY KEY(id)); CREATE INDEX test_table_id_idx ON test_table(id);";
+            assertThat(statement).isEqualTo(expected);
+        }
+
+        // if primary integer -> do not need indexing
+        Result.Scheme scheme3 = schemes.get(2);
+        for (Map.Entry<String, List<Pair<Result.Primitive, String>>> table :  scheme3.tables.entrySet()) {
+            String statement = DatabaseProxyManager.sqlCreateTable(
+                    table.getKey(),
+                    table.getValue(),
+                    scheme3.primaryKeys.get(table.getKey()) );
+
+            String expected = "CREATE TABLE test_table (id INTEGER NOT NULL, name TEXT, PRIMARY KEY(id));";
             assertThat(statement).isEqualTo(expected);
         }
 
@@ -144,8 +161,8 @@ public class DatabaseProxyManagerTest {
         assertThat(v2.version).isEqualTo(2);
 
         Result.Scheme last = DatabaseProxyManager.getScheme(schemes, -1);
-        assertThat(last.version).isEqualTo(2);
+        assertThat(last.version).isEqualTo(3);
 
-        assertThat(DatabaseProxyManager.getScheme(schemes, 3)).isNull();
+        assertThat(DatabaseProxyManager.getScheme(schemes, 4)).isNull();
     }
 }
