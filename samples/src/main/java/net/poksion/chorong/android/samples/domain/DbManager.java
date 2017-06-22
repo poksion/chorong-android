@@ -49,6 +49,16 @@ public class DbManager {
         return readItemsAndNotify(false, notifyNullResult);
     }
 
+    public DbItemModel getItem(String id) {
+        StoreAccessor<Result.Rows> storeAccessor =  DatabaseProxyDefaultFactory.makeSimpleReadingAccessor(DB_STATIC_KEY, objectStore, "id=" + id);
+        List<DbItemModel> result = convertModel(storeAccessor.read());
+        if (result.isEmpty()) {
+            return null;
+        }
+
+        return result.get(0);
+    }
+
     public List<DbItemModel> addItems(List<DbItemModel> items) {
         dbSimpleAddingAccessor.write(convertModel(items));
         return readItemsAndNotify(true, true);
