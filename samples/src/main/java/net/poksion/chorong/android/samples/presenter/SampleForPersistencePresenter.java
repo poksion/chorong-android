@@ -9,6 +9,7 @@ import net.poksion.chorong.android.presenter.BaseView;
 import net.poksion.chorong.android.samples.domain.DbItemModel;
 import net.poksion.chorong.android.samples.domain.DbManager;
 import net.poksion.chorong.android.samples.domain.DbObservingTask;
+import net.poksion.chorong.android.task.SimpleTask;
 import net.poksion.chorong.android.task.SimpleWorkingTask;
 import net.poksion.chorong.android.task.TaskRunner;
 
@@ -50,6 +51,24 @@ public class SampleForPersistencePresenter {
             @Override
             protected void onWork() {
                 dbManager.addItems(items);
+            }
+        });
+    }
+
+    public void readItem(final String id) {
+        taskRunner.runTask(new SimpleTask<DbItemModel, View>() {
+            @Override
+            protected DbItemModel onWorkSimple() {
+                return dbManager.getItem(id);
+            }
+
+            @Override
+            protected void onResultSimple(DbItemModel dbItemModel, View view) {
+                if (dbItemModel != null && !view.isFinishing()) {
+                    List<DbItemModel> items = new ArrayList<>();
+                    items.add(dbItemModel);
+                    view.showItems(items);
+                }
             }
         });
     }

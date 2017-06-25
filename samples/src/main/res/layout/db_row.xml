@@ -3,6 +3,7 @@
 
   <data>
     <variable name="item" type="net.poksion.chorong.android.samples.domain.DbItemModel" />
+    <variable name="itemClickHandler" type="net.poksion.chorong.android.samples.ui.DbItemClickHandler" />
   </data>
 
   <LinearLayout
@@ -10,6 +11,7 @@
     android:layout_height="wrap_content"
     android:background="@color/flatCard"
     android:paddingBottom="10dp"
+    android:onClick="@{() -> itemClickHandler.onItemClick(item.id)}"
     android:orientation="horizontal"
     android:weightSum="6">
 

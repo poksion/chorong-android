@@ -3,11 +3,13 @@ package net.poksion.chorong.android.samples;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import java.util.List;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.samples.domain.DbItemModel;
 import net.poksion.chorong.android.samples.presenter.SampleForPersistencePresenter;
+import net.poksion.chorong.android.samples.ui.DbItemClickHandler;
 import net.poksion.chorong.android.samples.ui.DbItemViewModelUtil;
 import net.poksion.chorong.android.ui.card.FlatCardRecyclerView;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
@@ -35,7 +37,12 @@ public class SampleForPersistence extends ToolbarActivity implements SampleForPe
 
         cardRecyclerView.addItem(
                 dbItemViewModelUtil.makeViewModel("ID", "NAME", "DATE"),
-                dbItemViewModelUtil.getViewBinder());
+                dbItemViewModelUtil.makeViewBinder(new DbItemClickHandler() {
+                    @Override
+                    public void onItemClick(String id) {
+                        Toast.makeText(SampleForPersistence.this, "Header clicked", Toast.LENGTH_SHORT).show();
+                    }
+                }));
 
         cardRecyclerView.notifyDataSetChanged();
     }
@@ -45,12 +52,16 @@ public class SampleForPersistence extends ToolbarActivity implements SampleForPe
         for (DbItemModel model : itemList) {
             cardRecyclerView.addItem(
                     dbItemViewModelUtil.makeViewModel(model),
-                    dbItemViewModelUtil.getViewBinder());
+                    dbItemViewModelUtil.makeViewBinder(new DbItemClickHandler() {
+                        @Override
+                        public void onItemClick(String id) {
+                            presenter.readItem(id);
+                        }
+                    }));
         }
 
         cardRecyclerView.notifyDataSetChanged();
     }
-
 
     @Override
     protected ThemeType getThemeType() {

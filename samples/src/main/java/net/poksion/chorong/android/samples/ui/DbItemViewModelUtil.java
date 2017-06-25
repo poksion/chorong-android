@@ -28,15 +28,6 @@ public class DbItemViewModelUtil {
         }
     };
 
-    private ViewBinder<View, DbItemModel> viewBinder = new ViewBinder<View, DbItemModel>() {
-        @Override
-        public void onBind(View view, DbItemModel model) {
-            DbRowBinding binding = (DbRowBinding) view.getTag();
-            binding.setItem(model);
-        }
-    };
-
-
     public ViewModel<View, DbItemModel> makeViewModel(String id, String name, String date) {
         DbItemModel model = new DbItemModel();
         model.id = id;
@@ -50,8 +41,15 @@ public class DbItemViewModelUtil {
         return new ViewModel<>(R.layout.db_row, model);
     }
 
-    public ViewBinder<View, DbItemModel> getViewBinder() {
-        return viewBinder;
+    public ViewBinder<View, DbItemModel> makeViewBinder(final DbItemClickHandler clickHandler) {
+        return new ViewBinder<View, DbItemModel>() {
+            @Override
+            public void onBind(View view, DbItemModel model) {
+                DbRowBinding binding = (DbRowBinding) view.getTag();
+                binding.setItem(model);
+                binding.setItemClickHandler(clickHandler);
+            }
+        };
     }
 
     public ItemAdapter.ViewInflater getItemViewInflater() {
