@@ -124,6 +124,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.RecycleViewHol
         notifyItemRangeChangedSafely(modelIdx, newListSize - modelIdx);
     }
 
+    void clearAllItems() {
+        itemUpdaterList.clear();
+        notifyDataSetChanged();
+    }
+
     void notifyItemRangeChangedSafely(int positionStart, int itemCount) {
         if (isOnBinding) {
             return;

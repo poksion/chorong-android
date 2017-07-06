@@ -34,6 +34,10 @@ public class FlatCardRecyclerView extends RecyclerView {
         adapter.addItem(viewModel, viewBinder);
     }
 
+    public void clearAllItems() {
+        adapter.clearAllItems();
+    }
+
     public void notifyDataSetChanged() {
         adapter.notifyDataSetChanged();
     }
