@@ -11,7 +11,7 @@ To use only core things (Module, Task, ...)
 
 ```groovy
 dependencies {
-    compile 'net.poksion:chorong-android-core:0.1.2'
+    compile 'net.poksion:chorong-android-core:0.1.5'
 }
 ```
 
@@ -19,8 +19,8 @@ If you want use UI stuff (ToolbarActivity, FlatCardRecyclerView, ...), append 'u
 
 ```groovy
 dependencies {
-    compile 'net.poksion:chorong-android-core:0.1.2'
-    compile 'net.poksion:chorong-android-ui:0.1.2'
+    compile 'net.poksion:chorong-android-core:0.1.5'
+    compile 'net.poksion:chorong-android-ui:0.1.5'
 }
 ```
 

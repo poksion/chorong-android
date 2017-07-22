@@ -2,6 +2,7 @@
 <resources>
 
     <color name="skyPrimaryDark">#0593de</color>
+    <color name="skyPrimary">#039be5</color>
 
     <style name="MySkyTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textColor">#4a4a50</item>
@@ -22,7 +23,7 @@
         <item name="colorAccent">@color/skyPrimaryDark</item>
         <item name="colorControlHighlight">@color/skyPrimaryDark</item>
 
-        <item name="colorPrimary">#039be5</item>
+        <item name="colorPrimary">@color/skyPrimary</item>
         <item name="colorControlNormal">#999999</item>
 
         <item name="android:textViewStyle">@style/MySkyTextViewStyle</item>

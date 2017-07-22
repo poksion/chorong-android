@@ -2,6 +2,7 @@
 <resources>
 
     <color name="purplePrimaryDark">#4c3a5b</color>
+    <color name="purplePrimary">#674287</color>
 
     <style name="MyPurpleTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textColor">#4a4a50</item>
@@ -22,7 +23,7 @@
         <item name="colorAccent">@color/purplePrimaryDark</item>
         <item name="colorControlHighlight">@color/purplePrimaryDark</item>
 
-        <item name="colorPrimary">#674287</item>
+        <item name="colorPrimary">@color/purplePrimary</item>
         <item name="colorControlNormal">#999999</item>
 
         <item name="android:textViewStyle">@style/MyPurpleTextViewStyle</item>

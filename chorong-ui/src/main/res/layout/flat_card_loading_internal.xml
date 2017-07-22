@@ -8,6 +8,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
 
+  <!--
+    kinds of styles
+     - style="?android:attr/progressBarStyle"
+     - style="?android:attr/progressBarInverse"
+     - style="?android:attr/progressBarLarge"
+     - style="?android:attr/progressBarLargeInverse"
+     - style="?android:attr/progressBarStyleSmall"
+     - style="?android:attr/progressBarStyleSmallInverse"
+     - style="?android:attr/progressBarStyleSmallTitle"
+     - style="@style/ProgressBarCircleStyle"
+  -->
   <ProgressBar
     android:id="@+id/loading_indicator"
     android:layout_width="wrap_content"

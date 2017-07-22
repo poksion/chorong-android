@@ -2,6 +2,7 @@
 <resources>
 
     <color name="darkPrimaryDark">#4a4a50</color>
+    <color name="darkPrimary">#4a4a50</color>
 
     <style name="MyDarkTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textColor">#4a4a50</item>
@@ -22,7 +23,7 @@
         <item name="colorAccent">@color/darkPrimaryDark</item>
         <item name="colorControlHighlight">@color/darkPrimaryDark</item>
 
-        <item name="colorPrimary">#4a4a50</item>
+        <item name="colorPrimary">@color/darkPrimary</item>
         <item name="colorControlNormal">#999999</item>
 
         <item name="android:textViewStyle">@style/MyDarkTextViewStyle</item>

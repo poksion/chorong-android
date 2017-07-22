@@ -2,6 +2,7 @@
 <resources>
 
     <color name="greenPrimaryDark">#00c30e</color>
+    <color name="greenPrimary">#25cb31</color>
 
     <style name="MyGreenTextViewStyle" parent="android:Widget.TextView">
         <item name="android:textColor">#4a4a50</item>
@@ -22,7 +23,7 @@
         <item name="colorAccent">@color/greenPrimaryDark</item>
         <item name="colorControlHighlight">@color/greenPrimaryDark</item>
 
-        <item name="colorPrimary">#25cb31</item>
+        <item name="colorPrimary">@color/greenPrimary</item>
         <item name="colorControlNormal">#999999</item>
 
         <item name="android:textViewStyle">@style/MyGreenTextViewStyle</item>
