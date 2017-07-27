@@ -11,7 +11,7 @@ To use only core things (Module, Task, ...)
 
 ```groovy
 dependencies {
-    compile 'net.poksion:chorong-android-core:0.1.5'
+    compile 'net.poksion:chorong-android-core:0.1.7'
 }
 ```
 
@@ -19,8 +19,8 @@ If you want use UI stuff (ToolbarActivity, FlatCardRecyclerView, ...), append 'u
 
 ```groovy
 dependencies {
-    compile 'net.poksion:chorong-android-core:0.1.5'
-    compile 'net.poksion:chorong-android-ui:0.1.5'
+    compile 'net.poksion:chorong-android-core:0.1.7'
+    compile 'net.poksion:chorong-android-ui:0.1.7'
 }
 ```
 
@@ -52,11 +52,16 @@ protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup cont
 
 ```java
 @Override
-public void showItems(List<DbItemModel> itemList) {
-    for (DbItemModel model : itemList) {
+public void showItems(List<SampleItem> itemList) {
+    for (SampleItem model : itemList) {
         cardRecyclerView.addItem(
-                dbItemViewModelUtil.makeViewModel(model),
-                dbItemViewModelUtil.getViewBinder());
+                sampleItemViewModelUtil.makeViewModel(model),
+                sampleItemViewModelUtil.makeViewBinder(new SampleItemClickHandler() {
+                    @Override
+                    public void onItemClick(String id) {
+                        presenter.reloadItem(id);
+                    }
+                }));
     }
 
     cardRecyclerView.notifyDataSetChanged();
@@ -76,30 +81,32 @@ See also : Module
 There are two main depending components:
 
  * [TaskRunner](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunner.java)
- * [DbManager](samples/src/main/java/net/poksion/chorong/android/samples/domain/DbManager.java)
+ * [SampleItemRepository](samples/src/main/java/net/poksion/chorong/android/samples/domain/SampleItemRepository.java)
 
-TaskRunner provides how running tasks - synchronous or asynchronous, running on executor, etc. I pefer to use [TaskRunnerAsyncShared](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerAsyncShared.java) for IO task and [TaskRunnerSync](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerSync.java) for testing (for easy to test, if the test does not need to run asynchronously)
+TaskRunner provides how running tasks - synchronous or asynchronous, running on executor, etc. We prefer to use [TaskRunnerAsyncShared](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerAsyncShared.java) for IO task and [TaskRunnerSync](chorong-core/src/main/java/net/poksion/chorong/android/task/TaskRunnerSync.java) for testing (for easy to test, if the test does not need to run asynchronously)
 
-[DbManager](samples/src/main/java/net/poksion/chorong/android/samples/domain/DbManager.java) is model that handles the database. chrong-android provides utils handing model like [ObjectStore](chorong-core/src/main/java/net/poksion/chorong/android/store/ObjectStore.java), [StoreAccessor](chorong-core/src/main/java/net/poksion/chorong/android/store/StoreAccessor.java) - DbManager is the application commponent that using [DatabaseProxyManager](chorong-core/src/main/java/net/poksion/chorong/android/store/persistence/DatabaseProxyManager.java) and DatabaseProxyManager basically uses ObjectStore/StoreAccessor.
+[SampleItemRepository](samples/src/main/java/net/poksion/chorong/android/samples/domain/SampleItemRepository.java) is model that handles the database. chrong-android provides [ObjectStore](chorong-core/src/main/java/net/poksion/chorong/android/store/ObjectStore.java), [StoreAccessor](chorong-core/src/main/java/net/poksion/chorong/android/store/StoreAccessor.java) - SampleItemRepository is the application commponent that using [DatabaseProxyManager](chorong-core/src/main/java/net/poksion/chorong/android/store/persistence/DatabaseProxyManager.java) and DatabaseProxyManager basically uses ObjectStore/StoreAccessor.
 
 #### Business logic
 
-[SampleForPersistencePresenter](samples/src/main/java/net/poksion/chorong/android/samples/presenter/SampleForPersistencePresenter.java) does really simple logic : adding Items with DbManager and notifying result to View. You can find this in [test code](samples/src/test/java/net/poksion/chorong/android/samples/presenter/SampleForPersistencePresenterTest.java).
+[SampleForPersistencePresenter](samples/src/main/java/net/poksion/chorong/android/samples/presenter/SampleForPersistencePresenter.java) does really simple logic : adding Items with SampleItemRepository and notifying result to View. You can find this in [test code](samples/src/test/java/net/poksion/chorong/android/samples/presenter/SampleForPersistencePresenterTest.java).
 
 ```java
-public void test_add_item() {
-    List<DbItemModel> items = new ArrayList<>();
-    DbItemModel item = new DbItemModel();
+@Test
+public void view_should_show_items_stored_on_repository() {
+    List<SampleItem> items = new ArrayList<>();
+    SampleItem item = new SampleItem();
     item.id = "dummy-id";
     item.name = "dummy-name";
     item.date = "dummy-date";
 
     items.add(item);
+    sampleItemRepository.storeAll(items);
 
-    presenter.addItems(items);
+    presenter.readDb();
     verify(view, times(1)).showItems(captor.capture());
 
-    List<DbItemModel> values = captor.getValue();
+    List<SampleItem> values = captor.getValue();
     assertThat(values.size()).isEqualTo(1);
     assertThat(values.get(0).id).isEqualTo("dummy-id");
 }
@@ -109,7 +116,7 @@ See also : Task
 
 ### Model : DbManager
 
-[DbManager](samples/src/main/java/net/poksion/chorong/android/samples/domain/DbManager.java) is the core model in this sample. It uses [DatabaseProxyManager](chorong-core/src/main/java/net/poksion/chorong/android/store/persistence/DatabaseProxyManager.java) to save entity to DB.
+[SampleItemRepository](samples/src/main/java/net/poksion/chorong/android/samples/domain/SampleItemRepository.java) is the core model in this sample. It uses [DatabaseProxyManager](chorong-core/src/main/java/net/poksion/chorong/android/store/persistence/DatabaseProxyManager.java) to save entity to DB.
 
 DatabaseProxyManager manages persistence proxies that read/write data from DB when realted [StoreAccessor](chorong-core/src/main/java/net/poksion/chorong/android/store/StoreAccessor.java) is called with getter/setter.
 

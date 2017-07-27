@@ -20,6 +20,11 @@ public class ObservingBuffer<T_Result extends ObservingBuffer.Unique, T_Listener
     private boolean taskDone = false;
     private final Queue<T_Result> queue = new ConcurrentLinkedQueue<>();
 
+    public void resetMainTask() {
+        taskDone = false;
+        queue.clear();
+    }
+
     public void completeMainTask(List<T_Result> results, T_Listener listener, Callback<T_Result, T_Listener> callback) {
         taskDone = true;
 
