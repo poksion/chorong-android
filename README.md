@@ -25,7 +25,7 @@ dependencies {
 ```
 
 ## Sample MVP
-[SampleForPersistence](samples/src/main/java/net/poksion/chorong/android/samples/SampleForPersistence.java) is an entry point to show how implement activity with MVP pattern using chorong-android. It consists of 3 major parts : [SampleForPersistence](samples/src/main/java/net/poksion/chorong/android/samples/SampleForPersistence.java), [SampleForPersistencePresenter](samples/src/main/java/net/poksion/chorong/android/samples/presenter/SampleForPersistencePresenter.java) and [DbManager](samples/src/main/java/net/poksion/chorong/android/samples/domain/DbManager.java)
+[SampleForPersistence](samples/src/main/java/net/poksion/chorong/android/samples/SampleForPersistence.java) is an entry point to show how implement activity with MVP pattern using chorong-android. It consists of 3 major parts : [SampleForPersistence](samples/src/main/java/net/poksion/chorong/android/samples/SampleForPersistence.java), [SampleForPersistencePresenter](samples/src/main/java/net/poksion/chorong/android/samples/presenter/SampleForPersistencePresenter.java) and [SampleItemRepository](samples/src/main/java/net/poksion/chorong/android/samples/domain/SampleItemRepository.java)
 
 ### View : SampleForPersistence
 [SampleForPersistence](samples/src/main/java/net/poksion/chorong/android/samples/SampleForPersistence.java) is the Activity and plays role for assembler and View.
@@ -68,7 +68,7 @@ public void showItems(List<SampleItem> itemList) {
 }
 ```
 
-The main UI compoent of SampleForPersistence is [FlatCardRecyclerView](chorong-ui/src/main/java/net/poksion/chorong/android/ui/card/FlatCardRecyclerView.java). [DbItemViewModelUtil](samples/src/main/java/net/poksion/chorong/android/samples/ui/DbItemViewModelUtil.java) is helper class for making ViewModel/ViewBinder used in FlatCardRecyclerView
+The main UI compoent of SampleForPersistence is [FlatCardRecyclerView](chorong-ui/src/main/java/net/poksion/chorong/android/ui/card/FlatCardRecyclerView.java). [SampleItemViewModelUtil](samples/src/main/java/net/poksion/chorong/android/samples/ui/SampleItemViewModelUtil.java) is helper class for making ViewModel/ViewBinder used in FlatCardRecyclerView
 
 See also : Module
 
@@ -114,7 +114,7 @@ public void view_should_show_items_stored_on_repository() {
 
 See also : Task
 
-### Model : DbManager
+### Model : SampleItemRepository
 
 [SampleItemRepository](samples/src/main/java/net/poksion/chorong/android/samples/domain/SampleItemRepository.java) is the core model in this sample. It uses [DatabaseProxyManager](chorong-core/src/main/java/net/poksion/chorong/android/store/persistence/DatabaseProxyManager.java) to save entity to DB.
 
