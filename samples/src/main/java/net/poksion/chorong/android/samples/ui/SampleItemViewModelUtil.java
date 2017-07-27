@@ -7,12 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import net.poksion.chorong.android.samples.R;
 import net.poksion.chorong.android.samples.databinding.DbRowBinding;
-import net.poksion.chorong.android.samples.domain.DbItemModel;
+import net.poksion.chorong.android.samples.domain.SampleItem;
 import net.poksion.chorong.android.ui.card.ViewBinder;
 import net.poksion.chorong.android.ui.card.ViewModel;
 import net.poksion.chorong.android.ui.card.ItemAdapter;
 
-public class DbItemViewModelUtil {
+public class SampleItemViewModelUtil {
 
     private ItemAdapter.ViewInflater itemViewInflater = new ItemAdapter.ViewInflater() {
 
@@ -28,8 +28,8 @@ public class DbItemViewModelUtil {
         }
     };
 
-    public ViewModel<View, DbItemModel> makeViewModel(String id, String name, String date) {
-        DbItemModel model = new DbItemModel();
+    public ViewModel<View, SampleItem> makeViewModel(String id, String name, String date) {
+        SampleItem model = new SampleItem();
         model.id = id;
         model.name = name;
         model.date = date;
@@ -37,14 +37,14 @@ public class DbItemViewModelUtil {
         return makeViewModel(model);
     }
 
-    public ViewModel<View, DbItemModel> makeViewModel(DbItemModel model) {
+    public ViewModel<View, SampleItem> makeViewModel(SampleItem model) {
         return new ViewModel<>(R.layout.db_row, model);
     }
 
-    public ViewBinder<View, DbItemModel> makeViewBinder(final DbItemClickHandler clickHandler) {
-        return new ViewBinder<View, DbItemModel>() {
+    public ViewBinder<View, SampleItem> makeViewBinder(final SampleItemClickHandler clickHandler) {
+        return new ViewBinder<View, SampleItem>() {
             @Override
-            public void onBind(View view, DbItemModel model) {
+            public void onBind(View view, SampleItem model) {
                 DbRowBinding binding = (DbRowBinding) view.getTag();
                 binding.setItem(model);
                 binding.setItemClickHandler(clickHandler);

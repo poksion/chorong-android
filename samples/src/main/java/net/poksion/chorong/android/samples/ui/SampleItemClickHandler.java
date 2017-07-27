@@ -1,5 +1,5 @@
 package net.poksion.chorong.android.samples.ui;
 
-public interface DbItemClickHandler {
+public interface SampleItemClickHandler {
     void onItemClick(String id);
 }

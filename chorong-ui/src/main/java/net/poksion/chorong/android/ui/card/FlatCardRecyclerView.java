@@ -1,6 +1,7 @@
 package net.poksion.chorong.android.ui.card;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,7 +47,7 @@ public class FlatCardRecyclerView extends RecyclerView {
         adapter.setCustomItemViewInflater(itemViewInflater);
     }
 
-    public ViewModel<FlatCardTitleView, String[]> makeTitleViewModel(String title, @Nullable String subTitle) {
+    public ViewModel<FlatCardTitleView, String[]> makeTitleViewModel(@NonNull String title, @Nullable String subTitle) {
         return new ViewModel<>(R.layout.flat_card_title, new String[] { title, subTitle } );
     }
 
@@ -61,6 +62,10 @@ public class FlatCardRecyclerView extends RecyclerView {
 
     public ViewModel<FlatCardGeneralContentView, String> makeGeneralContentViewModel(@Nullable String content) {
         return new ViewModel<>(R.layout.flat_card_general_content, content);
+    }
+
+    public ViewModel<FlatCardTextView, String> makeTextViewModel(@NonNull String content) {
+        return new ViewModel<>(R.layout.flat_card_text, content);
     }
 
     public ViewModel<FlatCardLoadingView, FlatCardLoadingView.LoadingState> makeLoadingViewModel() {

@@ -3,15 +3,15 @@ package net.poksion.chorong.android.samples;
 import android.view.ViewGroup;
 import java.lang.reflect.Field;
 import net.poksion.chorong.android.module.Assemble;
-import net.poksion.chorong.android.samples.domain.DbManager;
+import net.poksion.chorong.android.samples.domain.SampleItemRepository;
 import net.poksion.chorong.android.samples.presenter.SampleForPersistencePresenter;
-import net.poksion.chorong.android.samples.ui.DbItemViewModelUtil;
+import net.poksion.chorong.android.samples.ui.SampleItemViewModelUtil;
 import net.poksion.chorong.android.task.TaskRunnerAsyncShared;
 
 @SuppressWarnings("unused")
 class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence> {
 
-    @Assemble private DbManager dbManager;
+    @Assemble private SampleItemRepository sampleItemRepository;
 
     SampleForPersistenceAssembler(SampleForPersistence activity, ViewGroup container) {
         super(activity, container);
@@ -22,11 +22,11 @@ class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence
         if (filedClass.equals(SampleForPersistencePresenter.class)) {
             return new SampleForPersistencePresenter(
                     new TaskRunnerAsyncShared<SampleForPersistencePresenter.View>(activity),
-                    dbManager);
+                    sampleItemRepository);
         }
 
-        if (filedClass.equals(DbItemViewModelUtil.class)) {
-            return new DbItemViewModelUtil();
+        if (filedClass.equals(SampleItemViewModelUtil.class)) {
+            return new SampleItemViewModelUtil();
         }
 
         return super.findModule(filedClass, id);

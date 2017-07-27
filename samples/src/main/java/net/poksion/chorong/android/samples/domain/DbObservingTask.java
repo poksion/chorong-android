@@ -5,10 +5,10 @@ import net.poksion.chorong.android.presenter.BaseView;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.task.ObservingTask;
 
-public abstract class DbObservingTask<T_View extends BaseView> implements ObservingTask<List<DbItemModel>, T_View> {
-    private final DbManager dbManager;
+public abstract class DbObservingTask<T_View extends BaseView> implements ObservingTask<List<SampleItem>, T_View> {
+    private final DbRepository dbManager;
 
-    public DbObservingTask(DbManager dbManager) {
+    public DbObservingTask(DbRepository dbManager) {
         this.dbManager = dbManager;
     }
 

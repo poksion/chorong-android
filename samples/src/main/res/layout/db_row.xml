@@ -2,8 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
   <data>
-    <variable name="item" type="net.poksion.chorong.android.samples.domain.DbItemModel" />
-    <variable name="itemClickHandler" type="net.poksion.chorong.android.samples.ui.DbItemClickHandler" />
+    <variable name="item" type="net.poksion.chorong.android.samples.domain.SampleItem" />
+    <variable name="itemClickHandler" type="net.poksion.chorong.android.samples.ui.SampleItemClickHandler" />
   </data>
 
   <LinearLayout

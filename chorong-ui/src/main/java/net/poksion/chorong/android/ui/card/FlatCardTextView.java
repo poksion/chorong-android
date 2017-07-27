@@ -1,6 +1,7 @@
 package net.poksion.chorong.android.ui.card;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.AttributeSet;
@@ -29,18 +30,12 @@ public class FlatCardTextView extends RelativeLayout {
         textContentView = (TextView) findViewById(R.id.card_general_text_content);
     }
 
-    public void setTextContent(@Nullable String content, boolean html) {
-        if (content == null) {
-            textContentView.setVisibility(GONE);
+    public void setTextContent(@NonNull String content, boolean html) {
+        if (html) {
+            //noinspection deprecation
+            textContentView.setText(Html.fromHtml(content));
         } else {
-            textContentView.setVisibility(VISIBLE);
-
-            if (html) {
-                //noinspection deprecation
-                textContentView.setText(Html.fromHtml(content));
-            } else {
-                textContentView.setText(content);
-            }
+            textContentView.setText(content);
         }
     }
 }

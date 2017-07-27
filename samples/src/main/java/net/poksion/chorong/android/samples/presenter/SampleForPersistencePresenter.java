@@ -6,79 +6,90 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import net.poksion.chorong.android.presenter.BaseView;
-import net.poksion.chorong.android.samples.domain.DbItemModel;
-import net.poksion.chorong.android.samples.domain.DbManager;
+import net.poksion.chorong.android.samples.domain.SampleItem;
 import net.poksion.chorong.android.samples.domain.DbObservingTask;
+import net.poksion.chorong.android.samples.domain.SampleItemRepository;
+import net.poksion.chorong.android.task.ObservingBuffer;
 import net.poksion.chorong.android.task.SimpleTask;
-import net.poksion.chorong.android.task.SimpleWorkingTask;
 import net.poksion.chorong.android.task.TaskRunner;
 
 public class SampleForPersistencePresenter {
 
     public interface View extends BaseView {
-        void showItems(List<DbItemModel> itemList);
+        void showItems(List<SampleItem> itemList);
     }
 
     private final TaskRunner<View> taskRunner;
-    private final DbManager dbManager;
+    private final SampleItemRepository sampleItemRepository;
 
-    public SampleForPersistencePresenter(TaskRunner<View> taskRunner, DbManager dbManager) {
+    private final ObservingBuffer<SampleItem, View> observingBuffer = new ObservingBuffer<>();
+
+    public SampleForPersistencePresenter(TaskRunner<View> taskRunner, SampleItemRepository sampleItemRepository) {
         this.taskRunner = taskRunner;
-        this.dbManager = dbManager;
+        this.sampleItemRepository = sampleItemRepository;
 
-        taskRunner.registerObservingTask(new DbObservingTask<View>(dbManager) {
+        taskRunner.registerObservingTask(new DbObservingTask<View>(sampleItemRepository) {
             @Override
-            public void onChanged(List<DbItemModel> dbItemModels, View view) {
-                view.showItems(dbItemModels);
+            public void onChanged(List<SampleItem> sampleItems, View view) {
+                observingBuffer.buffering(sampleItems, view, new ObservingBuffer.Callback<SampleItem, View>() {
+                    @Override
+                    public void onComplete(List<SampleItem> sampleItems, View view) {
+                        view.showItems(sampleItems);
+                    }
+                });
             }
         });
     }
 
     public void readDb() {
-        taskRunner.runTask(new SimpleWorkingTask<View>() {
+        taskRunner.runTask(new SimpleTask<List<SampleItem>, View>() {
             @Override
-            protected void onWork() {
-                List<DbItemModel> result = dbManager.readItems(false);
-                if (result == null || result.isEmpty()) {
-                    dbManager.addItems(buildSampleDbItem());
+            protected List<SampleItem> onWorkSimple() {
+                List<SampleItem> result = sampleItemRepository.findAll();
+                if (result.isEmpty()) {
+                    sampleItemRepository.storeAll(buildSampleDbItem());
                 }
+
+                return result;
+            }
+
+            @Override
+            protected void onResultSimple(List<SampleItem> sampleItems, View view) {
+                observingBuffer.completeMainTask(sampleItems, view, new ObservingBuffer.Callback<SampleItem, View>() {
+                    @Override
+                    public void onComplete(List<SampleItem> sampleItems, View view) {
+                        view.showItems(sampleItems);
+                    }
+                });
+
             }
         });
     }
 
-    public void addItems(final List<DbItemModel> items) {
-        taskRunner.runTask(new SimpleWorkingTask<View>() {
+    public void reloadItem(final String id) {
+        taskRunner.runTask(new SimpleTask<SampleItem, View>() {
             @Override
-            protected void onWork() {
-                dbManager.addItems(items);
-            }
-        });
-    }
-
-    public void readItem(final String id) {
-        taskRunner.runTask(new SimpleTask<DbItemModel, View>() {
-            @Override
-            protected DbItemModel onWorkSimple() {
-                return dbManager.getItem(id);
+            protected SampleItem onWorkSimple() {
+                return sampleItemRepository.find(id);
             }
 
             @Override
-            protected void onResultSimple(DbItemModel dbItemModel, View view) {
-                if (dbItemModel != null && !view.isFinishing()) {
-                    List<DbItemModel> items = new ArrayList<>();
-                    items.add(dbItemModel);
+            protected void onResultSimple(SampleItem sampleItem, View view) {
+                if (sampleItem != null && !view.isFinishing()) {
+                    List<SampleItem> items = new ArrayList<>();
+                    items.add(sampleItem);
                     view.showItems(items);
                 }
             }
         });
     }
 
-    private List<DbItemModel> buildSampleDbItem() {
+    private List<SampleItem> buildSampleDbItem() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        List<DbItemModel> sampleItems = new ArrayList<>();
+        List<SampleItem> sampleItems = new ArrayList<>();
 
         for (int i = 0; i < 4; ++i) {
-            DbItemModel itemModel = new DbItemModel();
+            SampleItem itemModel = new SampleItem();
             itemModel.id = "" + (i+1);
             itemModel.name = "test name " + i;
             itemModel.date = sdf.format(new Date());

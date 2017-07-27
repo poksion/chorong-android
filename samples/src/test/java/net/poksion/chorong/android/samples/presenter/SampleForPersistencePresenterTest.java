@@ -8,8 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.poksion.chorong.android.samples.domain.DbItemModel;
-import net.poksion.chorong.android.samples.domain.DbManager;
+import net.poksion.chorong.android.samples.domain.SampleItem;
+import net.poksion.chorong.android.samples.domain.SampleItemRepository;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.ObjectStoreImpl;
 import net.poksion.chorong.android.store.persistence.DatabaseProxyManager;
@@ -25,9 +25,10 @@ import org.robolectric.annotation.Config;
 @Config(manifest=Config.NONE)
 public class SampleForPersistencePresenterTest {
 
-    private ArgumentCaptor<List<DbItemModel>> captor;
+    private ArgumentCaptor<List<SampleItem>> captor;
     private SampleForPersistencePresenter.View view;
 
+    private SampleItemRepository sampleItemRepository;
     private SampleForPersistencePresenter presenter;
 
     @SuppressWarnings("unchecked")
@@ -38,33 +39,41 @@ public class SampleForPersistencePresenterTest {
         when(view.isFinishing()).thenReturn(false);
 
         final ObjectStore objectStore = new ObjectStoreImpl();
-        final ObjectStore.Key storeKey = new ObjectStore.Key(DbManager.DB_CACHE_STATIC_KEY);
+        final ObjectStore.Key storeKey = new ObjectStore.Key(SampleItemRepository.SAMPLE_DB_CACHE_STATIC_KEY);
 
-        DbManager dbManager = new DbManager(mock(DatabaseProxyManager.class), objectStore) {
+        sampleItemRepository = new SampleItemRepository(mock(DatabaseProxyManager.class), objectStore) {
+            List<SampleItem> stored = new ArrayList<>();
+
             @Override
-            public List<DbItemModel> addItems(List<DbItemModel> items) {
+            public void storeAll(List<SampleItem> items) {
+                stored.addAll(items);
                 objectStore.set(storeKey, items);
-                return items;
+            }
+
+            @Override
+            public List<SampleItem> findAll() {
+                return stored;
             }
         };
 
-        presenter = new SampleForPersistencePresenter(new TaskRunnerSync<>(view), dbManager);
+        presenter = new SampleForPersistencePresenter(new TaskRunnerSync<>(view), sampleItemRepository);
     }
 
     @Test
-    public void test_add_item() {
-        List<DbItemModel> items = new ArrayList<>();
-        DbItemModel item = new DbItemModel();
+    public void view_should_show_items_stored_on_repository() {
+        List<SampleItem> items = new ArrayList<>();
+        SampleItem item = new SampleItem();
         item.id = "dummy-id";
         item.name = "dummy-name";
         item.date = "dummy-date";
 
         items.add(item);
+        sampleItemRepository.storeAll(items);
 
-        presenter.addItems(items);
+        presenter.readDb();
         verify(view, times(1)).showItems(captor.capture());
 
-        List<DbItemModel> values = captor.getValue();
+        List<SampleItem> values = captor.getValue();
         assertThat(values.size()).isEqualTo(1);
         assertThat(values.get(0).id).isEqualTo("dummy-id");
     }
