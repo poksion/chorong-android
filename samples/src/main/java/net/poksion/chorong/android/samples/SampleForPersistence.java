@@ -17,8 +17,7 @@ import net.poksion.chorong.android.ui.main.ToolbarActivity;
 public class SampleForPersistence extends ToolbarActivity implements SampleForPersistencePresenter.View {
 
     @Assemble FlatCardRecyclerView cardRecyclerView;
-    @Assemble
-    SampleItemViewModelUtil sampleItemViewModelUtil;
+    @Assemble SampleItemViewModelUtil sampleItemViewModelUtil;
     @Assemble SampleForPersistencePresenter presenter;
 
     @Override

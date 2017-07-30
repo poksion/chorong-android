@@ -24,6 +24,8 @@ public class ModuleAssemblerTest {
 
     private static class TestModuleAssembler extends ModuleAssembler {
 
+        @Assemble DummyModule dummyModule;
+
         @Override
         public Object findModule(Class<?> filedClass, int id) {
             if (id > 0) {
@@ -54,23 +56,31 @@ public class ModuleAssemblerTest {
         idAssembled2 = null;
 
         ModuleFactory.reset();
-    }
-
-    @Test
-    public void assembler_should_set_with_assemble_annotation() {
-
         ModuleFactory.init(this, new ModuleFactory.Initializer() {
             @Override
             public void onInit(Object host, ModuleFactory.SingletonBinder singletonBinder) {
                 singletonBinder.bind(DummyModule.class, new DummyModule("dummy-module"));
             }
         });
+    }
 
+    @Test
+    public void assembler_should_set_with_assemble_annotation() {
         ModuleFactory.assemble(ModuleAssemblerTest.class, this, new TestModuleAssembler());
 
         assertThat(assembledDummyModule.value).isEqualTo("dummy-module");
+
         assertThat(idAssembled1).isEqualTo("id-assembled-1");
         assertThat(idAssembled2).isEqualTo("id-assembled-2");
+    }
+
+    @Test
+    public void assembler_can_have_assembling_field_itself() {
+        TestModuleAssembler assembler = new TestModuleAssembler();
+        ModuleFactory.assemble(ModuleAssemblerTest.class, this, assembler);
+
+        assertThat(assembler.dummyModule).isNotNull();
+        assertThat(assembler.dummyModule.value).isEqualTo("dummy-module");
     }
 
     @Test

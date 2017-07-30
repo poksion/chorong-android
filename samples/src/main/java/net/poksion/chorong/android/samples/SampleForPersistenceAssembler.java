@@ -18,18 +18,34 @@ class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence
     }
 
     @Override
-    public Object findModule(Class<?> filedClass, int id) {
-        if (filedClass.equals(SampleForPersistencePresenter.class)) {
-            return new SampleForPersistencePresenter(
-                    new TaskRunnerAsyncShared<SampleForPersistencePresenter.View>(activity),
-                    sampleItemRepository);
-        }
+    protected void onInit(Factory factory) {
+        super.onInit(factory);
 
-        if (filedClass.equals(SampleItemViewModelUtil.class)) {
-            return new SampleItemViewModelUtil();
-        }
+        factory.addProvider(new Provider() {
+            @Override
+            public boolean isMatchedField(Class<?> filedClass) {
+                return filedClass.equals(SampleForPersistencePresenter.class);
+            }
 
-        return super.findModule(filedClass, id);
+            @Override
+            public Object provide(int id) {
+                return new SampleForPersistencePresenter(
+                        new TaskRunnerAsyncShared<SampleForPersistencePresenter.View>(activity),
+                        sampleItemRepository);
+            }
+        });
+
+        factory.addProvider(new Provider() {
+            @Override
+            public boolean isMatchedField(Class<?> filedClass) {
+                return filedClass.equals(SampleItemViewModelUtil.class);
+            }
+
+            @Override
+            public Object provide(int id) {
+                return new SampleItemViewModelUtil();
+            }
+        });
     }
 
     @Override

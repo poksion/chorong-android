@@ -26,18 +26,6 @@ public class ViewModuleAssemblerTest {
         mainFrame = null;
         openBtn = null;
         testPresenter = null;
-
-        ModuleFactory.reset();
-        ModuleFactory.init(this, new TestModuleInitializer());
-    }
-
-    @Test
-    public void view_module_assembler_can_have_assembling_field() {
-        ChildTestViewModuleAssembler childTestViewModuleAssembler = new ChildTestViewModuleAssembler(makeMockActivity("dummy-frame", "dummy-btn"));
-        ModuleFactory.assemble(ViewModuleAssemblerTest.class, this, childTestViewModuleAssembler);
-
-        assertThat(childTestViewModuleAssembler.testPresenter).isNotNull();
-        assertThat(childTestViewModuleAssembler.testChildPresenter).isNotNull();
     }
 
     @Test
@@ -51,9 +39,6 @@ public class ViewModuleAssemblerTest {
         assertThat(openBtn.getTag()).isEqualTo("dummy-btn");
 
         assertThat(testPresenter).isNotNull();
-
-        TestPresenter manualAssembledPresenter = ModuleFactory.get(TestPresenter.class);
-        assertThat(manualAssembledPresenter).isNotNull();
     }
 
     @Test
@@ -99,8 +84,6 @@ public class ViewModuleAssemblerTest {
 
     private static class TestViewModuleAssembler extends ViewModuleAssembler {
 
-        @Assemble TestPresenter testPresenter;
-
         TestViewModuleAssembler(Activity activity) {
             super(null, activity);
         }
@@ -110,24 +93,24 @@ public class ViewModuleAssemblerTest {
         }
 
         @Override
+        protected void onInit(Factory factory) {
+            factory.addProvider(new Provider() {
+                @Override
+                public boolean isMatchedField(Class<?> filedClass) {
+                    return filedClass.equals(TestPresenter.class);
+                }
+
+                @Override
+                public Object provide(int id) {
+                    return new TestPresenter();
+                }
+            });
+
+        }
+
+        @Override
         public void setField(Field filed, Object object, Object value) throws IllegalAccessException {
             filed.set(object, value);
-        }
-    }
-
-    private static class ChildTestViewModuleAssembler extends TestViewModuleAssembler {
-
-        @Assemble TestPresenter testChildPresenter;
-
-        ChildTestViewModuleAssembler(Activity activity) {
-            super(activity);
-        }
-    }
-
-    private static class TestModuleInitializer implements ModuleFactory.Initializer {
-        @Override
-        public void onInit(Object host, ModuleFactory.SingletonBinder singletonBinder) {
-            singletonBinder.bind(TestPresenter.class, new TestPresenter());
         }
     }
 

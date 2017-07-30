@@ -22,7 +22,6 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
     private final int navHeaderResId;
     private final int navMenuResId;
 
-
     private final Performer<Integer> performer = new Performer<Integer>() {
         @Override
         public void onNavigateTo(Integer to, Bundle bundle) {
@@ -67,26 +66,42 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
     }
 
     @Override
-    public Object findModule(Class<?> filedClass, int id) {
-        if (filedClass.equals(Integer.class)) {
-            if (id == R.layout.navigation_header) {
-                return navHeaderResId;
+    protected void onInit(Factory factory) {
+        super.onInit(factory);
+
+        factory.addProvider(new Provider() {
+            @Override
+            public boolean isMatchedField(Class<?> filedClass) {
+                return filedClass.equals(Integer.class);
             }
 
-            if (id == R.menu.navigation_menu) {
-                return navMenuResId;
+            @Override
+            public Object provide(int id) {
+                if (id == R.layout.navigation_header) {
+                    return navHeaderResId;
+                }
+                if (id == R.menu.navigation_menu) {
+                    return navMenuResId;
+                }
+                return null;
             }
-        }
+        });
 
-        if (filedClass.equals(Router.class)) {
-            Router<Integer> router = new Router<>("sample-router");
-            router.init(objectStore, currentRoutingId);
-            router.setPerformer(performer);
+        factory.addProvider(new Provider() {
+            @Override
+            public boolean isMatchedField(Class<?> filedClass) {
+                return filedClass.equals(Router.class);
+            }
 
-            return router;
-        }
+            @Override
+            public Object provide(int id) {
+                Router<Integer> router = new Router<>("sample-router");
+                router.init(objectStore, currentRoutingId);
+                router.setPerformer(performer);
 
-        return super.findModule(filedClass, id);
+                return router;
+            }
+        });
     }
 
     @Override

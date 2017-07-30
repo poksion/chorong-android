@@ -26,32 +26,46 @@ class SampleAssembler<T extends Activity> extends ViewModuleAssembler {
     }
 
     @Override
-    public Object findModule(Class<?> filedClass, int id) {
+    protected void onInit(Factory factory) {
 
-        if (filedClass.equals(LinearLayout.class)) {
+        factory.addProvider(new Provider() {
+            @Override
+            public boolean isMatchedField(Class<?> filedClass) {
+                return filedClass.equals(LinearLayout.class);
+            }
 
-            ScrollView scrollView = new ScrollView(activity);
-            container.addView(scrollView, wrapHeightParams);
+            @Override
+            public Object provide(int id) {
+                ScrollView scrollView = new ScrollView(activity);
+                container.addView(scrollView, wrapHeightParams);
 
-            LinearLayout linearLayout = new LinearLayout(activity);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            scrollView.addView(linearLayout, wrapHeightParams);
+                LinearLayout linearLayout = new LinearLayout(activity);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                scrollView.addView(linearLayout, wrapHeightParams);
 
-            return linearLayout;
-        }
+                return linearLayout;
+            }
+        });
 
-        if (filedClass.equals(FlatCardRecyclerView.class)) {
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+        factory.addProvider(new Provider() {
+            @Override
+            public boolean isMatchedField(Class<?> filedClass) {
+                return filedClass.equals(FlatCardRecyclerView.class);
+            }
 
-            FlatCardRecyclerView flatCardRecyclerView = new FlatCardRecyclerView(activity);
-            container.addView(flatCardRecyclerView, params);
+            @Override
+            public Object provide(int id) {
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
 
-            return flatCardRecyclerView;
-        }
+                FlatCardRecyclerView flatCardRecyclerView = new FlatCardRecyclerView(activity);
+                container.addView(flatCardRecyclerView, params);
 
-        return super.findModule(filedClass, id);
+                return flatCardRecyclerView;
+            }
+        });
+
     }
 
     @Override
