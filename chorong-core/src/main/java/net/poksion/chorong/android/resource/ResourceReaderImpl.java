@@ -2,9 +2,9 @@ package net.poksion.chorong.android.resource;
 
 import android.content.Context;
 
-public class ResourceImpl {
+public class ResourceReaderImpl {
 
-    public static class String0 implements Resource.String0 {
+    public static class String0 implements ResourceReader.String0 {
 
         protected final Context applicationContext;
 
@@ -18,7 +18,7 @@ public class ResourceImpl {
         }
     }
 
-    public static class String1<T1> extends String0 implements Resource.String1<T1> {
+    public static class String1<T1> extends String0 implements ResourceReader.String1<T1> {
 
         public String1(Context applicationContext) {
             super(applicationContext);
@@ -30,7 +30,7 @@ public class ResourceImpl {
         }
     }
 
-    public static class String2<T1, T2> extends String0 implements Resource.String2<T1, T2> {
+    public static class String2<T1, T2> extends String0 implements ResourceReader.String2<T1, T2> {
 
         public String2(Context applicationContext) {
             super(applicationContext);
@@ -42,7 +42,7 @@ public class ResourceImpl {
         }
     }
 
-    public static class String3<T1, T2, T3> extends String0 implements Resource.String3<T1, T2, T3> {
+    public static class String3<T1, T2, T3> extends String0 implements ResourceReader.String3<T1, T2, T3> {
 
         public String3(Context applicationContext) {
             super(applicationContext);

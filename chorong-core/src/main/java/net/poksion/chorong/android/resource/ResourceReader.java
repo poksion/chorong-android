@@ -1,6 +1,6 @@
 package net.poksion.chorong.android.resource;
 
-public interface Resource {
+public interface ResourceReader {
 
     interface String0 {
         String read(int id);

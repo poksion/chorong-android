@@ -12,7 +12,7 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-public class ResourceStringTest {
+public class ResourceReaderStringTest {
 
     private Context mockContext;
 
@@ -59,16 +59,16 @@ public class ResourceStringTest {
 
     @Test
     public void index_should_work_same_way_on_java() {
-        Resource.String0 string0 = new ResourceImpl.String0(mockContext);
+        ResourceReader.String0 string0 = new ResourceReaderImpl.String0(mockContext);
         assertThat(string0.read(ID_FOR_IDX0)).isEqualTo(DUMMY_IDX_0_STR);
 
-        Resource.String1<Integer> string1 = new ResourceImpl.String1<>(mockContext);
+        ResourceReader.String1<Integer> string1 = new ResourceReaderImpl.String1<>(mockContext);
         assertThat(string1.read(ID_FOR_IDX1, 1)).isEqualTo("dummy-idx-1-str : 1");
 
-        Resource.String2<Integer, String> string2 = new ResourceImpl.String2<>(mockContext);
+        ResourceReader.String2<Integer, String> string2 = new ResourceReaderImpl.String2<>(mockContext);
         assertThat(string2.read(ID_FOR_IDX2, 1, "two")).isEqualTo("dummy-idx-2-str : 1,two");
 
-        Resource.String3<Integer, String, Object> string3 = new ResourceImpl.String3<>(mockContext);
+        ResourceReader.String3<Integer, String, Object> string3 = new ResourceReaderImpl.String3<>(mockContext);
         assertThat(string3.read(ID_FOR_IDX3, 1, "two", new Object(){ public String toString(){ return "THREE"; } })).isEqualTo("dummy-idx-3-str : 1,two,THREE");
     }
 
