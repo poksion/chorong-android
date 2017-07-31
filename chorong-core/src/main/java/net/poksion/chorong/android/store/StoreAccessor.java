@@ -1,6 +1,6 @@
 package net.poksion.chorong.android.store;
 
-public class StoreAccessor<T_Value> {
+public class StoreAccessor<V> {
 
     private final ObjectStore.Key key;
     private final ObjectStore store;
@@ -14,15 +14,15 @@ public class StoreAccessor<T_Value> {
         this.store = store;
     }
 
-    public T_Value read() {
+    public V read() {
         Object data = store.get(key);
 
         @SuppressWarnings("unchecked")
-        T_Value typed = (T_Value)data;
+        V typed = (V)data;
         return typed;
     }
 
-    public void write(T_Value value) {
+    public void write(V value) {
         store.set(key, value);
     }
 }

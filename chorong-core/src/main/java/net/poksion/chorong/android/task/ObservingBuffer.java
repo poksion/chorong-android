@@ -7,36 +7,36 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ObservingBuffer<T_Result extends ObservingBuffer.Unique, T_Listener> {
+public class ObservingBuffer<ResultT extends ObservingBuffer.Unique, ListenerT> {
 
     public interface Unique {
         String getId();
     }
 
-    public interface Callback<T_Result, T_Listener> {
-        void onComplete(List<T_Result> results, T_Listener listener);
+    public interface Callback<ResultT, ListenerT> {
+        void onComplete(List<ResultT> results, ListenerT listener);
     }
 
     private boolean taskDone = false;
-    private final Queue<T_Result> queue = new ConcurrentLinkedQueue<>();
+    private final Queue<ResultT> queue = new ConcurrentLinkedQueue<>();
 
     public void resetMainTask() {
         taskDone = false;
         queue.clear();
     }
 
-    public void completeMainTask(List<T_Result> results, T_Listener listener, Callback<T_Result, T_Listener> callback) {
+    public void completeMainTask(List<ResultT> results, ListenerT listener, Callback<ResultT, ListenerT> callback) {
         taskDone = true;
 
-        List<T_Result> bufferedResults = new ArrayList<>();
+        List<ResultT> bufferedResults = new ArrayList<>();
 
         Set<String> ids = new HashSet<>();
-        for (T_Result result : results) {
+        for (ResultT result : results) {
             bufferedResults.add(result);
             ids.add(result.getId());
         }
 
-        for (T_Result result : queue) {
+        for (ResultT result : queue) {
             if (!ids.contains(result.getId())) {
                 bufferedResults.add(result);
             }
@@ -47,7 +47,7 @@ public class ObservingBuffer<T_Result extends ObservingBuffer.Unique, T_Listener
         callback.onComplete(bufferedResults, listener);
     }
 
-    public void buffering(List<T_Result> results, T_Listener listener, Callback<T_Result, T_Listener> callback) {
+    public void buffering(List<ResultT> results, ListenerT listener, Callback<ResultT, ListenerT> callback) {
         if (taskDone) {
             completeMainTask(results, listener, callback);
         } else {

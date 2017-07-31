@@ -1,10 +1,10 @@
 package net.poksion.chorong.android.task;
 
-public interface TaskRunner<T_Listener> {
+public interface TaskRunner<ListenerT> {
 
-    void runTask(Task<T_Listener> task);
+    void runTask(Task<ListenerT> task);
 
-    void runBlockingTask(BlockingTask<T_Listener> blockingTask);
-    <T_Result> void registerObservingTask(ObservingTask<T_Result, T_Listener> observingTask);
+    void runBlockingTask(BlockingTask<ListenerT> blockingTask);
+        <ResultT> void registerObservingTask(ObservingTask<ResultT, ListenerT> observingTask);
 
 }

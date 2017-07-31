@@ -2,14 +2,14 @@ package net.poksion.chorong.android.task.internal;
 
 import net.poksion.chorong.android.task.Task;
 
-public class TaskQueueWithSimpleThread<T_Listener> extends TaskQueueImpl<T_Listener> {
+public class TaskQueueWithSimpleThread<ListenerT> extends TaskQueueImpl<ListenerT> {
 
-    public TaskQueueWithSimpleThread(T_Listener listener) {
+    public TaskQueueWithSimpleThread(ListenerT listener) {
         super(listener);
     }
 
     @Override
-    public void onRun(final Task<T_Listener> task, final Task.ResultSender taskResultSender) {
+    public void onRun(final Task<ListenerT> task, final Task.ResultSender taskResultSender) {
         new Thread() {
             @Override
             public void run() {

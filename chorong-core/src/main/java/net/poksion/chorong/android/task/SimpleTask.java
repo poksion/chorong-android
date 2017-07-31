@@ -2,23 +2,23 @@ package net.poksion.chorong.android.task;
 
 import java.lang.ref.WeakReference;
 
-public abstract class SimpleTask<T_Result, T_Listener> implements Task<T_Listener> {
+public abstract class SimpleTask<ResultT, ListenerT> implements Task<ListenerT> {
 
-    protected abstract T_Result onWorkSimple();
-    protected abstract void onResultSimple(T_Result result, T_Listener listener);
+    protected abstract ResultT onWorkSimple();
+    protected abstract void onResultSimple(ResultT result, ListenerT listener);
 
     @Override
     public final void onWork(ResultSender resultSender) {
-        T_Result result = onWorkSimple();
+        ResultT result = onWorkSimple();
         resultSender.sendResult(-1, result, true);
     }
 
     @Override
-    public final void onResult(int resultKey, Object resultValue, WeakReference<T_Listener> resultListenerRef) {
+    public final void onResult(int resultKey, Object resultValue, WeakReference<ListenerT> resultListenerRef) {
         @SuppressWarnings("unchecked")
-        T_Result result = (T_Result) resultValue;
+        ResultT result = (ResultT) resultValue;
 
-        T_Listener listener = resultListenerRef.get();
+        ListenerT listener = resultListenerRef.get();
         if (listener == null) {
             return;
         }

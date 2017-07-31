@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
+public class TaskQueueWithAsync<ListenerT> extends TaskQueueImpl<ListenerT> {
 
     public enum ThreadType {
         USE_DEDICATED,
@@ -58,10 +58,10 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
     }
 
     // internal handler
-    private static class InternalHandler<T_Listener> extends Handler {
-        private final WeakReference<TaskQueueWithAsync<T_Listener>> ownerRef;
+    private static class InternalHandler<ListenerT> extends Handler {
+        private final WeakReference<TaskQueueWithAsync<ListenerT>> ownerRef;
 
-        private InternalHandler(Looper looper, TaskQueueWithAsync<T_Listener> owner) {
+        private InternalHandler(Looper looper, TaskQueueWithAsync<ListenerT> owner) {
             super(looper);
 
             ownerRef = new WeakReference<>(owner);
@@ -78,17 +78,17 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
             @SuppressWarnings("unchecked")
             InternalMessage internalMessage = (InternalMessage) msg.obj;
 
-            TaskQueueWithAsync<T_Listener> owner = ownerRef.get();
+            TaskQueueWithAsync<ListenerT> owner = ownerRef.get();
             if (owner != null) {
                 owner.handleResult(msg.what, internalMessage.resultValue, internalMessage.lastResult, internalMessage.taskId);
             }
         }
     }
 
-    private final InternalHandler<T_Listener> internalHandler;
+    private final InternalHandler<ListenerT> internalHandler;
     private final ThreadType threadType;
 
-    public TaskQueueWithAsync(T_Listener listener, Looper looper, ThreadType threadType) {
+    public TaskQueueWithAsync(ListenerT listener, Looper looper, ThreadType threadType) {
         super(listener);
 
         internalHandler = new InternalHandler<>(looper, this);
@@ -96,7 +96,7 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
     }
 
     @Override
-    protected void onRun(final Task<T_Listener> task, final Task.ResultSender taskResultSender) {
+    protected void onRun(final Task<ListenerT> task, final Task.ResultSender taskResultSender) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -127,12 +127,12 @@ public class TaskQueueWithAsync<T_Listener> extends TaskQueueImpl<T_Listener> {
     }
 
     @Override
-    protected <T_Result> StoreObserver<T_Result> getStoreObserver(final ObservingTask<T_Result, T_Listener> observingTask) {
-        return new StoreObserver<T_Result>() {
+    protected <ResultT> StoreObserver<ResultT> getStoreObserver(final ObservingTask<ResultT, ListenerT> observingTask) {
+        return new StoreObserver<ResultT>() {
             @Override
-            protected void onChanged(final T_Result result) {
+            protected void onChanged(final ResultT result) {
 
-                final StoreObserver<T_Result> owner = this;
+                final StoreObserver<ResultT> owner = this;
 
                 internalHandler.post(new Runnable() {
                     @Override

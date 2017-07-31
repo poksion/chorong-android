@@ -13,30 +13,30 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.poksion.chorong.android.task.TaskQueue;
 
-public abstract class TaskQueueImpl<T_Listener> implements TaskQueue<T_Listener> {
+public abstract class TaskQueueImpl<ListenerT> implements TaskQueue<ListenerT> {
 
-    protected abstract void onRun(Task<T_Listener> task, Task.ResultSender taskResultSender);
+    protected abstract void onRun(Task<ListenerT> task, Task.ResultSender taskResultSender);
 
-    private final Map<Long, Task<T_Listener>> taskList = new ConcurrentHashMap<>();
-    private final WeakReference<T_Listener> taskResultListenerRef;
+    private final Map<Long, Task<ListenerT>> taskList = new ConcurrentHashMap<>();
+    private final WeakReference<ListenerT> taskResultListenerRef;
 
     // weak reference store observer holder
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<StoreObserver<?>> storeObserverHolder = new LinkedList<>();
 
-    protected TaskQueueImpl(T_Listener listener) {
+    protected TaskQueueImpl(ListenerT listener) {
         taskResultListenerRef = new WeakReference<>(listener);
     }
 
     @Override
-    public void enqueue(long taskId, Task<T_Listener> task) {
+    public void enqueue(long taskId, Task<ListenerT> task) {
         taskList.put(taskId, task);
         onRun(task, getResultSender(taskId));
     }
 
     @Override
-    public void execute(BlockingTask<T_Listener> task) {
-        T_Listener listener = taskResultListenerRef.get();
+    public void execute(BlockingTask<ListenerT> task) {
+        ListenerT listener = taskResultListenerRef.get();
         if (listener == null) {
             return;
         }
@@ -44,11 +44,11 @@ public abstract class TaskQueueImpl<T_Listener> implements TaskQueue<T_Listener>
     }
 
     @Override
-    public <T_Result> void register(final ObservingTask<T_Result, T_Listener> observingTask) {
+    public <ResultT> void register(final ObservingTask<ResultT, ListenerT> observingTask) {
         final ObjectStore objectStore = observingTask.getStore();
         final String storeKey = observingTask.getStoreKey();
 
-        StoreObserver<T_Result> storeObserver = getStoreObserver(observingTask);
+        StoreObserver<ResultT> storeObserver = getStoreObserver(observingTask);
 
         storeObserverHolder.add(storeObserver);
         objectStore.addWeakObserver(storeKey, storeObserver, false);
@@ -69,7 +69,7 @@ public abstract class TaskQueueImpl<T_Listener> implements TaskQueue<T_Listener>
     }
 
     protected void handleResult(int resultId, Object resultValue, boolean lastResult, long taskId) {
-        Task<T_Listener> task;
+        Task<ListenerT> task;
         if (lastResult) {
             task = taskList.remove(taskId);
         } else {
@@ -83,20 +83,20 @@ public abstract class TaskQueueImpl<T_Listener> implements TaskQueue<T_Listener>
         task.onResult(resultId, resultValue, taskResultListenerRef);
     }
 
-    protected <T_Result> StoreObserver<T_Result> getStoreObserver(final ObservingTask<T_Result, T_Listener> observingTask) {
-        return new StoreObserver<T_Result>() {
+    protected <ResultT> StoreObserver<ResultT> getStoreObserver(final ObservingTask<ResultT, ListenerT> observingTask) {
+        return new StoreObserver<ResultT>() {
             @Override
-            protected void onChanged(T_Result result) {
+            protected void onChanged(ResultT result) {
                 handleObservingTask(observingTask, this, result);
             }
         };
     };
 
-    protected  <T_Result> void handleObservingTask(ObservingTask<T_Result, T_Listener> observingTask, StoreObserver<T_Result> storeObserver, T_Result result) {
+    protected  <ResultT> void handleObservingTask(ObservingTask<ResultT, ListenerT> observingTask, StoreObserver<ResultT> storeObserver, ResultT result) {
         final ObjectStore objectStore = observingTask.getStore();
         final String storeKey = observingTask.getStoreKey();
 
-        T_Listener listener = taskResultListenerRef.get();
+        ListenerT listener = taskResultListenerRef.get();
         boolean available = (listener != null && observingTask.isAvailable(listener));
 
         if (available) {

@@ -2,14 +2,14 @@ package net.poksion.chorong.android.task.internal;
 
 import net.poksion.chorong.android.task.Task;
 
-public class TaskQueueWithSync<T_Listener> extends TaskQueueImpl<T_Listener> {
+public class TaskQueueWithSync<ListenerT> extends TaskQueueImpl<ListenerT> {
 
-    public TaskQueueWithSync(T_Listener listener) {
+    public TaskQueueWithSync(ListenerT listener) {
         super(listener);
     }
 
     @Override
-    public void onRun(Task<T_Listener> task, Task.ResultSender taskResultSender) {
+    public void onRun(Task<ListenerT> task, Task.ResultSender taskResultSender) {
         task.onWork(taskResultSender);
     }
 }

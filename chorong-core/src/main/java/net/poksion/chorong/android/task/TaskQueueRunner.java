@@ -1,26 +1,26 @@
 package net.poksion.chorong.android.task;
 
-public class TaskQueueRunner<T_Listener> implements TaskRunner<T_Listener> {
+public class TaskQueueRunner<ListenerT> implements TaskRunner<ListenerT> {
 
-    private final TaskQueue<T_Listener> taskQueue;
+    private final TaskQueue<ListenerT> taskQueue;
 
-    public TaskQueueRunner(TaskQueue<T_Listener> taskQueue) {
+    public TaskQueueRunner(TaskQueue<ListenerT> taskQueue) {
         this.taskQueue = taskQueue;
     }
 
     @Override
-    public void runTask(Task<T_Listener> task) {
+    public void runTask(Task<ListenerT> task) {
         long taskId = System.currentTimeMillis();
         taskQueue.enqueue(taskId, task);
     }
 
     @Override
-    public void runBlockingTask(BlockingTask<T_Listener> blockingTask) {
+    public void runBlockingTask(BlockingTask<ListenerT> blockingTask) {
         taskQueue.execute(blockingTask);
     }
 
     @Override
-    public <T_Result> void registerObservingTask(ObservingTask<T_Result, T_Listener> observingTask) {
+    public <ResultT> void registerObservingTask(ObservingTask<ResultT, ListenerT> observingTask) {
         taskQueue.register(observingTask);
     }
 

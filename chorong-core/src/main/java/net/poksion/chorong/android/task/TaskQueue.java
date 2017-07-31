@@ -1,10 +1,10 @@
 package net.poksion.chorong.android.task;
 
-public interface TaskQueue<T_Listener> {
+public interface TaskQueue<ListenerT> {
 
-    void enqueue(long taskId, Task<T_Listener> task);
-    void execute(BlockingTask<T_Listener> task);
-    <T_Result> void register(ObservingTask<T_Result, T_Listener> observingTask);
+    void enqueue(long taskId, Task<ListenerT> task);
+    void execute(BlockingTask<ListenerT> task);
+    <ResultT> void register(ObservingTask<ResultT, ListenerT> observingTask);
 
     int size();
 

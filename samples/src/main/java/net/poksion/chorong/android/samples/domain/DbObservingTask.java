@@ -5,7 +5,7 @@ import net.poksion.chorong.android.presenter.BaseView;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.task.ObservingTask;
 
-public abstract class DbObservingTask<T_View extends BaseView> implements ObservingTask<List<SampleItem>, T_View> {
+public abstract class DbObservingTask<ViewT extends BaseView> implements ObservingTask<List<SampleItem>, ViewT> {
     private final DbRepository dbManager;
 
     public DbObservingTask(DbRepository dbManager) {
@@ -23,7 +23,7 @@ public abstract class DbObservingTask<T_View extends BaseView> implements Observ
     }
 
     @Override
-    public boolean isAvailable(T_View view) {
+    public boolean isAvailable(ViewT view) {
         return !view.isFinishing();
     }
 }
