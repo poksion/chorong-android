@@ -48,8 +48,7 @@ public class AlertDialogActivity extends Activity {
 
     public static EventRouter makeEventRouter(ObjectStore objectStore, OnClickCallback clickCallback) {
         EventRouter eventRouter = new EventRouter("alert-dialog-activity");
-        eventRouter.init(objectStore, EndPoint.DIALOG);
-        eventRouter.setPerformer(clickCallback);
+        eventRouter.init(EndPoint.DIALOG, objectStore, clickCallback);
 
         return eventRouter;
     }
@@ -75,7 +74,7 @@ public class AlertDialogActivity extends Activity {
             return this;
         }
 
-        public Builder nonCancelable() {
+        public Builder closeable() {
             i.putExtra("close-event-key", true);
             return this;
         }
@@ -92,7 +91,7 @@ public class AlertDialogActivity extends Activity {
     }
 
     private EventRouter eventRouter;
-    private boolean nonCancelable = false;
+    private boolean closeableFromOthers = false;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -140,7 +139,7 @@ public class AlertDialogActivity extends Activity {
         //noinspection ConstantConditions
         alert.getWindow().setWindowAnimations(R.style.AlertDialogNoAnimation);
 
-        if (nonCancelable) {
+        if (closeableFromOthers) {
             setFinishOnTouchOutside(false);
             alert.setCanceledOnTouchOutside(false);
             alert.setCancelable(false);
@@ -163,7 +162,7 @@ public class AlertDialogActivity extends Activity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        if (!nonCancelable) {
+        if (!closeableFromOthers) {
             finishDialog();
         }
     }
@@ -178,25 +177,30 @@ public class AlertDialogActivity extends Activity {
     }
 
     private void updateFromIntent(Intent i, Application application) {
-        nonCancelable = i.getBooleanExtra("close-event-key", false);
+        closeableFromOthers = i.getBooleanExtra("close-event-key", false);
 
         if (!(application instanceof ObjectStore)) {
             return;
         }
 
-        ObjectStore objectStore = (ObjectStore) application;
-        eventRouter = makeEventRouter(objectStore, null);
+        OnClickCallback callbackListenable = null;
+        if (closeableFromOthers) {
+            callbackListenable = new OnClickCallback() {
 
-        if (nonCancelable) {
-            eventRouter.setPerformer(new Performer<EndPoint>() {
                 @Override
                 public void onNavigateTo(EndPoint to, Bundle bundle) {
                     if (to == EndPoint.DIALOG_CLOSE) {
                         finishDialog();
                     }
                 }
-            });
+
+                @Override
+                protected void onClick(boolean yes) {}
+            };
         }
+
+        ObjectStore objectStore = (ObjectStore) application;
+        eventRouter = makeEventRouter(objectStore, callbackListenable);
     }
 
     private void updateClickEvent(boolean yes) {

@@ -18,16 +18,16 @@ public class Router<N> {
     private ObjectStore objectStore;
     private N current;
 
-    private Performer<N> performer;
+    private Performer<N> listeningPerformer;
 
     private StoreObserver<PerformCmd<N>> storeObserver = new StoreObserver<PerformCmd<N>>() {
         @Override
         protected void onChanged(PerformCmd<N> performCmd) {
-            if (performer == null || !current.equals(performCmd.from)) {
+            if (listeningPerformer == null || !current.equals(performCmd.from)) {
                 return;
             }
 
-            performer.onNavigateTo(performCmd.to, performCmd.bundle);
+            listeningPerformer.onNavigateTo(performCmd.to, performCmd.bundle);
         }
     };
 
@@ -35,22 +35,21 @@ public class Router<N> {
         this.routingKey = new ObjectStore.Key(routingKey);
     }
 
-    public void init(ObjectStore objectStore, N current) {
-        this.objectStore = objectStore;
+    public void init(N current, ObjectStore objectStore, Performer<N> listeningPerformer) {
         this.current = current;
 
+        // add observer before listening performer set
         objectStore.addWeakObserver(routingKey.staticKey, storeObserver, false);
-    }
 
-    public void setPerformer(Performer<N> performer) {
-        this.performer = performer;
+        this.objectStore = objectStore;
+        this.listeningPerformer = listeningPerformer;
     }
 
     public void halt() {
         objectStore.removeWeakObserver(routingKey.staticKey, storeObserver);
 
         objectStore = null;
-        performer = null;
+        listeningPerformer = null;
     }
 
     public void navigateTo(N to) {

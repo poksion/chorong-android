@@ -22,7 +22,7 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
     private final int navHeaderResId;
     private final int navMenuResId;
 
-    private final Performer<Integer> performer = new Performer<Integer>() {
+    private final Performer<Integer> listeningPerformer = new Performer<Integer>() {
         @Override
         public void onNavigateTo(Integer to, Bundle bundle) {
             Intent i = new Intent(activity, SampleForRouting.class);
@@ -96,8 +96,7 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
             @Override
             public Object provide(int id) {
                 Router<Integer> router = new Router<>("sample-router");
-                router.init(objectStore, currentRoutingId);
-                router.setPerformer(performer);
+                router.init(currentRoutingId, objectStore, listeningPerformer);
 
                 return router;
             }
