@@ -35,11 +35,11 @@ public class Router<N> {
         this.routingKey = new ObjectStore.Key(routingKey);
     }
 
-    public void init(N current, ObjectStore objectStore, Performer<N> listeningPerformer) {
-        this.current = current;
-
+    public void init(ObjectStore objectStore, N current, Performer<N> listeningPerformer) {
         // add observer before listening performer set
         objectStore.addWeakObserver(routingKey.staticKey, storeObserver, false);
+
+        this.current = current;
 
         this.objectStore = objectStore;
         this.listeningPerformer = listeningPerformer;

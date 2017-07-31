@@ -34,10 +34,10 @@ public class RouterAndPerformerTest {
         };
 
         Router<Integer> routerA = new Router<>("test-router");
-        routerA.init(from, objectStore, performer);
+        routerA.init(objectStore, from, performer);
 
         Router<Integer> routerB = new Router<>("test-router");
-        routerB.init(from, objectStore, null);
+        routerB.init(objectStore, from, null);
 
         routerB.navigateTo(expectedTo);
 

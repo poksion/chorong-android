@@ -96,7 +96,7 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
             @Override
             public Object provide(int id) {
                 Router<Integer> router = new Router<>("sample-router");
-                router.init(currentRoutingId, objectStore, listeningPerformer);
+                router.init(objectStore, currentRoutingId, listeningPerformer);
 
                 return router;
             }

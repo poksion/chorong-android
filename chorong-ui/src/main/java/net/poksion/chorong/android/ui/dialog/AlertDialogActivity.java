@@ -48,7 +48,7 @@ public class AlertDialogActivity extends Activity {
 
     public static EventRouter makeEventRouter(ObjectStore objectStore, OnClickCallback clickCallback) {
         EventRouter eventRouter = new EventRouter("alert-dialog-activity");
-        eventRouter.init(EndPoint.DIALOG, objectStore, clickCallback);
+        eventRouter.init(objectStore, EndPoint.DIALOG, clickCallback);
 
         return eventRouter;
     }
