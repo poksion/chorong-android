@@ -18,7 +18,7 @@ public final class ModuleFactory {
     public final static class SingletonBinder {
         private Map<String, Object> moduleMap;
 
-        public void bind(Class<?> representType, Object singletonInstance) {
+        public <T1, T2 extends T1> void bind(Class<T1> representType, T2 singletonInstance) {
             moduleMap.put(representType.getName(), singletonInstance);
         }
 
