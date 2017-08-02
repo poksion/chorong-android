@@ -9,7 +9,10 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
+@RunWith(RobolectricTestRunner.class)
 public class PerformanceLoggerTest {
     private PerformanceLogger.Printer mockPrinter;
 
@@ -39,6 +42,21 @@ public class PerformanceLoggerTest {
         logger.end(startingId);
 
         verify(mockPrinter, times(2)).print(anyString(), anyString());
+    }
+
+    @Test
+    public void staring_time_can_be_duplicate() {
+        PerformanceLogger logger = new PerformanceLogger(true);
+
+        long staringTime = 10;
+        logger.pushName(staringTime, "dummy-1");
+        logger.pushName(staringTime, "dummy-2");
+
+        String name = logger.popName(staringTime);
+        assertThat(name).isEqualTo("dummy-2");
+
+        name = logger.popName(staringTime);
+        assertThat(name).isEqualTo("dummy-1");
     }
 
 }

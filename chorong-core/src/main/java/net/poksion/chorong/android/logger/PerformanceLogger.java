@@ -1,5 +1,6 @@
 package net.poksion.chorong.android.logger;
 
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,7 @@ public class PerformanceLogger {
         }
 
         long current = System.currentTimeMillis();
-        List<String> names = logStack.get(current);
-        if (names == null) {
-            names = new ArrayList<>();
-            logStack.put(current, names);
-        }
-        names.add(name);
+        pushName(current, name);
 
         printer.print("[performance]", name + " started");
         return current;
@@ -55,7 +51,24 @@ public class PerformanceLogger {
         }
 
         long elapsed = System.currentTimeMillis() - startingId;
+        String name = popName(startingId);
 
+        printer.print("[performance]", name + " ended (" + elapsed + "ms)");
+        return elapsed;
+    }
+
+    @VisibleForTesting
+    void pushName(long startingId, String name) {
+        List<String> names = logStack.get(startingId);
+        if (names == null) {
+            names = new ArrayList<>();
+            logStack.put(startingId, names);
+        }
+        names.add(name);
+    }
+
+    @VisibleForTesting
+    String popName(long startingId) {
         List<String> names = logStack.get(startingId);
         int lastIdx = names.size()-1;
         String name = names.get(lastIdx);
@@ -66,8 +79,7 @@ public class PerformanceLogger {
             names.remove(lastIdx);
         }
 
-        printer.print("[performance]", name + " ended (" + elapsed + "ms)");
-        return elapsed;
+        return name;
     }
 
 }
