@@ -90,7 +90,7 @@ public abstract class TaskQueueImpl<ListenerT> implements TaskQueue<ListenerT> {
                 handleObservingTask(observingTask, this, result);
             }
         };
-    };
+    }
 
     protected  <ResultT> void handleObservingTask(ObservingTask<ResultT, ListenerT> observingTask, StoreObserver<ResultT> storeObserver, ResultT result) {
         final ObjectStore objectStore = observingTask.getStore();

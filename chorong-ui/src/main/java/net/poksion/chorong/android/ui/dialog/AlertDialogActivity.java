@@ -37,8 +37,8 @@ public class AlertDialogActivity extends Activity {
     }
 
     public static class EventRouter extends Router<EndPoint> {
-        private EventRouter(String routingKey) {
-            super(routingKey);
+        private EventRouter() {
+            super("alert-dialog-activity");
         }
 
         public void closeDialog() {
@@ -47,7 +47,7 @@ public class AlertDialogActivity extends Activity {
     }
 
     public static EventRouter makeEventRouter(ObjectStore objectStore, OnClickCallback clickCallback) {
-        EventRouter eventRouter = new EventRouter("alert-dialog-activity");
+        EventRouter eventRouter = new EventRouter();
         eventRouter.init(objectStore, EndPoint.DIALOG, clickCallback);
 
         return eventRouter;

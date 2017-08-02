@@ -2,7 +2,6 @@ package net.poksion.chorong.android.ui.card;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;

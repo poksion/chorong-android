@@ -35,7 +35,7 @@ public class PicasaWebApiImpl extends ApiTemplate implements PicasaWebApi {
             @NonNull final String albumId,
             @NonNull final String filename) {
 
-        if (loginToken == null || loginToken.length() == 0 || !loginToken.equals(cachedToken)) {
+        if (loginToken.length() == 0 || !loginToken.equals(cachedToken)) {
             cachedToken = loginToken;
             cached.clear();
         }

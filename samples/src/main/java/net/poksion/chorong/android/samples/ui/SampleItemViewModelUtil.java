@@ -14,7 +14,7 @@ import net.poksion.chorong.android.ui.card.ItemAdapter;
 
 public class SampleItemViewModelUtil {
 
-    private ItemAdapter.ViewInflater itemViewInflater = new ItemAdapter.ViewInflater() {
+    private final ItemAdapter.ViewInflater itemViewInflater = new ItemAdapter.ViewInflater() {
 
         @Override
         public View inflate(LayoutInflater layoutInflater, @LayoutRes int resId, ViewGroup parent) {

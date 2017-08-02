@@ -20,7 +20,7 @@ public class TaskRunnerEtcTest {
         }
     }
 
-    private DummyListener dummyListener = new DummyListener();
+    private final DummyListener dummyListener = new DummyListener();
     private BlockingTask<DummyListener> makeDummyTask(final String result) {
         return new BlockingTask<DummyListener>() {
             @Override
@@ -53,6 +53,7 @@ public class TaskRunnerEtcTest {
         assertThat(dummyListener.result).isEqualTo("sync");
     }
 
+    @SuppressWarnings("UnusedAssignment")
     @Test
     public void async_shared_should_be_running_with_work_thread() {
         DummyListener dummyListenerForGc = new DummyListener();

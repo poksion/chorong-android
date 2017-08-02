@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ObservingTaskTest {
-    private ObjectStore.Key storeKey = new ObjectStore.Key("observing-task-test");
+    private final ObjectStore.Key storeKey = new ObjectStore.Key("observing-task-test");
     private ObjectStore objectStore;
     private StoreAccessor<String> storeAccessor;
 

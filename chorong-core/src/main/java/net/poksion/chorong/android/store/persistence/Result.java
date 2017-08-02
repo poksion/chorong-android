@@ -14,7 +14,7 @@ public class Result {
         INT("INTEGER"),
         BOOLEAN("INTEGER");
 
-        String dbType;
+        final String dbType;
         Primitive(String dbType) {
             this.dbType = dbType;
         }

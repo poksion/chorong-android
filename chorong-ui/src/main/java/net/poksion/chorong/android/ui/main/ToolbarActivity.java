@@ -71,7 +71,7 @@ public abstract class ToolbarActivity extends AppCompatActivity {
 
     protected static class MenuInfo {
         private final int id;
-        private int strResId;
+        private final int strResId;
 
         public MenuInfo(int id, int strRedId) {
             this.id = id;
@@ -79,8 +79,7 @@ public abstract class ToolbarActivity extends AppCompatActivity {
         }
 
         public MenuInfo(int strResIdAsId) {
-            this.id = strResIdAsId;
-            this.strResId = strResIdAsId;
+            this(strResIdAsId, strResIdAsId);
         }
     }
 
@@ -166,10 +165,6 @@ public abstract class ToolbarActivity extends AppCompatActivity {
                 navigationInfo.descOpenDrawer,
                 navigationInfo.descCloseDrawer) {
 
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-            }
-
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
@@ -220,11 +215,7 @@ public abstract class ToolbarActivity extends AppCompatActivity {
     }
 
     // if option menu needs dynamic state, do something in this method
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
-    }
-
+    // do something on [public boolean onPrepareOptionsMenu(Menu menu)]
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

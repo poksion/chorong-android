@@ -20,7 +20,7 @@ public class Router<N> {
 
     private Performer<N> listeningPerformer;
 
-    private StoreObserver<PerformCmd<N>> storeObserver = new StoreObserver<PerformCmd<N>>() {
+    private final StoreObserver<PerformCmd<N>> storeObserver = new StoreObserver<PerformCmd<N>>() {
         @Override
         protected void onChanged(PerformCmd<N> performCmd) {
             if (listeningPerformer == null || !current.equals(performCmd.from)) {

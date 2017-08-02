@@ -14,7 +14,7 @@ public abstract class ViewModuleAssembler implements Assembler {
     }
 
     protected final class Factory {
-        private List<Provider> providers = new ArrayList<>();
+        private final List<Provider> providers = new ArrayList<>();
 
         public void addProvider(Provider provider) {
             providers.add(provider);

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class LoginTokenManagerImpl implements LoginTokenManager {
-    private Context applicationContext;
+    private final Context applicationContext;
 
     public LoginTokenManagerImpl(Context context) {
         applicationContext = context.getApplicationContext();

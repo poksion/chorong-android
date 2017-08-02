@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class SimpleTaskTest {
 
-    private Object dummyListener = new Object();
+    private final Object dummyListener = new Object();
 
     private static class TestResult {
         int id;

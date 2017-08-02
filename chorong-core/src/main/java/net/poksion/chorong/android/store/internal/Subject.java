@@ -9,8 +9,8 @@ import java.util.Map;
 
 public class Subject {
 
-    private Map<String, Object> container = new HashMap<>();
-    private Map<String, List<WeakReference<Observer>>> observers = new HashMap<>();
+    private final Map<String, Object> container = new HashMap<>();
+    private final Map<String, List<WeakReference<Observer>>> observers = new HashMap<>();
 
     public synchronized Object get(String key) {
         return container.get(key);
