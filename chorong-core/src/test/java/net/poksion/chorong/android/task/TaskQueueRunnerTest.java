@@ -3,8 +3,6 @@ package net.poksion.chorong.android.task;
 import android.os.HandlerThread;
 import android.os.Looper;
 
-import junit.framework.Assert;
-
 import net.poksion.chorong.android.task.internal.TaskQueueWithAsync;
 import net.poksion.chorong.android.task.internal.TaskQueueWithSimpleThread;
 import net.poksion.chorong.android.task.internal.TaskQueueWithSync;
@@ -30,15 +28,15 @@ public class TaskQueueRunnerTest {
         HANDLER_THREAD
     }
 
-    private static class RunnerOwnerAndListener {
-        private final TaskRunner<RunnerOwnerAndListener> taskRunner;
-        private final TaskQueue<RunnerOwnerAndListener> taskQueue;
+    private static class ListenableTaskApp {
+        private final TaskRunner<ListenableTaskApp> taskRunner;
+        private final TaskQueue<ListenableTaskApp> taskQueue;
 
-        RunnerOwnerAndListener(QueueType queueType) {
+        ListenableTaskApp(QueueType queueType) {
             this(queueType, null);
         }
 
-        RunnerOwnerAndListener(QueueType queueType, Looper looper) {
+        ListenableTaskApp(QueueType queueType, Looper looper) {
             switch (queueType) {
                 case SYNC:
                     taskQueue = new TaskQueueWithSync<>(this);
@@ -55,56 +53,23 @@ public class TaskQueueRunnerTest {
             taskRunner = new TaskQueueRunner<>(taskQueue);
         }
 
-        TaskRunner<RunnerOwnerAndListener> getTaskRunner() {
+        TaskRunner<ListenableTaskApp> getTaskRunner() {
             return taskRunner;
         }
 
-        TaskQueue<RunnerOwnerAndListener> getTaskQueue() {
+        TaskQueue<ListenableTaskApp> getTaskQueue() {
             return taskQueue;
         }
     }
 
-    @Test
-    public void task_should_be_removed_if_send_last_result() {
-        final RunnerOwnerAndListener runnerOwnerAndListener = new RunnerOwnerAndListener(QueueType.SYNC);
-        runnerOwnerAndListener.getTaskRunner().runTask(new Task<RunnerOwnerAndListener>() {
-            @Override
-            public void onWork(ResultSender resultSender) {
-                resultSender.sendResult(0, null, false);
-
-                // notify that this is the last result
-                resultSender.sendResult(1, null, true);
-
-                // not receive anymore
-                resultSender.sendResult(2, null, false);
-            }
-
-            @Override
-            public void onResult(int resultKey, Object resultValue, WeakReference<RunnerOwnerAndListener> resultListenerRef) {
-                if (resultKey == 0) {
-                    assertThat(runnerOwnerAndListener.getTaskQueue().size()).isEqualTo(1);
-                }
-
-                if (resultKey == 1) {
-                    assertThat(runnerOwnerAndListener.getTaskQueue().size()).isEqualTo(0);
-                }
-
-                if (resultKey == 2) {
-                    Assert.fail("not possible since passed away on resultKey==1");
-                }
-            }
-        });
-    }
-
     private static class TaskFixture {
-
         boolean gotResult = false;
-        WeakReference<RunnerOwnerAndListener> resultListenerWeakRef;
+        WeakReference<ListenableTaskApp> taskListenerWeakRef;
 
-        Task<RunnerOwnerAndListener> getTask() {
+        Task<ListenableTaskApp> provideTestTask() {
             gotResult = false;
 
-            return new Task<RunnerOwnerAndListener>() {
+            return new Task<ListenableTaskApp>() {
                 @Override
                 public void onWork(ResultSender resultSender) {
                     try {
@@ -116,16 +81,16 @@ public class TaskQueueRunnerTest {
                 }
 
                 @Override
-                public void onResult(int resultKey, Object resultValue, WeakReference<RunnerOwnerAndListener> resultListenerRef) {
+                public void onResult(int resultKey, Object resultValue, WeakReference<ListenableTaskApp> resultListenerRef) {
                     assertThat(resultKey).isEqualTo(0);
-                    resultListenerWeakRef = resultListenerRef;
+                    taskListenerWeakRef = resultListenerRef;
 
                     gotResult = true;
                 }
             };
         }
 
-        void waitUntilGotResult() {
+        void awaitRunningTask() {
             while(!gotResult) {
                 try {
                     Thread.sleep(600);
@@ -135,7 +100,7 @@ public class TaskQueueRunnerTest {
             }
         }
 
-        void waitUntilGotResultWithShadowLooper(Looper looper) {
+        void awaitRunningTaskWithLooper(Looper looper) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -145,24 +110,91 @@ public class TaskQueueRunnerTest {
             ShadowLooper shadowLooper = Shadows.shadowOf(looper);
             shadowLooper.runToEndOfTasks();
 
-            waitUntilGotResult();
+            awaitRunningTask();
         }
+    }
+
+    @Test
+    public void task_should_be_kept_unless_last_result() {
+        final int DUMMY_RESULT_ID = 7;
+
+        final ListenableTaskApp listenableTaskApp = new ListenableTaskApp(QueueType.SYNC);
+        listenableTaskApp.getTaskRunner().runTask(new Task<ListenableTaskApp>() {
+            @Override
+            public void onWork(ResultSender resultSender) {
+                resultSender.sendResult(DUMMY_RESULT_ID, null, false);
+            }
+
+            @Override
+            public void onResult(int resultKey, Object resultValue, WeakReference<ListenableTaskApp> resultListenerRef) {
+                assertThat(resultKey).isEqualTo(DUMMY_RESULT_ID);
+                assertThat(listenableTaskApp.getTaskQueue().size()).isEqualTo(1);
+            }
+        });
+    }
+
+    @Test
+    public void task_should_be_removed_if_send_last_result() {
+        final int DUMMY_RESULT_ID = 7;
+
+        final ListenableTaskApp listenableTaskApp = new ListenableTaskApp(QueueType.SYNC);
+        listenableTaskApp.getTaskRunner().runTask(new Task<ListenableTaskApp>() {
+            @Override
+            public void onWork(ResultSender resultSender) {
+                // notify that this is the last result
+                resultSender.sendResult(DUMMY_RESULT_ID, null, true);
+            }
+
+            @Override
+            public void onResult(int resultKey, Object resultValue, WeakReference<ListenableTaskApp> resultListenerRef) {
+                assertThat(resultKey).isEqualTo(DUMMY_RESULT_ID);
+                assertThat(listenableTaskApp.getTaskQueue().size()).isEqualTo(0);
+            }
+        });
+    }
+
+    @Test
+    public void result_should_not_receive_if_last_result_sent() {
+        final int DUMMY_RESULT_ID_1 = 7;
+        final int DUMMY_RESULT_ID_2 = 3;
+        final int[] onResultCount = new int[] {0};
+
+        final ListenableTaskApp listenableTaskApp = new ListenableTaskApp(QueueType.SYNC);
+        listenableTaskApp.getTaskRunner().runTask(new Task<ListenableTaskApp>() {
+            @Override
+            public void onWork(ResultSender resultSender) {
+                // notify that this is the last result
+                resultSender.sendResult(DUMMY_RESULT_ID_1, null, true);
+
+                // never receive this result
+                resultSender.sendResult(DUMMY_RESULT_ID_2, null, false);
+            }
+
+            @Override
+            public void onResult(int resultKey, Object resultValue, WeakReference<ListenableTaskApp> resultListenerRef) {
+                assertThat(resultKey).isEqualTo(DUMMY_RESULT_ID_1);
+                assertThat(listenableTaskApp.getTaskQueue().size()).isEqualTo(0);
+                onResultCount[0] += 1;
+            }
+        });
+
+        assertThat(onResultCount[0]).isEqualTo(1);
     }
 
     @Test
     public void listener_should_be_managed_as_weak_ref_on_simple_thread() {
         TaskFixture taskFixture = new TaskFixture();
 
-        RunnerOwnerAndListener runnerOwnerAndListener = new RunnerOwnerAndListener(QueueType.SIMPLE_THREAD);
-        runnerOwnerAndListener.getTaskRunner().runTask(taskFixture.getTask());
+        ListenableTaskApp listenableTaskApp = new ListenableTaskApp(QueueType.SIMPLE_THREAD);
+        listenableTaskApp.getTaskRunner().runTask(taskFixture.provideTestTask());
 
         // remove reference
         // noinspection UnusedAssignment
-        runnerOwnerAndListener = null;
+        listenableTaskApp = null;
         System.gc();
 
-        taskFixture.waitUntilGotResult();
-        assertThat(taskFixture.resultListenerWeakRef.get()).isNull();
+        taskFixture.awaitRunningTask();
+        assertThat(taskFixture.taskListenerWeakRef.get()).isNull();
     }
 
     @Test
@@ -173,15 +205,15 @@ public class TaskQueueRunnerTest {
         handlerThread.start();
         assertThat(handlerThread.getLooper()).isNotNull();
 
-        RunnerOwnerAndListener runnerOwnerAndListener = new RunnerOwnerAndListener(QueueType.HANDLER_THREAD, handlerThread.getLooper());
-        runnerOwnerAndListener.getTaskRunner().runTask(taskFixture.getTask());
+        ListenableTaskApp listenableTaskApp = new ListenableTaskApp(QueueType.HANDLER_THREAD, handlerThread.getLooper());
+        listenableTaskApp.getTaskRunner().runTask(taskFixture.provideTestTask());
 
         // remove reference
         // noinspection UnusedAssignment
-        runnerOwnerAndListener = null;
+        listenableTaskApp = null;
         System.gc();
 
-        taskFixture.waitUntilGotResultWithShadowLooper(handlerThread.getLooper());
-        assertThat(taskFixture.resultListenerWeakRef.get()).isNull();
+        taskFixture.awaitRunningTaskWithLooper(handlerThread.getLooper());
+        assertThat(taskFixture.taskListenerWeakRef.get()).isNull();
     }
 }

@@ -39,7 +39,6 @@ public class ObservingTaskTest {
 
             @Override
             public boolean isAvailable(Object listener) {
-                assertThat(listener).isEqualTo(dummyListener);
                 return true;
             }
 
