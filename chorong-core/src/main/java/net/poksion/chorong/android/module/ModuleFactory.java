@@ -31,12 +31,12 @@ public final class ModuleFactory {
     }
 
     private final static Map<String, Object> MODULES = new ConcurrentHashMap<>();
-    private final static AnnotatedFields ANNOTATED_FIELDS = new AnnotatedFields() {
+    private final static AnnotatedFields<Integer> ANNOTATED_FIELDS = new AnnotatedFields<Integer>() {
         @Override
-        protected Annotated provideAnnotated(Annotation annotation, Field field) {
+        protected Annotated<Integer> provideAnnotated(Annotation annotation, Field field) {
             if (annotation instanceof Assemble) {
                 Assemble assemble = (Assemble)annotation;
-                return new Annotated(field, assemble.value());
+                return new Annotated<>(field, assemble.value());
             }
 
             return null;
@@ -90,7 +90,7 @@ public final class ModuleFactory {
     }
 
     private static void assemble(Object host, Class<?> assembleOwnerClass, Assembler assembler) {
-        for (AnnotatedFields.Annotated annotated : ANNOTATED_FIELDS.getAnnotatedFields(assembleOwnerClass)) {
+        for (AnnotatedFields.Annotated<Integer> annotated : ANNOTATED_FIELDS.getAnnotatedFields(assembleOwnerClass)) {
 
             Class<?> filedClass = annotated.field.getType();
 

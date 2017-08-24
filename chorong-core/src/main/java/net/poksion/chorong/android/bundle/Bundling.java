@@ -10,11 +10,12 @@ public abstract class Bundling {
     abstract Object getValue(Field field, Object object) throws IllegalArgumentException, IllegalAccessException;
     abstract void setValue(Field filed, Object object, Object value) throws IllegalAccessException;
 
-    private final static AnnotatedFields ANNOTATED_FIELDS = new AnnotatedFields() {
+    private final static AnnotatedFields<String> ANNOTATED_FIELDS = new AnnotatedFields<String>() {
         @Override
-        protected Annotated provideAnnotated(Annotation annotation, Field field) {
+        protected Annotated<String> provideAnnotated(Annotation annotation, Field field) {
             if (annotation instanceof Member) {
-                return new Annotated(field, -1);
+                Member member = (Member) annotation;
+                return new Annotated<>(field, member.value());
             }
 
             return null;
@@ -26,8 +27,8 @@ public abstract class Bundling {
         try {
             Class<?> ownerClass = getClass();
             while(ownerClass != Bundling.class) {
-                for(AnnotatedFields.Annotated annotated : ANNOTATED_FIELDS.getAnnotatedFields(getClass())) {
-                    String name = annotated.field.getName();
+                for(AnnotatedFields.Annotated<String> annotated : ANNOTATED_FIELDS.getAnnotatedFields(getClass())) {
+                    String name = getName(annotated);
                     Class<?> type = annotated.field.getType();
                     if (type == String.class) {
                         String value = (String) getValue(annotated.field, this);
@@ -55,8 +56,8 @@ public abstract class Bundling {
         try {
             Class<?> ownerClass = getClass();
             while(ownerClass != Bundling.class) {
-                for(AnnotatedFields.Annotated annotated : ANNOTATED_FIELDS.getAnnotatedFields(getClass())) {
-                    String name = annotated.field.getName();
+                for(AnnotatedFields.Annotated<String> annotated : ANNOTATED_FIELDS.getAnnotatedFields(getClass())) {
+                    String name = getName(annotated);
                     Class<?> type = annotated.field.getType();
                     Object value;
                     if (type == String.class) {
@@ -76,7 +77,13 @@ public abstract class Bundling {
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private String getName(AnnotatedFields.Annotated<String> annotated) {
+        if (annotated.id.length() > 0) {
+            return annotated.id;
+        }
+        return annotated.field.getName();
     }
 
 }

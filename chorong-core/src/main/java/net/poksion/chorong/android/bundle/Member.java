@@ -7,11 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Annotation Annotated
+ * Annotation Member
  * It is marked on fields to want bundling with {@link Bundling}
  */
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface Member {
-
+    String value() default "";
 }

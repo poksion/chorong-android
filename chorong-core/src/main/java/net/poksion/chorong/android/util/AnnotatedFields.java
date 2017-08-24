@@ -7,28 +7,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AnnotatedFields {
-    public final static class Annotated {
+public abstract class AnnotatedFields<IdT> {
+    public final static class Annotated<IdT> {
         public final Field field;
-        public final int id;
+        public final IdT id;
 
-        public Annotated(Field field, int id) {
+        public Annotated(Field field, IdT id) {
             this.field = field;
             this.id = id;
         }
     }
 
-    protected abstract Annotated provideAnnotated(Annotation annotation, Field field);
+    protected abstract Annotated<IdT> provideAnnotated(Annotation annotation, Field field);
 
-    private final Map<String, List<Annotated>> CLASS_CACHED = new ConcurrentHashMap<>();
+    private final Map<String, List<Annotated<IdT>>> CLASS_CACHED = new ConcurrentHashMap<>();
 
-    public List<Annotated> getAnnotatedFields(Class<?> ownerClass) {
-        List<Annotated> ownerClassCached = CLASS_CACHED.get(ownerClass.getName());
+    public List<Annotated<IdT>> getAnnotatedFields(Class<?> ownerClass) {
+        List<Annotated<IdT>> ownerClassCached = CLASS_CACHED.get(ownerClass.getName());
         if (ownerClassCached == null) {
             ownerClassCached = new ArrayList<>();
             for (Field field : ownerClass.getDeclaredFields()) {
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    Annotated annotatedField = provideAnnotated(annotation, field);
+                    Annotated<IdT> annotatedField = provideAnnotated(annotation, field);
                     if (annotatedField != null) {
                         ownerClassCached.add(annotatedField);
                     }

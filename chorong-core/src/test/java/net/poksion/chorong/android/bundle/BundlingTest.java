@@ -14,7 +14,7 @@ import org.robolectric.annotation.Config;
 public class BundlingTest {
     public static class BundlingClass extends Bundling {
 
-        @Member String stringMember;
+        @Member("explicit_id") String stringMember;
         @Member int primitiveIntMember;
         @Member Integer objectIntegerMember;
 
@@ -38,6 +38,7 @@ public class BundlingTest {
 
         Bundle bundle = bundling.toBundle();
         assertThat(bundle).isNotNull();
+        assertThat(bundle.getString("explicit_id")).isEqualTo(bundling.stringMember);
 
         BundlingClass unBundling = new BundlingClass();
         unBundling.fromBundle(bundle);
