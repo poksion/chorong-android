@@ -30,14 +30,14 @@ public abstract class Bundling {
                 for(AnnotatedFields.Annotated<String> annotated : ANNOTATED_FIELDS.getAnnotatedFields(getClass())) {
                     String name = getName(annotated);
                     Class<?> type = annotated.field.getType();
-                    if (type == String.class) {
-                        String value = (String) getValue(annotated.field, this);
+                    if (type == String.class || type == NullSafe.String.class) {
+                        String value = (String) NullSafe.getNullSafeValue(getValue(annotated.field, this));
                         bundle.putString(name, value);
-                    } else if (type == int.class || type == Integer.class) {
-                        Integer value = (Integer) getValue(annotated.field, this);
+                    } else if (type == int.class || type == Integer.class || type == NullSafe.Integer.class) {
+                        Integer value = (Integer) NullSafe.getNullSafeValue(getValue(annotated.field, this));
                         bundle.putInt(name, value);
-                    } else if (type == long.class || type == Long.class) {
-                        Long value = (Long) getValue(annotated.field, this);
+                    } else if (type == long.class || type == Long.class || type == NullSafe.Long.class) {
+                        Long value = (Long) NullSafe.getNullSafeValue(getValue(annotated.field, this));
                         bundle.putLong(name, value);
                     } else {
                         throw new UnsupportedOperationException("cannot bundling");
@@ -60,12 +60,21 @@ public abstract class Bundling {
                     String name = getName(annotated);
                     Class<?> type = annotated.field.getType();
                     Object value;
-                    if (type == String.class) {
+                    if (type == String.class || type == NullSafe.String.class) {
                         value = bundle.getString(name);
-                    } else if (type == int.class || type == Integer.class) {
+                        if (type == NullSafe.String.class) {
+                            value = new NullSafe.String().set((String)value);
+                        }
+                    } else if (type == int.class || type == Integer.class || type == NullSafe.Integer.class) {
                         value = bundle.getInt(name);
-                    } else if (type == long.class || type == Long.class) {
+                        if (type == NullSafe.Integer.class) {
+                            value = new NullSafe.Integer().set((Integer)value);
+                        }
+                    } else if (type == long.class || type == Long.class || type == NullSafe.Long.class) {
                         value = bundle.getLong(name);
+                        if (type == NullSafe.Long.class) {
+                            value = new NullSafe.Long().set((Long)value);
+                        }
                     } else {
                         throw new UnsupportedOperationException("cannot un-bundling");
                     }
