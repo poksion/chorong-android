@@ -9,13 +9,7 @@ public final class NullSafe {
 
     static Object getNullSafeValue(Object object) {
         if (object instanceof Base) {
-            Base base = (Base) object;
-
-            if (base.value == null) {
-                base.value = base.getDefaultValue();
-            }
-
-            return base.value;
+            return ((Base) object).getNullSafeValue();
         } else {
             return object;
         }
@@ -24,6 +18,14 @@ public final class NullSafe {
     static abstract class Base {
         Object value;
         abstract Object getDefaultValue();
+
+        Object getNullSafeValue() {
+            if (value == null) {
+                value = getDefaultValue();
+            }
+
+            return value;
+        }
     }
 
     public static final class String extends Base {
@@ -38,7 +40,7 @@ public final class NullSafe {
         }
 
         public java.lang.String get() {
-            return (java.lang.String) value;
+            return (java.lang.String) getNullSafeValue();
         }
     }
 
@@ -54,7 +56,7 @@ public final class NullSafe {
         }
 
         public java.lang.Integer get() {
-            return (java.lang.Integer) value;
+            return (java.lang.Integer) getNullSafeValue();
         }
     }
 
@@ -70,7 +72,7 @@ public final class NullSafe {
         }
 
         public java.lang.Long get() {
-            return (java.lang.Long) value;
+            return (java.lang.Long) getNullSafeValue();
         }
     }
 
