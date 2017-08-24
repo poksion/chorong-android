@@ -19,12 +19,12 @@ public class BundlingTest {
         @Member Integer objectIntegerMember;
 
         @Override
-        Object getValue(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
+        protected Object getValue(Field field, Object object) throws IllegalArgumentException, IllegalAccessException {
             return field.get(object);
         }
 
         @Override
-        void setValue(Field filed, Object object, Object value) throws IllegalAccessException {
+        protected void setValue(Field filed, Object object, Object value) throws IllegalAccessException {
             filed.set(object, value);
         }
     }
