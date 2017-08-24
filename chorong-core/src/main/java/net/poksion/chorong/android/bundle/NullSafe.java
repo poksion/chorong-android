@@ -34,9 +34,9 @@ public final class NullSafe {
             return DEFAULT_STRING;
         }
 
-        public java.lang.String set(java.lang.String value) {
+        public String set(java.lang.String value) {
             this.value = value;
-            return get();
+            return this;
         }
 
         public java.lang.String get() {
@@ -50,9 +50,9 @@ public final class NullSafe {
             return DEFAULT_INTEGER;
         }
 
-        public java.lang.Integer set(java.lang.Integer value) {
+        public Integer set(java.lang.Integer value) {
             this.value = value;
-            return get();
+            return this;
         }
 
         public java.lang.Integer get() {
@@ -66,9 +66,9 @@ public final class NullSafe {
             return DEFAULT_LONG;
         }
 
-        public java.lang.Long set(java.lang.Long value) {
+        public Long set(java.lang.Long value) {
             this.value = value;
-            return get();
+            return this;
         }
 
         public java.lang.Long get() {
