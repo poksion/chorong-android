@@ -2,10 +2,9 @@ package net.poksion.chorong.android.module;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import net.poksion.chorong.android.util.AnnotatedFields;
 
 /**
  * Module Factory.
@@ -31,18 +30,18 @@ public final class ModuleFactory {
         void onInit(Object host, SingletonBinder singletonBinder);
     }
 
-    private final static class AssemblingField {
-        private final Field field;
-        private final int id;
-
-        private AssemblingField(Field field, int id) {
-            this.field = field;
-            this.id = id;
-        }
-    }
-
     private final static Map<String, Object> MODULES = new ConcurrentHashMap<>();
-    private final static Map<String, List<AssemblingField>> CACHED_ASSEMBLE_FIELDS = new ConcurrentHashMap<>();
+    private final static AnnotatedFields ANNOTATED_FIELDS = new AnnotatedFields() {
+        @Override
+        protected Annotated provideAnnotated(Annotation annotation, Field field) {
+            if (annotation instanceof Assemble) {
+                Assemble assemble = (Assemble)annotation;
+                return new Annotated(field, assemble.value());
+            }
+
+            return null;
+        }
+    };
 
     private ModuleFactory() {
 
@@ -78,43 +77,27 @@ public final class ModuleFactory {
 
         Class<?> assembleOwnerClass = assembler.getClass();
         while (assembleOwnerClass != Object.class) {
-            assemble(assembler, getAssembleFields(assembleOwnerClass), assembler);
+            assemble(assembler, assembleOwnerClass, assembler);
             assembleOwnerClass = assembleOwnerClass.getSuperclass();
         }
 
         assembleOwnerClass = host.getClass();
         Class<?> hostParentClass = hostClass.getSuperclass();
         while (assembleOwnerClass != hostParentClass) {
-            assemble(host, getAssembleFields(assembleOwnerClass), assembler);
+            assemble(host, assembleOwnerClass, assembler);
             assembleOwnerClass = assembleOwnerClass.getSuperclass();
         }
     }
 
-    private static List<AssemblingField> getAssembleFields(Class<?> assembleOwnerClass) {
-        List<AssemblingField> cachedFields = CACHED_ASSEMBLE_FIELDS.get(assembleOwnerClass.getName());
-        if (cachedFields == null) {
-            cachedFields = new ArrayList<>();
-            for (Field field : assembleOwnerClass.getDeclaredFields()) {
-                Assemble assembleAnnotation = getAssembleAnnotation(field);
-                if (assembleAnnotation != null) {
-                    cachedFields.add(new AssemblingField(field, assembleAnnotation.value()));
-                }
-            }
-            CACHED_ASSEMBLE_FIELDS.put(assembleOwnerClass.getName(), cachedFields);
-        }
+    private static void assemble(Object host, Class<?> assembleOwnerClass, Assembler assembler) {
+        for (AnnotatedFields.Annotated annotated : ANNOTATED_FIELDS.getAnnotatedFields(assembleOwnerClass)) {
 
-        return cachedFields;
-    }
+            Class<?> filedClass = annotated.field.getType();
 
-    private static void assemble(Object host, List<AssemblingField> assemblingFields, Assembler assembler) {
-        for (AssemblingField assemblingField : assemblingFields) {
-
-            Class<?> filedClass = assemblingField.field.getType();
-
-            Object module = assembler.findModule(filedClass, assemblingField.id);
+            Object module = assembler.findModule(filedClass, annotated.id);
             if (module == null) {
                 try {
-                    Object member = assemblingField.field.get(host);
+                    Object member = annotated.field.get(host);
                     if (member != null) {
                         return;
                     }
@@ -122,7 +105,7 @@ public final class ModuleFactory {
 
                 String message =
                         "Fail finding module for : " +
-                        filedClass.getName() + ", (id:" + assemblingField.id + ") " +
+                        filedClass.getName() + ", (id:" + annotated.id + ") " +
                         "Check findModule method in Assembler or " +
                         "order of ModuleFactory.assemble (The subclass should call it before)";
 
@@ -130,21 +113,10 @@ public final class ModuleFactory {
             }
 
             try {
-                assembler.setField(assemblingField.field, host, module);
+                assembler.setField(annotated.field, host, module);
             } catch(IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-
-    private static Assemble getAssembleAnnotation(Field field) {
-        for (Annotation annotation : field.getDeclaredAnnotations()) {
-            if (annotation instanceof Assemble) {
-                return (Assemble)annotation;
-            }
-        }
-
-        return null;
-    }
-
 }
