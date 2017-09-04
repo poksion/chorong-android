@@ -15,9 +15,14 @@ public abstract class ViewModuleAssembler implements Assembler {
         Object provide(int id);
     }
 
-    public interface IndexedProvider {
-        Class<?> getIndexClass();
-        Object provide();
+    public static abstract class IndexedProvider<T> {
+        private final Class<T> indexedClass;
+
+        public IndexedProvider(Class<T> indexedClass) {
+            this.indexedClass = indexedClass;
+        }
+
+        protected abstract T provide();
     }
 
     protected final class Factory {
@@ -29,7 +34,7 @@ public abstract class ViewModuleAssembler implements Assembler {
         }
 
         public void addIndexedProvider(IndexedProvider provider) {
-            Class<?> indexClass = provider.getIndexClass();
+            Class<?> indexClass = provider.indexedClass;
             indexedProviders.put(indexClass, provider);
         }
     }
