@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.view.View;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class ViewModuleAssembler implements Assembler {
 
@@ -13,11 +15,22 @@ public abstract class ViewModuleAssembler implements Assembler {
         Object provide(int id);
     }
 
+    public interface IndexedProvider {
+        Class<?> getIndexClass();
+        Object provide();
+    }
+
     protected final class Factory {
         private final List<Provider> providers = new ArrayList<>();
+        private final Map<Class<?>, IndexedProvider> indexedProviders = new HashMap<>();
 
         public void addProvider(Provider provider) {
             providers.add(provider);
+        }
+
+        public void addIndexedProvider(IndexedProvider provider) {
+            Class<?> indexClass = provider.getIndexClass();
+            indexedProviders.put(indexClass, provider);
         }
     }
 
@@ -36,6 +49,15 @@ public abstract class ViewModuleAssembler implements Assembler {
 
     @Override
     public Object findModule(Class<?> filedClass, int id) {
+        IndexedProvider indexedProvider = factory.indexedProviders.get(filedClass);
+        if (indexedProvider != null) {
+            return indexedProvider.provide();
+        }
+
+        Object module = (id == 0) ? ModuleFactory.get(filedClass.getName()) : null;
+        if (module != null) {
+            return module;
+        }
 
         for (Provider provider : factory.providers) {
             if (provider.isMatchedField(filedClass)) {
@@ -43,18 +65,10 @@ public abstract class ViewModuleAssembler implements Assembler {
             }
         }
 
-        if (id <= 0) {
-            return ModuleFactory.get(filedClass.getName());
-        }
-
-        Object module = null;
-
         if (View.class.isAssignableFrom(filedClass)) {
-
             if (containerView != null) {
                 module = containerView.findViewById(id);
             }
-
             if (containerActivity != null && module == null) {
                 module = containerActivity.findViewById(id);
             }

@@ -1,6 +1,9 @@
 package net.poksion.chorong.android.task;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -70,7 +73,8 @@ public class TaskRunnerEtcTest {
         };
         taskRunner.runBlockingTask(blockingTask);
 
-        final Object lock = new Object();
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        final BlockingQueue<Boolean> lock = new LinkedBlockingQueue<>();
 
         Task<DummyListener> task = new Task<DummyListener>() {
             @Override
@@ -78,8 +82,10 @@ public class TaskRunnerEtcTest {
                 String name = Thread.currentThread().getName();
                 assertThat(name).contains("TaskQueueWithAsync Worker Thread");
 
-                synchronized(lock) {
-                    lock.notify();
+                try {
+                    lock.put(true);
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -91,12 +97,10 @@ public class TaskRunnerEtcTest {
 
         taskRunner.runTask(task);
 
-        synchronized(lock) {
-            try {
-                lock.wait();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            lock.poll(10, TimeUnit.SECONDS);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
