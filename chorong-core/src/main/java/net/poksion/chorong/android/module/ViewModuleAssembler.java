@@ -29,13 +29,13 @@ public abstract class ViewModuleAssembler implements Assembler {
 
     protected final class Factory {
         private final List<Provider> providers = new ArrayList<>();
-        private final Map<String, IndexedProvider> indexedProviders = new HashMap<>();
+        private final Map<String, IndexedProvider<?>> indexedProviders = new HashMap<>();
 
         public void addProvider(Provider provider) {
             providers.add(provider);
         }
 
-        public void addIndexedProvider(IndexedProvider provider) {
+        public <T> void addIndexedProvider(IndexedProvider<T> provider) {
             indexedProviders.put(provider.getIndexName(), provider);
         }
     }
@@ -55,7 +55,7 @@ public abstract class ViewModuleAssembler implements Assembler {
 
     @Override
     public Object findModule(Class<?> fieldClass, int id) {
-        IndexedProvider indexedProvider = factory.indexedProviders.get(fieldClass.getName());
+        IndexedProvider<?> indexedProvider = factory.indexedProviders.get(fieldClass.getName());
         if (indexedProvider != null) {
             return indexedProvider.provide();
         }
