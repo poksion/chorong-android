@@ -3,6 +3,8 @@ package net.poksion.chorong.android.module;
 import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.view.View;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,31 +13,30 @@ import java.util.Map;
 public abstract class ViewModuleAssembler implements Assembler {
 
     public interface Provider {
-        boolean isMatchedField(Class<?> filedClass);
+        boolean isMatchedField(Class<?> fieldClass);
         Object provide(int id);
     }
 
     public static abstract class IndexedProvider<T> {
-        private final Class<T> indexedClass;
-
-        public IndexedProvider(Class<T> indexedClass) {
-            this.indexedClass = indexedClass;
-        }
-
         protected abstract T provide();
+
+        private String getIndexName() {
+            Type superclass = getClass().getGenericSuperclass();
+            Type type = ((ParameterizedType)superclass).getActualTypeArguments()[0];
+            return type.toString().replace("class ", "");
+        }
     }
 
     protected final class Factory {
         private final List<Provider> providers = new ArrayList<>();
-        private final Map<Class<?>, IndexedProvider> indexedProviders = new HashMap<>();
+        private final Map<String, IndexedProvider> indexedProviders = new HashMap<>();
 
         public void addProvider(Provider provider) {
             providers.add(provider);
         }
 
         public void addIndexedProvider(IndexedProvider provider) {
-            Class<?> indexClass = provider.indexedClass;
-            indexedProviders.put(indexClass, provider);
+            indexedProviders.put(provider.getIndexName(), provider);
         }
     }
 
@@ -53,24 +54,24 @@ public abstract class ViewModuleAssembler implements Assembler {
     }
 
     @Override
-    public Object findModule(Class<?> filedClass, int id) {
-        IndexedProvider indexedProvider = factory.indexedProviders.get(filedClass);
+    public Object findModule(Class<?> fieldClass, int id) {
+        IndexedProvider indexedProvider = factory.indexedProviders.get(fieldClass.getName());
         if (indexedProvider != null) {
             return indexedProvider.provide();
         }
 
-        Object module = (id == 0) ? ModuleFactory.get(filedClass.getName()) : null;
+        Object module = (id == 0) ? ModuleFactory.get(fieldClass.getName()) : null;
         if (module != null) {
             return module;
         }
 
         for (Provider provider : factory.providers) {
-            if (provider.isMatchedField(filedClass)) {
+            if (provider.isMatchedField(fieldClass)) {
                 return provider.provide(id);
             }
         }
 
-        if (View.class.isAssignableFrom(filedClass)) {
+        if (View.class.isAssignableFrom(fieldClass)) {
             if (containerView != null) {
                 module = containerView.findViewById(id);
             }

@@ -71,8 +71,8 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
 
         factory.addProvider(new Provider() {
             @Override
-            public boolean isMatchedField(Class<?> filedClass) {
-                return filedClass.equals(Integer.class);
+            public boolean isMatchedField(Class<?> fieldClass) {
+                return fieldClass.equals(Integer.class);
             }
 
             @Override
@@ -89,8 +89,8 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
 
         factory.addProvider(new Provider() {
             @Override
-            public boolean isMatchedField(Class<?> filedClass) {
-                return filedClass.equals(Router.class);
+            public boolean isMatchedField(Class<?> fieldClass) {
+                return fieldClass.equals(Router.class);
             }
 
             @Override
@@ -104,7 +104,7 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
     }
 
     @Override
-    public void setField(Field filed, Object object, Object value) throws IllegalAccessException {
-        filed.set(object, value);
+    public void setField(Field field, Object object, Object value) throws IllegalAccessException {
+        field.set(object, value);
     }
 }

@@ -92,9 +92,9 @@ public final class ModuleFactory {
     private static void assemble(Object host, Class<?> assembleOwnerClass, Assembler assembler) {
         for (AnnotatedFields.Annotated<Integer> annotated : ANNOTATED_FIELDS.getAnnotatedFields(assembleOwnerClass)) {
 
-            Class<?> filedClass = annotated.field.getType();
+            Class<?> fieldClass = annotated.field.getType();
 
-            Object module = assembler.findModule(filedClass, annotated.id);
+            Object module = assembler.findModule(fieldClass, annotated.id);
             if (module == null) {
                 try {
                     Object member = annotated.field.get(host);
@@ -105,7 +105,7 @@ public final class ModuleFactory {
 
                 String message =
                         "Fail finding module for : " +
-                        filedClass.getName() + ", (id:" + annotated.id + ") " +
+                        fieldClass.getName() + ", (id:" + annotated.id + ") " +
                         "Check findModule method in Assembler or " +
                         "order of ModuleFactory.assemble (The subclass should call it before)";
 

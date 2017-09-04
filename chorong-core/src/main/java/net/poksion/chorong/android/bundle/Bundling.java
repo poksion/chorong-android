@@ -8,7 +8,7 @@ import net.poksion.chorong.android.util.AnnotatedFields;
 public abstract class Bundling {
 
     protected abstract Object getValue(Field field, Object object) throws IllegalArgumentException, IllegalAccessException;
-    protected abstract void setValue(Field filed, Object object, Object value) throws IllegalAccessException;
+    protected abstract void setValue(Field field, Object object, Object value) throws IllegalAccessException;
 
     private final static AnnotatedFields<String> ANNOTATED_FIELDS = new AnnotatedFields<String>() {
         @Override

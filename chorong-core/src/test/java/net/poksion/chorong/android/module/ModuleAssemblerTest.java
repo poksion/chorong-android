@@ -27,7 +27,7 @@ public class ModuleAssemblerTest {
         @Assemble DummyModule dummyModule;
 
         @Override
-        public Object findModule(Class<?> filedClass, int id) {
+        public Object findModule(Class<?> fieldClass, int id) {
             if (id > 0) {
                 if (id == 1) {
                     return "id-assembled-1";
@@ -40,12 +40,12 @@ public class ModuleAssemblerTest {
                 return null;
             }
 
-            return super.findModule(filedClass, id);
+            return super.findModule(fieldClass, id);
         }
 
         @Override
-        public void setField(Field filed, Object object, Object value) throws IllegalAccessException {
-            filed.set(object, value);
+        public void setField(Field field, Object object, Object value) throws IllegalAccessException {
+            field.set(object, value);
         }
     }
 
@@ -89,7 +89,7 @@ public class ModuleAssemblerTest {
         boolean caught = false;
         try {
             ModuleFactory.assemble(PrivateMemberClass.class, testClassForNonAccessibleField, new TestModuleAssembler());
-            fail("impossible since non-accessible on PrivateMemberClass fileds");
+            fail("impossible since non-accessible on PrivateMemberClass fields");
         } catch(Exception e) {
             caught = true;
         }

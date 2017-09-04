@@ -96,8 +96,8 @@ public class ViewModuleAssemblerTest {
         protected void onInit(Factory factory) {
             factory.addProvider(new Provider() {
                 @Override
-                public boolean isMatchedField(Class<?> filedClass) {
-                    return filedClass.equals(TestPresenter.class);
+                public boolean isMatchedField(Class<?> fieldClass) {
+                    return fieldClass.equals(TestPresenter.class);
                 }
 
                 @Override
@@ -109,8 +109,8 @@ public class ViewModuleAssemblerTest {
         }
 
         @Override
-        public void setField(Field filed, Object object, Object value) throws IllegalAccessException {
-            filed.set(object, value);
+        public void setField(Field field, Object object, Object value) throws IllegalAccessException {
+            field.set(object, value);
         }
     }
 

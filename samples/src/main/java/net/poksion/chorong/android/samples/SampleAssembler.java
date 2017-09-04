@@ -30,8 +30,8 @@ class SampleAssembler<T extends Activity> extends ViewModuleAssembler {
 
         factory.addProvider(new Provider() {
             @Override
-            public boolean isMatchedField(Class<?> filedClass) {
-                return filedClass.equals(LinearLayout.class);
+            public boolean isMatchedField(Class<?> fieldClass) {
+                return fieldClass.equals(LinearLayout.class);
             }
 
             @Override
@@ -49,8 +49,8 @@ class SampleAssembler<T extends Activity> extends ViewModuleAssembler {
 
         factory.addProvider(new Provider() {
             @Override
-            public boolean isMatchedField(Class<?> filedClass) {
-                return filedClass.equals(FlatCardRecyclerView.class);
+            public boolean isMatchedField(Class<?> fieldClass) {
+                return fieldClass.equals(FlatCardRecyclerView.class);
             }
 
             @Override
@@ -69,7 +69,7 @@ class SampleAssembler<T extends Activity> extends ViewModuleAssembler {
     }
 
     @Override
-    public void setField(Field filed, Object object, Object value) throws IllegalAccessException {
-        filed.set(object, value);
+    public void setField(Field field, Object object, Object value) throws IllegalAccessException {
+        field.set(object, value);
     }
 }

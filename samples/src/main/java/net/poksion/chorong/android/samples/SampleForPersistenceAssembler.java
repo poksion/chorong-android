@@ -23,8 +23,8 @@ class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence
 
         factory.addProvider(new Provider() {
             @Override
-            public boolean isMatchedField(Class<?> filedClass) {
-                return filedClass.equals(SampleForPersistencePresenter.class);
+            public boolean isMatchedField(Class<?> fieldClass) {
+                return fieldClass.equals(SampleForPersistencePresenter.class);
             }
 
             @Override
@@ -37,8 +37,8 @@ class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence
 
         factory.addProvider(new Provider() {
             @Override
-            public boolean isMatchedField(Class<?> filedClass) {
-                return filedClass.equals(SampleItemViewModelUtil.class);
+            public boolean isMatchedField(Class<?> fieldClass) {
+                return fieldClass.equals(SampleItemViewModelUtil.class);
             }
 
             @Override
@@ -49,7 +49,7 @@ class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence
     }
 
     @Override
-    public void setField(Field filed, Object object, Object value) throws IllegalAccessException {
-        filed.set(object, value);
+    public void setField(Field field, Object object, Object value) throws IllegalAccessException {
+        field.set(object, value);
     }
 }

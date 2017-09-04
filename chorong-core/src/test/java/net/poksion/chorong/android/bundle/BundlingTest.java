@@ -24,8 +24,8 @@ public class BundlingTest {
         }
 
         @Override
-        protected void setValue(Field filed, Object object, Object value) throws IllegalAccessException {
-            filed.set(object, value);
+        protected void setValue(Field field, Object object, Object value) throws IllegalAccessException {
+            field.set(object, value);
         }
     }
 
