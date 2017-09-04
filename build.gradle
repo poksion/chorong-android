@@ -2,8 +2,8 @@
 
 buildscript {
 
-    ext._version_code     = 1020
-    ext._version_name     = '0.1.20'
+    ext._version_code     = 1021
+    ext._version_name     = '0.1.21'
 
     ext._compile_sdk_ver  = 24
     ext._build_tools_ver  = '24.0.2'

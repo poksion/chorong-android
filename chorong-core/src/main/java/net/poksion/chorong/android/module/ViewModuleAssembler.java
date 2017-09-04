@@ -60,7 +60,7 @@ public abstract class ViewModuleAssembler implements Assembler {
             return indexedProvider.provide();
         }
 
-        Object module = (id == 0) ? ModuleFactory.get(fieldClass.getName()) : null;
+        Object module = (id == -1) ? ModuleFactory.get(fieldClass.getName()) : null;
         if (module != null) {
             return module;
         }
