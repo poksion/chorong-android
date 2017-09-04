@@ -87,14 +87,9 @@ class SampleForRoutingAssembler extends SampleAssembler<SampleForRouting> {
             }
         });
 
-        factory.addProvider(new Provider() {
+        factory.addIndexedProvider(new IndexedProvider<Router>() {
             @Override
-            public boolean isMatchedField(Class<?> fieldClass) {
-                return fieldClass.equals(Router.class);
-            }
-
-            @Override
-            public Object provide(int id) {
+            public Router provide() {
                 Router<Integer> router = new Router<>("sample-router");
                 router.init(objectStore, currentRoutingId, listeningPerformer);
 

@@ -21,28 +21,18 @@ class SampleForPersistenceAssembler extends SampleAssembler<SampleForPersistence
     protected void onInit(Factory factory) {
         super.onInit(factory);
 
-        factory.addProvider(new Provider() {
+        factory.addIndexedProvider(new IndexedProvider<SampleForPersistencePresenter>() {
             @Override
-            public boolean isMatchedField(Class<?> fieldClass) {
-                return fieldClass.equals(SampleForPersistencePresenter.class);
-            }
-
-            @Override
-            public Object provide(int id) {
+            protected SampleForPersistencePresenter provide() {
                 return new SampleForPersistencePresenter(
                         new TaskRunnerAsyncShared<SampleForPersistencePresenter.View>(activity),
                         sampleItemRepository);
             }
         });
 
-        factory.addProvider(new Provider() {
+        factory.addIndexedProvider(new IndexedProvider<SampleItemViewModelUtil>() {
             @Override
-            public boolean isMatchedField(Class<?> fieldClass) {
-                return fieldClass.equals(SampleItemViewModelUtil.class);
-            }
-
-            @Override
-            public Object provide(int id) {
+            protected SampleItemViewModelUtil provide() {
                 return new SampleItemViewModelUtil();
             }
         });

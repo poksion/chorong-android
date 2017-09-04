@@ -47,14 +47,9 @@ class SampleAssembler<T extends Activity> extends ViewModuleAssembler {
             }
         });
 
-        factory.addProvider(new Provider() {
+        factory.addIndexedProvider(new IndexedProvider<FlatCardRecyclerView>() {
             @Override
-            public boolean isMatchedField(Class<?> fieldClass) {
-                return fieldClass.equals(FlatCardRecyclerView.class);
-            }
-
-            @Override
-            public Object provide(int id) {
+            protected FlatCardRecyclerView provide() {
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
@@ -65,7 +60,6 @@ class SampleAssembler<T extends Activity> extends ViewModuleAssembler {
                 return flatCardRecyclerView;
             }
         });
-
     }
 
     @Override

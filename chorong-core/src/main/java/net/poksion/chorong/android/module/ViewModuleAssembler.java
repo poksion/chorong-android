@@ -23,6 +23,9 @@ public abstract class ViewModuleAssembler implements Assembler {
         private String getIndexName() {
             Type superclass = getClass().getGenericSuperclass();
             Type type = ((ParameterizedType)superclass).getActualTypeArguments()[0];
+            if (type instanceof ParameterizedType) {
+                throw new IllegalArgumentException( "The index class(" + type.toString() + ") do not permit generic");
+            }
             return type.toString().replace("class ", "");
         }
     }
