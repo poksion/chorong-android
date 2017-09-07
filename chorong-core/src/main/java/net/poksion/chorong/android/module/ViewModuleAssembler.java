@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public abstract class ViewModuleAssembler implements Assembler {
+    private static final Pattern USELESS_TOKENS = Pattern.compile("(interface\\s|class\\s)");
 
     public interface Provider {
         boolean isMatchedField(Class<?> fieldClass);
@@ -20,14 +22,13 @@ public abstract class ViewModuleAssembler implements Assembler {
     public static abstract class IndexedProvider<T> {
         protected abstract T provide();
 
-        private static final String REGEX = "(interface\\s|class\\s)";
         private String getIndexName() {
             Type superclass = getClass().getGenericSuperclass();
             Type type = ((ParameterizedType)superclass).getActualTypeArguments()[0];
             if (type instanceof ParameterizedType) {
-                throw new IllegalArgumentException( "The index class(" + type.toString() + ") do not permit generic");
+                throw new IllegalArgumentException("The index class(" + type.toString() + ") do not permit generic");
             }
-            return type.toString().replaceFirst(REGEX, "");
+            return USELESS_TOKENS.matcher(type.toString()).replaceFirst("");
         }
     }
 
