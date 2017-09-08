@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.lang.reflect.Field;
+import net.poksion.chorong.android.bundle.Member;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +14,8 @@ public class ModuleAssemblerTest {
     @Assemble DummyModule assembledDummyModule;
     @Assemble(1) String idAssembled1;
     @Assemble(2) String idAssembled2;
+
+    @Member String noAssembleAnnotation;
 
     private static class DummyModule {
         final String value;
@@ -54,6 +57,7 @@ public class ModuleAssemblerTest {
         assembledDummyModule = null;
         idAssembled1 = null;
         idAssembled2 = null;
+        noAssembleAnnotation = null;
 
         ModuleFactory.reset();
         ModuleFactory.init(this, new ModuleFactory.Initializer() {
@@ -72,6 +76,8 @@ public class ModuleAssemblerTest {
 
         assertThat(idAssembled1).isEqualTo("id-assembled-1");
         assertThat(idAssembled2).isEqualTo("id-assembled-2");
+
+        assertThat(noAssembleAnnotation).isNull();
     }
 
     @Test
@@ -83,18 +89,16 @@ public class ModuleAssemblerTest {
         assertThat(assembler.dummyModule.value).isEqualTo("dummy-module");
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void check_error_if_does_not_have_access_right() {
         PrivateMemberClass testClassForNonAccessibleField = new PrivateMemberClass();
-        boolean caught = false;
-        try {
-            ModuleFactory.assemble(PrivateMemberClass.class, testClassForNonAccessibleField, new TestModuleAssembler());
-            fail("impossible since non-accessible on PrivateMemberClass fields");
-        } catch(Exception e) {
-            caught = true;
-        }
+        ModuleFactory.assemble(PrivateMemberClass.class, testClassForNonAccessibleField, new TestModuleAssembler());
+    }
 
-        assertThat(caught).isTrue();
+    @Test(expected = RuntimeException.class)
+    public void check_error_if_does_not_have_module_for_field() {
+        NoModuleMemberClass testClassForNoModuleMember = new NoModuleMemberClass();
+        ModuleFactory.assemble(NoModuleMemberClass.class, testClassForNoModuleMember, new TestModuleAssembler());
     }
 
 }
@@ -103,4 +107,9 @@ public class ModuleAssemblerTest {
 class PrivateMemberClass {
     private @Assemble(1) String idAssembled1;
     private @Assemble(2) String idAssembled2;
+}
+
+@SuppressWarnings("unused")
+class NoModuleMemberClass {
+    @Assemble Integer noModuleForInteger;
 }

@@ -39,6 +39,12 @@ public class ModuleFactoryTest {
         });
     }
 
+    @Test(expected = IllegalAccessException.class)
+    public void module_disallow_new_instance() throws IllegalAccessException, InstantiationException {
+        Class<ModuleFactory> moduleFactoryClass = ModuleFactory.class;
+        moduleFactoryClass.newInstance();
+    }
+
     @Test
     public void module_factory_should_return_request_module() {
         String testModule = (String) ModuleFactory.get(KEY);

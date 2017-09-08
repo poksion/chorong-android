@@ -18,8 +18,8 @@ import static org.mockito.Mockito.when;
 public class ViewModuleAssemblerTest {
 
     @Assemble(R.id.main_frame) FrameLayout mainFrame;
-    @Assemble(R.id.open_btn)   Button openBtn;
-    @Assemble                  TestPresenter testPresenter;
+    @Assemble(R.id.open_btn) Button openBtn;
+    @Assemble TestPresenter testPresenter;
 
     @Before
     public void setUp() {

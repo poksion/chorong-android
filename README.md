@@ -11,7 +11,7 @@ To use only core things (Module, Task, ...)
 
 ```groovy
 dependencies {
-    compile 'net.poksion:chorong-android-core:0.1.7'
+    compile 'net.poksion:chorong-android-core:0.1.25'
 }
 ```
 
@@ -19,8 +19,8 @@ If you want use UI stuff (ToolbarActivity, FlatCardRecyclerView, ...), append 'u
 
 ```groovy
 dependencies {
-    compile 'net.poksion:chorong-android-core:0.1.7'
-    compile 'net.poksion:chorong-android-ui:0.1.7'
+    compile 'net.poksion:chorong-android-core:0.1.25'
+    compile 'net.poksion:chorong-android-ui:0.1.25'
 }
 ```
 
@@ -42,7 +42,7 @@ protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup cont
     ModuleFactory.assemble(SampleForPersistence.class, this, new SampleForPersistenceAssembler(this, container));
 
     initCardView();
-    presenter.addItems(buildSampleDbItem());
+    presenter.readDb();
 }
 ```
 
@@ -68,7 +68,7 @@ public void showItems(List<SampleItem> itemList) {
 }
 ```
 
-The main UI compoent of SampleForPersistence is [FlatCardRecyclerView](chorong-ui/src/main/java/net/poksion/chorong/android/ui/card/FlatCardRecyclerView.java). [SampleItemViewModelUtil](samples/src/main/java/net/poksion/chorong/android/samples/ui/SampleItemViewModelUtil.java) is helper class for making ViewModel/ViewBinder used in FlatCardRecyclerView
+The main UI component of SampleForPersistence is [FlatCardRecyclerView](chorong-ui/src/main/java/net/poksion/chorong/android/ui/card/FlatCardRecyclerView.java). [SampleItemViewModelUtil](samples/src/main/java/net/poksion/chorong/android/samples/ui/SampleItemViewModelUtil.java) is helper class for making ViewModel/ViewBinder used in FlatCardRecyclerView
 
 See also : Module
 
