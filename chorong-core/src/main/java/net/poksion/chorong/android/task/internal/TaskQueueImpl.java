@@ -30,6 +30,9 @@ public abstract class TaskQueueImpl<ListenerT> implements TaskQueue<ListenerT> {
 
     @Override
     public void enqueue(long taskId, Task<ListenerT> task) {
+        while (taskList.containsKey(taskId)) {
+            taskId++;
+        }
         taskList.put(taskId, task);
         onRun(task, getResultSender(taskId));
     }
