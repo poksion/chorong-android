@@ -22,7 +22,19 @@ public class SampleForPersistencePresenter {
     private final TaskRunner<View> taskRunner;
     private final SampleItemRepository sampleItemRepository;
 
-    private final ObservingBuffer<SampleItem, View> observingBuffer = new ObservingBuffer<>();
+    private final ObservingBuffer<SampleItem, View> observingBuffer = new ObservingBuffer<>(
+            new ObservingBuffer.Callback<SampleItem, View>() {
+                @Override
+                public void completeOnMain(List<SampleItem> results, View listener) {
+                    listener.showItems(results);
+                }
+
+                @Override
+                public void completeOnSub(List<SampleItem> results, View listener) {
+                    listener.showItems(results);
+                }
+            }
+    );
 
     public SampleForPersistencePresenter(TaskRunner<View> taskRunner, SampleItemRepository sampleItemRepository) {
         this.taskRunner = taskRunner;
@@ -31,12 +43,7 @@ public class SampleForPersistencePresenter {
         taskRunner.registerObservingTask(new DbObservingTask<View>(sampleItemRepository) {
             @Override
             public void onChanged(List<SampleItem> sampleItems, View view) {
-                observingBuffer.buffering(sampleItems, view, new ObservingBuffer.Callback<SampleItem, View>() {
-                    @Override
-                    public void onComplete(List<SampleItem> sampleItems, View view) {
-                        view.showItems(sampleItems);
-                    }
-                });
+                observingBuffer.listenSub(sampleItems, view);
             }
         });
     }
@@ -55,13 +62,7 @@ public class SampleForPersistencePresenter {
 
             @Override
             protected void onResultSimple(List<SampleItem> sampleItems, View view) {
-                observingBuffer.completeMainTask(sampleItems, view, new ObservingBuffer.Callback<SampleItem, View>() {
-                    @Override
-                    public void onComplete(List<SampleItem> sampleItems, View view) {
-                        view.showItems(sampleItems);
-                    }
-                });
-
+                observingBuffer.completeMain(sampleItems, view);
             }
         });
     }

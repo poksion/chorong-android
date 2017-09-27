@@ -25,70 +25,70 @@ public class ObservingBufferTest {
     }
 
     private String[] dummyListener;
-    private ObservingBuffer<StubResult, String[]> observingBuffer;
 
     @Before
     public void setUp() {
-        observingBuffer = new ObservingBuffer<>();
         dummyListener = new String[] { "dummy-listener" };
     }
 
     @Test
     public void buffering_should_store_before_completing_main_task() {
-        List<StubResult> onBufferingResults = makeDummyBuffer(3, 0);
-        observingBuffer.buffering(onBufferingResults, dummyListener, new ObservingBuffer.Callback<StubResult, String[]>() {
-            @Override
-            public void onComplete(List<StubResult> results, String[] listener) {
-                fail("should not complete before completing main task");
-            }
-        });
+        List<StubResult> onMainResults = makeDummyBuffer(3, 2);
+        List<StubResult> onSubResults = makeDummyBuffer(3, 0);
 
-        List<StubResult> onMainTaskResults = makeDummyBuffer(3, 2);
-        observingBuffer.completeMainTask(onMainTaskResults, dummyListener, new ObservingBuffer.Callback<StubResult, String[]>() {
-            @Override
-            public void onComplete(List<StubResult> results, String[] listener) {
-                listener[0] = "called";
+        ObservingBuffer<StubResult, String[]> observingBuffer = new ObservingBuffer<>(
+                new ObservingBuffer.Callback<StubResult, String[]>() {
+                    @Override
+                    public void completeOnMain(List<StubResult> results, String[] listener) {
+                        listener[0] = "called";
 
-                // "2" is overlapped : 0, 1, 2 and 2, 3, 4
-                assertThat(results.size()).isEqualTo(5);
-            }
-        });
+                        // "2" is overlapped : 0, 1, 2 and 2, 3, 4
+                        assertThat(results.size()).isEqualTo(5);
+                    }
+
+                    @Override
+                    public void completeOnSub(List<StubResult> results, String[] listener) {
+                        fail("never complete on sub (just listening sub task)");
+                    }
+                }
+        );
+
+        observingBuffer.listenSub(onSubResults, dummyListener);
+        observingBuffer.completeMain(onMainResults, dummyListener);
 
         assertThat(dummyListener[0]).isEqualTo("called");
     }
 
     @Test
     public void buffering_should_call_complete_directly_after_completing_main_task() {
-        observingBuffer.completeMainTask(new ArrayList<StubResult>(), dummyListener, new ObservingBuffer.Callback<StubResult, String[]>() {
-            @Override
-            public void onComplete(List<StubResult> results, String[] listener) {
-                listener[0] = "called";
-            }
-        });
+        ObservingBuffer<StubResult, String[]> observingBuffer = new ObservingBuffer<>(
+                new ObservingBuffer.Callback<StubResult, String[]>() {
+                    @Override
+                    public void completeOnMain(List<StubResult> results, String[] listener) {
+                        listener[0] = "called";
+                    }
 
+                    @Override
+                    public void completeOnSub(List<StubResult> results, String[] listener) {
+                        listener[0] = "called-on-listenSub";
+                        assertThat(results.size()).isEqualTo(3);
+                    }
+                }
+        );
+
+        observingBuffer.completeMain(new ArrayList<StubResult>(), dummyListener);
         assertThat(dummyListener[0]).isEqualTo("called");
 
         List<StubResult> afterCompletingMainTaskResults = makeDummyBuffer(3, 0);
-        observingBuffer.buffering(afterCompletingMainTaskResults, dummyListener, new ObservingBuffer.Callback<StubResult, String[]>() {
-            @Override
-            public void onComplete(List<StubResult> results, String[] listener) {
-                listener[0] = "called-on-buffering";
+        observingBuffer.listenSub(afterCompletingMainTaskResults, dummyListener);
+        assertThat(dummyListener[0]).isEqualTo("called-on-listenSub");
 
-                assertThat(results.size()).isEqualTo(3);
-            }
-        });
-
-        assertThat(dummyListener[0]).isEqualTo("called-on-buffering");
-
-        // if reset main task, then not calling onComplete on buffering
-        observingBuffer.resetMainTask();
-        List<StubResult> afterResetMainTaskResult = makeDummyBuffer(3, 0);
-        observingBuffer.buffering(afterResetMainTaskResult, dummyListener, new ObservingBuffer.Callback<StubResult, String[]>() {
-            @Override
-            public void onComplete(List<StubResult> results, String[] listener) {
-                fail("should not call onComplete if main task reset");
-            }
-        });
+        // if re-start main task, then not calling completeOnSub on listenSub
+        observingBuffer.startMain();
+        List<StubResult> afterReStartMainTaskResult = makeDummyBuffer(4, 0);
+        dummyListener[0] = "restart-main-task";
+        observingBuffer.listenSub(afterReStartMainTaskResult, dummyListener);
+        assertThat(dummyListener[0]).isEqualTo("restart-main-task");
     }
 
     private List<StubResult> makeDummyBuffer(int cnt, int offset) {

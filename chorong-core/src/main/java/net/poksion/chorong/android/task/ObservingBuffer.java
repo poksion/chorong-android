@@ -14,23 +14,41 @@ public class ObservingBuffer<ResultT extends ObservingBuffer.Unique, ListenerT> 
     }
 
     public interface Callback<ResultT, ListenerT> {
-        void onComplete(List<ResultT> results, ListenerT listener);
+        void completeOnMain(List<ResultT> results, ListenerT listener);
+        void completeOnSub(List<ResultT> results, ListenerT listener);
     }
 
     private boolean taskDone = false;
+    private final Callback<ResultT, ListenerT> callback;
     private final Queue<ResultT> queue = new ConcurrentLinkedQueue<>();
 
-    public void resetMainTask() {
+    public ObservingBuffer(Callback<ResultT, ListenerT> callback) {
+        this.callback = callback;
+    }
+
+    public void startMain() {
         taskDone = false;
         queue.clear();
     }
 
-    public void completeMainTask(List<ResultT> results, ListenerT listener, Callback<ResultT, ListenerT> callback) {
+    public void completeMain(List<ResultT> results, ListenerT listener) {
+        complete(true, results, listener);
+    }
+
+    public void listenSub(List<ResultT> results, ListenerT listener) {
+        if (taskDone) {
+            complete(false, results, listener);
+        } else {
+            queue.addAll(results);
+        }
+    }
+
+    private void complete(boolean main, List<ResultT> results, ListenerT listener) {
         taskDone = true;
 
         List<ResultT> bufferedResults = new ArrayList<>();
-
         Set<String> ids = new HashSet<>();
+
         for (ResultT result : results) {
             bufferedResults.add(result);
             ids.add(result.getId());
@@ -41,17 +59,12 @@ public class ObservingBuffer<ResultT extends ObservingBuffer.Unique, ListenerT> 
                 bufferedResults.add(result);
             }
         }
-
         queue.clear();
 
-        callback.onComplete(bufferedResults, listener);
-    }
-
-    public void buffering(List<ResultT> results, ListenerT listener, Callback<ResultT, ListenerT> callback) {
-        if (taskDone) {
-            completeMainTask(results, listener, callback);
+        if (main) {
+            callback.completeOnMain(bufferedResults, listener);
         } else {
-            queue.addAll(results);
+            callback.completeOnSub(bufferedResults, listener);
         }
     }
 
