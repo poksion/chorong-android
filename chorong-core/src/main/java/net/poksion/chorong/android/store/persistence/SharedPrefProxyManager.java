@@ -9,7 +9,7 @@ import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.ObjectStoreApplication;
 import net.poksion.chorong.android.store.StoreAccessor;
 
-public class SharedPrefProxyManager {
+public class SharedPrefProxyManager extends ProxyManager {
 
     private static class SharedPrefProxy implements ObjectStore.PersistenceProxy {
 
@@ -67,7 +67,6 @@ public class SharedPrefProxyManager {
     }
 
     private final static String SHARED_PREF_KEY = "app-data-container";
-    private final ObjectStore objectStore;
     private final Application application;
     private final SharedPreferences sharedPreferences;
 
@@ -80,7 +79,8 @@ public class SharedPrefProxyManager {
     }
 
     public SharedPrefProxyManager(ObjectStore objectStore, Application application, String prefName) {
-        this.objectStore = objectStore;
+        super(objectStore);
+
         this.application = application;
         this.sharedPreferences = application.getSharedPreferences(prefName, Context.MODE_PRIVATE);
     }
@@ -100,6 +100,8 @@ public class SharedPrefProxyManager {
             @Nullable String prevPrefKey) {
 
         SharedPrefProxy proxy = new SharedPrefProxy(sharedPreferences, sharedPreKey, type);
+
+        ObjectStore objectStore = getRelatedObjectStore();
         objectStore.setPersistenceProxy(sharedPreKey, proxy);
 
         StoreAccessor<T> storeAccessor = new StoreAccessor<>(sharedPreKey, objectStore);

@@ -3,6 +3,7 @@ package net.poksion.chorong.android.samples.domain;
 import java.util.ArrayList;
 import java.util.List;
 import net.poksion.chorong.android.store.ObjectStore;
+import net.poksion.chorong.android.store.persistence.DatabaseProxyManager;
 import net.poksion.chorong.android.store.persistence.Result;
 
 public abstract class DbRepository {
@@ -23,13 +24,13 @@ public abstract class DbRepository {
 
     abstract String getRelatedDbMemeCacheStoreKey();
 
-    final ObjectStore objectStore;
+    private final DatabaseProxyManager databaseProxyManager;
 
-    DbRepository(ObjectStore objectStore) {
-        this.objectStore = objectStore;
+    DbRepository(DatabaseProxyManager databaseProxyManager) {
+        this.databaseProxyManager = databaseProxyManager;
     }
 
     ObjectStore getRelatedObjectStore() {
-        return objectStore;
+        return databaseProxyManager.getRelatedObjectStore();
     }
 }

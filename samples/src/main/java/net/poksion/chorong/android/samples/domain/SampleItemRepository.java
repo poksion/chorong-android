@@ -20,10 +20,12 @@ public class SampleItemRepository extends DbRepository {
     @VisibleForTesting public final static String SAMPLE_DB_CACHE_STATIC_KEY = "sample-db-cache-static-key";
     private final StoreAccessor<List<SampleItem>> dbCacheAccessor;
 
-    public SampleItemRepository(DatabaseProxyManager dbProxyManager, ObjectStore objectStore) {
-        super(objectStore);
+    public SampleItemRepository(DatabaseProxyManager dbProxyManager) {
+        super(dbProxyManager);
 
         dbProxyManager.installDbProxy(SAMPLE_DB_STATIC_KEY, SAMPLE_DB_TABLE, new DatabaseProxyDefaultFactory());
+
+        ObjectStore objectStore = dbProxyManager.getRelatedObjectStore();
         dbSimpleReadingAccessor = DatabaseProxyDefaultFactory.makeSimpleReadingAccessor(SAMPLE_DB_STATIC_KEY, objectStore);
         dbSimpleAddingAccessor = DatabaseProxyDefaultFactory.makeSimpleAddingAccessor(SAMPLE_DB_STATIC_KEY, objectStore, false);
 
@@ -40,6 +42,7 @@ public class SampleItemRepository extends DbRepository {
     }
 
     public SampleItem find(String id) {
+        ObjectStore objectStore = getRelatedObjectStore();
         StoreAccessor<Result.Rows> storeAccessor =  DatabaseProxyDefaultFactory.makeSimpleReadingAccessor(SAMPLE_DB_STATIC_KEY, objectStore, "id=" + id);
         List<SampleItem> result = convertModel(storeAccessor.read());
         if (result.isEmpty()) {

@@ -12,9 +12,8 @@ import java.util.Map;
 import net.poksion.chorong.android.store.ObjectStore;
 import net.poksion.chorong.android.store.ObjectStoreApplication;
 
-public class DatabaseProxyManager {
+public class DatabaseProxyManager extends ProxyManager {
 
-    private final ObjectStore objectStore;
     private final List<Result.Scheme> schemes;
     private final Result.Scheme currentScheme;
 
@@ -79,7 +78,8 @@ public class DatabaseProxyManager {
     }
 
     public DatabaseProxyManager(ObjectStore objectStore, Application application, String dbName, List<Result.Scheme> schemes) {
-        this.objectStore = objectStore;
+        super(objectStore);
+
         this.schemes = schemes;
 
         currentScheme = getScheme(schemes, -1);
@@ -87,7 +87,7 @@ public class DatabaseProxyManager {
     }
 
     public void installDbProxy(String staticKey, String table, DatabaseProxyFactory factory) {
-        objectStore.setPersistenceProxy(staticKey, factory.onNewInstance(dbHelper, currentScheme, table));
+        getRelatedObjectStore().setPersistenceProxy(staticKey, factory.onNewInstance(dbHelper, currentScheme, table));
     }
 
     static Result.Scheme getScheme(List<Result.Scheme> schemes, int version) {

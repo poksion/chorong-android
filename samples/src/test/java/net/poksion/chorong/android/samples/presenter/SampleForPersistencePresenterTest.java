@@ -41,7 +41,10 @@ public class SampleForPersistencePresenterTest {
         final ObjectStore objectStore = new ObjectStoreImpl();
         final ObjectStore.Key storeKey = new ObjectStore.Key(SampleItemRepository.SAMPLE_DB_CACHE_STATIC_KEY);
 
-        sampleItemRepository = new SampleItemRepository(mock(DatabaseProxyManager.class), objectStore) {
+        DatabaseProxyManager databaseProxyManager = mock(DatabaseProxyManager.class);
+        when(databaseProxyManager.getRelatedObjectStore()).thenReturn(objectStore);
+
+        sampleItemRepository = new SampleItemRepository(databaseProxyManager) {
             final List<SampleItem> stored = new ArrayList<>();
 
             @Override

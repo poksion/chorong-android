@@ -21,7 +21,7 @@ class AppModule implements ModuleFactory.Initializer {
         DatabaseProxyManager dbProxyManager = new DatabaseProxyManager(objectStoreApplication, DbRepository.DB_NAME, DbRepository.DB_SCHEMES);
         singletonBinder.bind(DatabaseProxyManager.class, dbProxyManager);
 
-        SampleItemRepository sampleItemRepository = new SampleItemRepository(dbProxyManager, objectStoreApplication);
+        SampleItemRepository sampleItemRepository = new SampleItemRepository(dbProxyManager);
         singletonBinder.bind(SampleItemRepository.class, sampleItemRepository);
     }
 }
