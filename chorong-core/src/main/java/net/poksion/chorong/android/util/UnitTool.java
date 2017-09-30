@@ -15,4 +15,9 @@ public class UnitTool {
         DisplayMetrics metrics = resources.getDisplayMetrics();
         return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, metrics);
     }
+
+    public int changePixelToDip(int pixel) {
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, pixel, metrics);
+    }
 }
