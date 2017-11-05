@@ -1,6 +1,7 @@
 package net.poksion.chorong.android.logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -31,7 +32,7 @@ public class PerformanceLoggerTest {
         long endingElapsed = logger.end(startingId);
         assertThat(endingElapsed).isZero();
 
-        verify(mockPrinter, never()).print(anyString(), anyString());
+        verify(mockPrinter, never()).printStarted(anyString(), anyString());
     }
 
     @Test
@@ -41,7 +42,8 @@ public class PerformanceLoggerTest {
         long startingId = logger.start("dummy-check");
         logger.end(startingId);
 
-        verify(mockPrinter, times(2)).print(anyString(), anyString());
+        verify(mockPrinter, times(1)).printStarted(anyString(), anyString());
+        verify(mockPrinter, times(1)).printEnded(anyString(), anyString(), anyLong());
     }
 
     @Test

@@ -10,9 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PerformanceLogger {
 
     public interface Printer {
-        void print(String tag, String message);
+        void printStarted(String tag, String name);
+        void printEnded(String tag, String name, long elapsed);
     }
-
 
     private final boolean enabled;
     private final Printer printer;
@@ -22,8 +22,13 @@ public class PerformanceLogger {
     public PerformanceLogger(boolean enabled) {
         this(enabled, new Printer() {
             @Override
-            public void print(String tag, String message) {
-                Log.d(tag, message);
+            public void printStarted(String tag, String name) {
+                Log.d(tag, name + " started");
+            }
+
+            @Override
+            public void printEnded(String tag, String name, long elapsed) {
+                Log.d(tag, name + " ended (" + elapsed + "ms)");
             }
         });
     }
@@ -41,7 +46,7 @@ public class PerformanceLogger {
         long current = System.currentTimeMillis();
         pushName(current, name);
 
-        printer.print("[performance]", name + " started");
+        printer.printStarted("[performance]", name);
         return current;
     }
 
@@ -53,7 +58,7 @@ public class PerformanceLogger {
         long elapsed = System.currentTimeMillis() - startingId;
         String name = popName(startingId);
 
-        printer.print("[performance]", name + " ended (" + elapsed + "ms)");
+        printer.printEnded("[performance]", name, elapsed);
         return elapsed;
     }
 
