@@ -1,5 +1,7 @@
 package net.poksion.chorong.android.logger;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 public class PerformanceLogger {
@@ -51,8 +53,9 @@ public class PerformanceLogger {
         this.printer = printer;
     }
 
-    public Checker start(String name) {
-        if (!enabled) {
+    @NonNull
+    public Checker start(@Nullable String name) {
+        if (!enabled || name == null) {
             return doNothingChecker;
         }
 

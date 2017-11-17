@@ -23,10 +23,21 @@ public class PerformanceLoggerTest {
     }
 
     @Test
-    public void starting_id_should_be_zero_if_not_enabled() {
+    public void checker_should_be_do_nothing_if_not_enabled() {
         PerformanceLogger logger = new PerformanceLogger(false, mockPrinter);
 
         PerformanceLogger.Checker checker = logger.start("dummy-check");
+        assertThat(checker.end()).isZero();
+
+        verify(mockPrinter, never()).printStarted(anyString(), anyString());
+        verify(mockPrinter, never()).printEnded(anyString(), anyString(), anyLong());
+    }
+
+    @Test
+    public void checker_should_be_do_nothing_if_null_name() {
+        PerformanceLogger logger = new PerformanceLogger(false, mockPrinter);
+
+        PerformanceLogger.Checker checker = logger.start(null);
         assertThat(checker.end()).isZero();
 
         verify(mockPrinter, never()).printStarted(anyString(), anyString());
