@@ -26,39 +26,21 @@ public class PerformanceLoggerTest {
     public void starting_id_should_be_zero_if_not_enabled() {
         PerformanceLogger logger = new PerformanceLogger(false, mockPrinter);
 
-        long startingId = logger.start("dummy-check");
-        assertThat(startingId).isZero();
-
-        long endingElapsed = logger.end(startingId);
-        assertThat(endingElapsed).isZero();
+        PerformanceLogger.Checker checker = logger.start("dummy-check");
+        assertThat(checker.end()).isZero();
 
         verify(mockPrinter, never()).printStarted(anyString(), anyString());
+        verify(mockPrinter, never()).printEnded(anyString(), anyString(), anyLong());
     }
 
     @Test
     public void print_should_be_called_when_enabled() {
         PerformanceLogger logger = new PerformanceLogger(true, mockPrinter);
 
-        long startingId = logger.start("dummy-check");
-        logger.end(startingId);
+        PerformanceLogger.Checker checker  = logger.start("dummy-check");
+        checker.end();
 
         verify(mockPrinter, times(1)).printStarted(anyString(), anyString());
         verify(mockPrinter, times(1)).printEnded(anyString(), anyString(), anyLong());
     }
-
-    @Test
-    public void staring_time_can_be_duplicate() {
-        PerformanceLogger logger = new PerformanceLogger(true);
-
-        long staringTime = 10;
-        logger.pushName(staringTime, "dummy-1");
-        logger.pushName(staringTime, "dummy-2");
-
-        String name = logger.popName(staringTime);
-        assertThat(name).isEqualTo("dummy-2");
-
-        name = logger.popName(staringTime);
-        assertThat(name).isEqualTo("dummy-1");
-    }
-
 }

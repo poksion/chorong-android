@@ -1,23 +1,36 @@
 package net.poksion.chorong.android.logger;
 
-import android.support.annotation.VisibleForTesting;
 import android.util.Log;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PerformanceLogger {
 
     public interface Printer {
         void printStarted(String tag, String name);
+
         void printEnded(String tag, String name, long elapsed);
+    }
+
+    public abstract class Checker {
+        final String name;
+        final long started;
+
+        private Checker(String name, long started) {
+            this.name = name;
+            this.started = started;
+        }
+
+        public abstract long end();
     }
 
     private final boolean enabled;
     private final Printer printer;
 
-    private final Map<Long, List<String>> logStack = new ConcurrentHashMap<>();
+    private final Checker doNothingChecker = new Checker("", 0) {
+        @Override
+        public long end() {
+            return 0;
+        }
+    };
 
     public PerformanceLogger(boolean enabled) {
         this(enabled, new Printer() {
@@ -38,53 +51,23 @@ public class PerformanceLogger {
         this.printer = printer;
     }
 
-    public long start(String name) {
+    public Checker start(String name) {
         if (!enabled) {
-            return 0;
+            return doNothingChecker;
         }
-
-        long current = System.currentTimeMillis();
-        pushName(current, name);
 
         printer.printStarted("[performance]", name);
-        return current;
+
+        long current = System.currentTimeMillis();
+        return new Checker(name, current) {
+
+            @Override
+            public long end() {
+                long elapsed = System.currentTimeMillis() - started;
+                printer.printEnded("[performance]", name, elapsed);
+
+                return elapsed;
+            }
+        };
     }
-
-    public long end(long startingId) {
-        if (!enabled) {
-            return 0;
-        }
-
-        long elapsed = System.currentTimeMillis() - startingId;
-        String name = popName(startingId);
-
-        printer.printEnded("[performance]", name, elapsed);
-        return elapsed;
-    }
-
-    @VisibleForTesting
-    void pushName(long startingId, String name) {
-        List<String> names = logStack.get(startingId);
-        if (names == null) {
-            names = new ArrayList<>();
-            logStack.put(startingId, names);
-        }
-        names.add(name);
-    }
-
-    @VisibleForTesting
-    String popName(long startingId) {
-        List<String> names = logStack.get(startingId);
-        int lastIdx = names.size()-1;
-        String name = names.get(lastIdx);
-
-        if (lastIdx == 0) {
-            logStack.remove(startingId);
-        } else {
-            names.remove(lastIdx);
-        }
-
-        return name;
-    }
-
 }
