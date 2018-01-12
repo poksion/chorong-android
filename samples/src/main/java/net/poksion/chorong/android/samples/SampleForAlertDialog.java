@@ -1,6 +1,5 @@
 package net.poksion.chorong.android.samples;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,7 @@ import android.widget.Toast;
 import net.poksion.chorong.android.module.Assemble;
 import net.poksion.chorong.android.module.ModuleFactory;
 import net.poksion.chorong.android.store.ObjectStore;
-import net.poksion.chorong.android.ui.dialog.AlertDialogActivity;
+import net.poksion.chorong.android.ui.dialog.AlertDialogActivityBuilder;
 import net.poksion.chorong.android.ui.main.ToolbarActivity;
 
 public class SampleForAlertDialog extends ToolbarActivity {
@@ -19,7 +18,7 @@ public class SampleForAlertDialog extends ToolbarActivity {
     @Assemble LinearLayout buttonContainer;
     @Assemble ObjectStore objectStore;
 
-    private AlertDialogActivity.EventRouter eventRouter;
+    private AlertDialogActivityBuilder.EventRouter eventRouter;
 
     @Override
     protected void onCreateContentView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class SampleForAlertDialog extends ToolbarActivity {
     }
 
     private void addAlertDialogOpener() {
-        eventRouter = AlertDialogActivity.makeEventRouter(objectStore, new AlertDialogActivity.OnClickCallback() {
+        eventRouter = AlertDialogActivityBuilder.makeEventRouter(objectStore, new AlertDialogActivityBuilder.OnClickCallback() {
             @Override
             protected void onClick(boolean yes) {
                 if (isFinishing()) {
@@ -45,9 +44,9 @@ public class SampleForAlertDialog extends ToolbarActivity {
                 }
 
                 if (yes) {
-                    Toast.makeText(SampleForAlertDialog.this, "Yes clicked", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SampleForAlertDialog.this, "Yes clicked", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SampleForAlertDialog.this, "No clicked", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SampleForAlertDialog.this, "No clicked", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -58,19 +57,16 @@ public class SampleForAlertDialog extends ToolbarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialogActivity.Builder dialogBuilder = new AlertDialogActivity.Builder(
+                new AlertDialogActivityBuilder(
                         SampleForAlertDialog.this,
                         "Sample Alert",
-                        "Sample Alert Dialog Body");
-
-                Intent i = dialogBuilder
+                        "Sample Alert Dialog Body")
                         .clickable(
                                 "yes button",
                                 "no button",
                                 eventRouter)
-                        .build();
-
-                startActivity(i);
+                        .noDimming()
+                        .startDialogActivity();
             }
         });
 

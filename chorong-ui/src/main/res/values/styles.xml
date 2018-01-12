@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AlertDialogNoAnimation">
-        <item name="android:windowEnterAnimation">@anim/alert_dialog_dummy</item>
-        <item name="android:windowExitAnimation">@anim/alert_dialog_dummy</item>
-    </style>
     <style name="ProgressBarCircleStyle" parent="@android:style/Widget.ProgressBar">
         <item name="android:indeterminateDrawable">@drawable/progress_circle</item>
+    </style>
+
+    <style name="Theme.AlertDialogActivity" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="Theme.AlertDialogNoDimmingActivity" parent="Theme.AlertDialogActivity">
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 </resources>

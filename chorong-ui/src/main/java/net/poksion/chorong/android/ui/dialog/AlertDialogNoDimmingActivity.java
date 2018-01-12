@@ -13,7 +13,7 @@ import net.poksion.chorong.android.store.ObjectStore;
 
 import static net.poksion.chorong.android.ui.dialog.AlertDialogActivityBuilder.makeEventRouter;
 
-public class AlertDialogActivity extends Activity {
+public class AlertDialogNoDimmingActivity extends Activity {
 
     private AlertDialogActivityBuilder.EventRouter eventRouter;
     private boolean closeControllingFromOthers = false;

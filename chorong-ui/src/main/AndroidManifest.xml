@@ -13,8 +13,12 @@
 
         <activity
             android:name=".dialog.AlertDialogActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:theme="@style/Theme.AlertDialogActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".dialog.AlertDialogNoDimmingActivity"
+            android:theme="@style/Theme.AlertDialogNoDimmingActivity" />
 
     </application>
 
